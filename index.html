@@ -56,6 +56,11 @@
     .btn:hover {
       background-color: #45a049;
     }
+    #map {
+      height: 500px;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
     footer {
       background-color: #4CAF50;
       color: white;
@@ -79,22 +84,11 @@
     <img src="https://via.placeholder.com/800x400" alt="Limpieza de hogar">
     <h2>Limpieza de Hogar</h2>
     <p>Contrata a un experto en limpieza para tu hogar. Servicios disponibles las 24 horas.</p>
-    <button class="btn" onclick="reservar('Limpieza de Hogar')">Reservar Ahora</button>
+    <button class="btn" onclick="reservar()">Reservar Ahora</button>
   </div>
 
-  <div class="service">
-    <img src="https://via.placeholder.com/800x400" alt="Limpieza de oficina">
-    <h2>Limpieza de Oficina</h2>
-    <p>Mantén tu oficina impecable con nuestro servicio de limpieza profesional.</p>
-    <button class="btn" onclick="reservar('Limpieza de Oficina')">Reservar Ahora</button>
-  </div>
-
-  <div class="service">
-    <img src="https://via.placeholder.com/800x400" alt="Limpieza profunda">
-    <h2>Limpieza Profunda</h2>
-    <p>Servicio de limpieza profunda para cualquier espacio, garantizando los más altos estándares.</p>
-    <button class="btn" onclick="reservar('Limpieza Profunda')">Reservar Ahora</button>
-  </div>
+  <!-- Mapa para visualizar los expertos cercanos -->
+  <div id="map"></div>
 </div>
 
 <footer>
@@ -102,9 +96,68 @@
 </footer>
 
 <script>
-  function reservar(servicio) {
-    alert('Has reservado el servicio: ' + servicio);
+  let map;
+  let expertos = [
+    { lat: -0.180653, lng: -78.467834, nombre: "Experto 1" },  // Quito
+    { lat: -0.186593, lng: -78.480901, nombre: "Experto 2" },
+    { lat: -0.172432, lng: -78.499533, nombre: "Experto 3" }
+  ];
+
+  function initMap() {
+    // Intenta obtener la ubicación del usuario
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        // Crear el mapa centrado en la ubicación del usuario
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: userLocation,
+          zoom: 13
+        });
+
+        // Mostrar la ubicación del usuario en el mapa
+        new google.maps.Marker({
+          position: userLocation,
+          map: map,
+          title: "Tú estás aquí"
+        });
+
+        // Mostrar a los expertos cercanos
+        expertos.forEach(function(experto) {
+          new google.maps.Marker({
+            position: experto,
+            map: map,
+            title: experto.nombre
+          });
+        });
+      }, function() {
+        handleLocationError(true, map.getCenter());
+      });
+    } else {
+      // Si el navegador no soporta geolocalización
+      handleLocationError(false, map.getCenter());
+    }
   }
+
+  function handleLocationError(browserHasGeolocation, pos) {
+    alert(browserHasGeolocation ?
+          "Error: No se pudo obtener tu ubicación." :
+          "Error: Tu navegador no soporta la geolocalización.");
+  }
+
+  function reservar() {
+    // Mostrar el mapa con los expertos
+    document.getElementById("map").scrollIntoView({ behavior: "smooth" });
+    initMap();
+  }
+</script>
+
+<!-- Cargar la API de Google Maps con tu clave API -->
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap">
 </script>
 
 </body>
