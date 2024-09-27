@@ -7,158 +7,63 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
       background-color: #f4f4f4;
-    }
-    header {
-      background-color: #4CAF50;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-    header h1 {
       margin: 0;
+      padding: 20px;
     }
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
-    .service {
+    .expert {
       background-color: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 1.5rem;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin: 10px;
     }
-    .service img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-    }
-    .service h2 {
-      margin-top: 0.5rem;
-      color: #333;
-    }
-    .service p {
-      color: #555;
+    .expert img {
+      border-radius: 50%;
+      max-width: 100px;
     }
     .btn {
       background-color: #4CAF50;
       color: white;
-      padding: 0.7rem 1.5rem;
+      padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    .btn:hover {
-      background-color: #45a049;
-    }
-    #map {
-      height: 500px;
-      width: 100%;
-      margin-top: 1.5rem;
-    }
-    footer {
-      background-color: #4CAF50;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Plataforma de Expertos en Limpieza</h1>
-  <p>Reserva un experto en limpieza con solo un clic</p>
-</header>
-
 <div class="container">
-  <div class="service">
-    <img src="https://via.placeholder.com/800x400" alt="Limpieza de hogar">
-    <h2>Limpieza de Hogar</h2>
-    <p>Contrata a un experto en limpieza para tu hogar. Servicios disponibles las 24 horas.</p>
-    <button class="btn" onclick="reservar()">Reservar Ahora</button>
+  <h2>Expertos en Limpieza Disponibles</h2>
+  <div class="expert">
+    <img src="https://via.placeholder.com/150" alt="Experto 1" />
+    <h3>Experto 1</h3>
+    <p>Especialista en limpieza profunda de hogares.</p>
+    <button class="btn">Reservar Ahora</button>
+  </div>
+  
+  <div class="expert">
+    <img src="https://via.placeholder.com/150" alt="Experto 2" />
+    <h3>Experto 2</h3>
+    <p>Experto en limpieza de oficinas y espacios comerciales.</p>
+    <button class="btn">Reservar Ahora</button>
   </div>
 
-  <!-- Mapa para visualizar los expertos cercanos -->
-  <div id="map"></div>
+  <div class="expert">
+    <img src="https://via.placeholder.com/150" alt="Experto 3" />
+    <h3>Experto 3</h3>
+    <p>Especialista en limpieza de alfombras y tapicería.</p>
+    <button class="btn">Reservar Ahora</button>
+  </div>
 </div>
-
-<footer>
-  Contacto: info@expertoslimpieza.com | Tel: 123-456-789
-</footer>
-
-<script>
-  let map;
-  let expertos = [
-    { lat: -0.180653, lng: -78.467834, nombre: "Experto 1" },  // Quito
-    { lat: -0.186593, lng: -78.480901, nombre: "Experto 2" },
-    { lat: -0.172432, lng: -78.499533, nombre: "Experto 3" }
-  ];
-
-  function initMap() {
-    // Intenta obtener la ubicación del usuario
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        const userLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-
-        // Crear el mapa centrado en la ubicación del usuario
-        map = new google.maps.Map(document.getElementById("map"), {
-          center: userLocation,
-          zoom: 13
-        });
-
-        // Mostrar la ubicación del usuario en el mapa
-        new google.maps.Marker({
-          position: userLocation,
-          map: map,
-          title: "Tú estás aquí"
-        });
-
-        // Mostrar a los expertos cercanos
-        expertos.forEach(function(experto) {
-          new google.maps.Marker({
-            position: experto,
-            map: map,
-            title: experto.nombre
-          });
-        });
-      }, function() {
-        handleLocationError(true, map.getCenter());
-      });
-    } else {
-      // Si el navegador no soporta geolocalización
-      handleLocationError(false, map.getCenter());
-    }
-  }
-
-  function handleLocationError(browserHasGeolocation, pos) {
-    alert(browserHasGeolocation ?
-          "Error: No se pudo obtener tu ubicación." :
-          "Error: Tu navegador no soporta la geolocalización.");
-  }
-
-  function reservar() {
-    // Mostrar el mapa con los expertos
-    document.getElementById("map").scrollIntoView({ behavior: "smooth" });
-    initMap();
-  }
-</script>
-
-<!-- Cargar la API de Google Maps con tu clave API -->
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?key=TU_CLAVE_API&callback=initMap">
-</script>
 
 </body>
 </html>
