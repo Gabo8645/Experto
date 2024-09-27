@@ -3,67 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plataforma de Expertos en Limpieza</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .expert {
-      background-color: white;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      margin: 10px;
-    }
-    .expert img {
-      border-radius: 50%;
-      max-width: 100px;
-    }
-    .btn {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-  </style>
+  <title>Contratar Expertos en Limpieza</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-  <h2>Expertos en Limpieza Disponibles</h2>
-  <div class="expert">
-    <img src="https://via.placeholder.com/150" alt="Experto 1" />
-    <h3>Experto 1</h3>
-    <p>Especialista en limpieza profunda de hogares.</p>
-    <button class="btn">Reservar Ahora</button>
-  </div>
+  <h1>Expertos en Limpieza Disponibles</h1>
   
-  <div class="expert">
-    <img src="https://via.placeholder.com/150" alt="Experto 2" />
-    <h3>Experto 2</h3>
-    <p>Experto en limpieza de oficinas y espacios comerciales.</p>
-    <button class="btn">Reservar Ahora</button>
-  </div>
+  <div id="experts-list" class="experts-list"></div>
+</div>
 
-  <div class="expert">
-    <img src="https://via.placeholder.com/150" alt="Experto 3" />
-    <h3>Experto 3</h3>
-    <p>Especialista en limpieza de alfombras y tapicería.</p>
-    <button class="btn">Reservar Ahora</button>
+<!-- Modal para Detalles del Experto -->
+<div id="expert-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2 id="expert-name"></h2>
+    <img id="expert-image" src="" alt="Experto" />
+    <p id="expert-description"></p>
+    <p><strong>Calificación: </strong><span id="expert-rating"></span></p>
+    <p><strong>Precio: </strong><span id="expert-price"></span></p>
+    <button onclick="openPaymentForm()">Contratar</button>
   </div>
 </div>
 
+<!-- Formulario de Pago Modal -->
+<div id="payment-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closePaymentForm()">&times;</span>
+    <h2>Formulario de Pago</h2>
+    <form id="payment-form">
+      <label for="card-number">Número de Tarjeta:</label>
+      <input type="text" id="card-number" required>
+      
+      <label for="expiration-date">Fecha de Expiración:</label>
+      <input type="text" id="expiration-date" required>
+      
+      <label for="cvv">CVV:</label>
+      <input type="text" id="cvv" required>
+      
+      <button type="submit">Pagar</button>
+    </form>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
