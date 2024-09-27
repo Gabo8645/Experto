@@ -9,8 +9,9 @@
 <body>
 
 <div class="container">
-  <h1>¡Bienvenido a tu solución de limpieza perfecta!</h1>
-  
+  <h1>¡Encuentra al Experto en Limpieza Perfecto!</h1>
+  <p>Transforma tu hogar con nuestros profesionales calificados. Tu espacio merece lo mejor.</p>
+
   <div id="experts-list" class="experts-list"></div>
 </div>
 
@@ -22,8 +23,8 @@
     <img id="expert-image" src="" alt="Experto" />
     <p id="expert-description"></p>
     <p><strong>Calificación: </strong><span id="expert-rating"></span></p>
-    <p><strong>Precio: </strong><span id="expert-price"></span></p>
-    <button onclick="openPaymentForm()">Contratar</button>
+    <p><strong>Precio por hora: </strong><span id="expert-price"></span></p>
+    <button class="button" onclick="openPaymentForm()">Contratar Ahora</button>
   </div>
 </div>
 
@@ -37,12 +38,12 @@
       <input type="text" id="card-number" required>
       
       <label for="expiration-date">Fecha de Expiración:</label>
-      <input type="text" id="expiration-date" required>
+      <input type="text" id="expiration-date" required placeholder="MM/AA">
       
       <label for="cvv">CVV:</label>
       <input type="text" id="cvv" required>
       
-      <button type="submit">Pagar</button>
+      <button type="submit" class="button">Pagar</button>
     </form>
   </div>
 </div>
