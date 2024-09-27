@@ -3,19 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plataforma de Expertos</title>
+  <title>Plataforma de Expertos en Limpieza</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+    header h1 {
+      margin: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .service {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+    }
+    .service img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .service h2 {
+      margin-top: 0.5rem;
+      color: #333;
+    }
+    .service p {
+      color: #555;
+    }
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+    footer {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
-  <h1>¡Bienvenidos a la Plataforma de Expertos!</h1>
-  <p>Aquí puedes encontrar expertos en limpieza y otros servicios.</p>
 
-  <h2>Servicios Disponibles</h2>
-  <ul>
-    <li>Limpieza de hogares</li>
-    <li>Limpieza de oficinas</li>
-    <li>Limpieza profunda</li>
-  </ul>
+<header>
+  <h1>Plataforma de Expertos en Limpieza</h1>
+  <p>Reserva un experto en limpieza con solo un clic</p>
+</header>
 
-  <p>Contacta con un experto y agenda tu servicio hoy mismo.</p>
+<div class="container">
+  <div class="service">
+    <img src="https://via.placeholder.com/800x400" alt="Limpieza de hogar">
+    <h2>Limpieza de Hogar</h2>
+    <p>Contrata a un experto en limpieza para tu hogar. Servicios disponibles las 24 horas.</p>
+    <button class="btn" onclick="reservar('Limpieza de Hogar')">Reservar Ahora</button>
+  </div>
+
+  <div class="service">
+    <img src="https://via.placeholder.com/800x400" alt="Limpieza de oficina">
+    <h2>Limpieza de Oficina</h2>
+    <p>Mantén tu oficina impecable con nuestro servicio de limpieza profesional.</p>
+    <button class="btn" onclick="reservar('Limpieza de Oficina')">Reservar Ahora</button>
+  </div>
+
+  <div class="service">
+    <img src="https://via.placeholder.com/800x400" alt="Limpieza profunda">
+    <h2>Limpieza Profunda</h2>
+    <p>Servicio de limpieza profunda para cualquier espacio, garantizando los más altos estándares.</p>
+    <button class="btn" onclick="reservar('Limpieza Profunda')">Reservar Ahora</button>
+  </div>
+</div>
+
+<footer>
+  Contacto: info@expertoslimpieza.com | Tel: 123-456-789
+</footer>
+
+<script>
+  function reservar(servicio) {
+    alert('Has reservado el servicio: ' + servicio);
+  }
+</script>
+
 </body>
 </html>
