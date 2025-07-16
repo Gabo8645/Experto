@@ -1,99 +1,112 @@
-// Lista de expertos
+// Simulamos datos del usuario y expertos
+const user = {
+  limpiezaPurchases: 4 // Cambia este número si quieres probar el desbloqueo
+};
+
 const experts = [
-  {
-    name: "María López",
-    image: "https://via.placeholder.com/200x200.png?text=María",
-    description: "Experta en limpieza básica y profunda con más de 5 años de experiencia.",
-    rating: "4.8",
-    price: "$15/hora",
-    level: "Mundo 1"
-  },
-  {
-    name: "Carlos Méndez",
-    image: "https://via.placeholder.com/200x200.png?text=Carlos",
-    description: "Especialista en limpieza de vehículos y electrodomésticos.",
-    rating: "4.9",
-    price: "$20/hora",
-    level: "Mundo 2"
-  },
-  {
-    name: "Ana Torres",
-    image: "https://via.placeholder.com/200x200.png?text=Ana",
-    description: "Chef a domicilio para cocina diaria o eventos especiales.",
-    rating: "4.7",
-    price: "$25/hora",
-    level: "Mundo 3"
-  },
-  {
-    name: "David Gómez",
-    image: "https://via.placeholder.com/200x200.png?text=David",
-    description: "Dog-sitter con experiencia en paseos y cuidado de mascotas.",
-    rating: "4.6",
-    price: "$18/hora",
-    level: "Mundo 4"
-  },
-  {
-    name: "Laura Rivera",
-    image: "https://via.placeholder.com/200x200.png?text=Laura",
-    description: "Enfermera con certificación y atención domiciliaria a adultos mayores.",
-    rating: "4.9",
-    price: "$30/hora",
-    level: "Mundo 5"
-  }
+  { id: 1, name: "Juan Pérez" },
+  { id: 2, name: "María Gómez" },
+  { id: 3, name: "Carlos Torres" }
 ];
 
-// Selección de elementos del DOM
-const expertsList = document.getElementById('experts-list');
-const expertModal = document.getElementById('expert-modal');
-const expertName = document.getElementById('expert-name');
-const expertImage = document.getElementById('expert-image');
-const expertDescription = document.getElementById('expert-description');
-const expertRating = document.getElementById('expert-rating');
-const expertPrice = document.getElementById('expert-price');
+const areas = [
+  { id: "room", label: "Habitaciones", price: 10 },
+  { id: "kitchen", label: "Cocina", price: 15 },
+  { id: "dining", label: "Comedor", price: 12 },
+  { id: "living", label: "Sala", price: 12 },
+  { id: "terrace", label: "Terraza", price: 20 }
+];
 
-const paymentModal = document.getElementById('payment-modal');
+// Elementos del DOM
+const btnBasic = document.getElementById("btnBasic");
+const btnDeep = document.getElementById("btnDeep");
+const stepExpert = document.getElementById("stepExpert");
+const stepAreas = document.getElementById("stepAreas");
+const stepSummary = document.getElementById("stepSummary");
+const expertSelect = document.getElementById("expertSelect");
+const btnNextAreas = document.getElementById("btnNextAreas");
+const areasContainer = document.getElementById("areasContainer");
+const btnCalculate = document.getElementById("btnCalculate");
+const summaryDetails = document.getElementById("summaryDetails");
 
-// Función para crear las tarjetas de expertos
-function loadExperts() {
-  experts.forEach((expert, index) => {
-    const card = document.createElement('div');
-    card.className = 'expert-card';
-    card.innerHTML = `
-      <img src="${expert.image}" alt="${expert.name}">
-      <h3>${expert.name}</h3>
-      <p><strong>${expert.level}</strong></p>
-      <button onclick="showExpertDetails(${index})" class="button">Ver Detalles</button>
-    `;
-    expertsList.appendChild(card);
+// Desbloquear mundo profundo si aplica
+if (user.limpiezaPurchases > 3) {
+  btnDeep.disabled = false;
+  btnDeep.textContent = "✅ Mundo de Limpieza Profunda";
+}
+
+// Paso 1: Seleccionar Mundo
+btnBasic.addEventListener("click", () => {
+  btnBasic.disabled = true;
+  btnDeep.disabled = true;
+  mostrarSeleccionExpertos();
+});
+
+btnDeep.addEventListener("click", () => {
+  btnBasic.disabled = true;
+  btnDeep.disabled = true;
+  mostrarSeleccionExpertos();
+});
+
+// Mostrar paso de selección de experto
+function mostrarSeleccionExpertos() {
+  stepExpert.classList.remove("hidden");
+  // Llenar select de expertos
+  experts.forEach(exp => {
+    const opt = document.createElement("option");
+    opt.value = exp.id;
+    opt.textContent = exp.name;
+    expertSelect.appendChild(opt);
   });
 }
 
-// Mostrar detalles del experto en el modal
-function showExpertDetails(index) {
-  const expert = experts[index];
-  expertName.textContent = expert.name;
-  expertImage.src = expert.image;
-  expertDescription.textContent = expert.description;
-  expertRating.textContent = expert.rating;
-  expertPrice.textContent = expert.price;
-  expertModal.style.display = "block";
-}
+// Paso 2: Seleccionar Áreas
+btnNextAreas.addEventListener("click", () => {
+  stepExpert.classList.add("hidden");
+  stepAreas.classList.remove("hidden");
+  // Crear inputs de cantidad por área
+  areasContainer.innerHTML = "";
+  areas.forEach(area => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <label>
+        ${area.label} ($${area.price} por unidad):
+        <input type="number" id="area-${area.id}" min="0" value="0">
+      </label>
+    `;
+    areasContainer.appendChild(div);
+  });
+});
 
-// Cerrar el modal de experto
-function closeModal() {
-  expertModal.style.display = "none";
-}
+// Paso 3: Calcular y mostrar resumen
+btnCalculate.addEventListener("click", () => {
+  let total = 0;
+  let details = "";
+  areas.forEach(area => {
+    const qty = parseInt(document.getElementById(`area-${area.id}`).value);
+    if (qty > 0) {
+      const subtotal = qty * area.price;
+      total += subtotal;
+      details += `<p>${qty} x ${area.label} ($${area.price}) = $${subtotal.toFixed(2)}</p>`;
+    }
+  });
 
-// Abrir el formulario de pago
-function openPaymentForm() {
-  expertModal.style.display = "none";
-  paymentModal.style.display = "block";
-}
+  if (total === 0) {
+    alert("Por favor, selecciona al menos un área.");
+    return;
+  }
 
-// Cerrar el formulario de pago
-function closePaymentForm() {
-  paymentModal.style.display = "none";
-}
+  const commission = total * 0.1;
+  const grandTotal = total + commission;
 
-// Cargar expertos al iniciar
-window.onload = loadExperts;
+  summaryDetails.innerHTML = `
+    ${details}
+    <hr>
+    <p>Subtotal: $${total.toFixed(2)}</p>
+    <p>Comisión (10%): $${commission.toFixed(2)}</p>
+    <h3>Total a pagar: $${grandTotal.toFixed(2)}</h3>
+  `;
+
+  stepAreas.classList.add("hidden");
+  stepSummary.classList.remove("hidden");
+});
