@@ -1,151 +1,183 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Xperto - Porque tu tiempo vale más</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Servicio de Limpieza</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .hidden {
+      display: none;
+    }
+    .btn {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px 0;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .btn:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input[type="number"] {
+      width: 60px;
+    }
+    .summary {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
 
-<!-- Header -->
-<header>
-  <div class="logo">
-    <img src="https://via.placeholder.com/150x50.png?text=Xperto" alt="Logo Xperto">
-  </div>
-  <nav>
-    <ul>
-      <li><a href="#mundos">Mundos</a></li>
-      <li><a href="#servicios">Servicios</a></li>
-      <li><a href="#expertos">Expertos</a></li>
-      <li><a href="#contacto">Contacto</a></li>
-    </ul>
-  </nav>
-</header>
+  <h1>Elige tu Mundo de Limpieza</h1>
+  <button id="btnBasic" class="btn">🌍 Mundo de Limpieza Básica</button>
+  <button id="btnDeep" class="btn" disabled>🔒 Mundo de Limpieza Profunda</button>
 
-<!-- Hero / Presentación -->
-<section class="hero">
-  <div class="container">
-    <h1>Desbloquea un mundo de servicios con Xperto</h1>
-    <p>Porque tu tiempo vale más. Sube de nivel y accede a expertos verificados para cada necesidad de tu hogar u oficina.</p>
-    <a href="#mundos" class="button">Explorar Mundos</a>
+  <div id="stepExpert" class="hidden">
+    <h2>Selecciona tu Experto</h2>
+    <select id="expertSelect"></select>
+    <button id="btnNextAreas" class="btn">Siguiente</button>
   </div>
-</section>
 
-<!-- Mundos / Niveles -->
-<section id="mundos" class="levels">
-  <div class="container">
-    <h2>Niveles que puedes desbloquear</h2>
-    <div class="levels-grid">
-      <div class="level">
-        <h3>Mundo 1</h3>
-        <p>Limpieza básica de hogares y oficinas</p>
-      </div>
-      <div class="level">
-        <h3>Mundo 2</h3>
-        <p>Limpieza especializada: vehículos, electrodomésticos, cisternas</p>
-      </div>
-      <div class="level">
-        <h3>Mundo 3</h3>
-        <p>Cocina y asistencia doméstica</p>
-      </div>
-      <div class="level">
-        <h3>Mundo 4</h3>
-        <p>Cuidado de mascotas (dogsitter)</p>
-      </div>
-      <div class="level">
-        <h3>Mundo 5</h3>
-        <p>Cuidado de personas y enfermería a domicilio</p>
-      </div>
-    </div>
+  <div id="stepAreas" class="hidden">
+    <h2>Selecciona las áreas y cantidad</h2>
+    <div id="areasContainer"></div>
+    <button id="btnCalculate" class="btn">Calcular Total</button>
   </div>
-</section>
 
-<!-- Servicios -->
-<section id="servicios" class="services">
-  <div class="container">
-    <h2>Nuestros Servicios Destacados</h2>
-    <div class="services-grid">
-      <div class="service">
-        <img src="https://via.placeholder.com/300x200.png?text=Limpieza+General" alt="Limpieza General">
-        <h3>Limpieza General</h3>
-        <p>Para mantener tu hogar impecable en el día a día.</p>
-      </div>
-      <div class="service">
-        <img src="https://via.placeholder.com/300x200.png?text=Limpieza+Especializada" alt="Limpieza Especializada">
-        <h3>Limpieza Especializada</h3>
-        <p>Vehículos, electrodomésticos, cisternas y más.</p>
-      </div>
-      <div class="service">
-        <img src="https://via.placeholder.com/300x200.png?text=Cocina+en+Casa" alt="Cocina en Casa">
-        <h3>Cocina en Casa</h3>
-        <p>Cocineros y chefs que transforman tu día.</p>
-      </div>
-      <div class="service">
-        <img src="https://via.placeholder.com/300x200.png?text=Cuidado+de+Mascotas" alt="Cuidado de Mascotas">
-        <h3>Cuidado de Mascotas</h3>
-        <p>Dog-sitting y paseos con expertos.</p>
-      </div>
-      <div class="service">
-        <img src="https://via.placeholder.com/300x200.png?text=Cuidado+de+Personas" alt="Cuidado de Personas">
-        <h3>Cuidado de Personas</h3>
-        <p>Asistencia y enfermería con calidez humana.</p>
-      </div>
-    </div>
+  <div id="stepSummary" class="hidden summary">
+    <h2>Resumen de tu pedido</h2>
+    <div id="summaryDetails"></div>
   </div>
-</section>
 
-<!-- Expertos -->
-<section id="expertos" class="experts">
-  <div class="container">
-    <h2>Conoce a Nuestros Expertos</h2>
-    <div id="experts-list" class="experts-list">
-      <!-- Aquí se cargarán dinámicamente los perfiles -->
-    </div>
-  </div>
-</section>
+  <script>
+    // Simulamos datos del usuario y expertos
+    const user = {
+      limpiezaPurchases: 4 // Cambia este número para probar el desbloqueo
+    };
 
-<!-- Modal Detalles del Experto -->
-<div id="expert-modal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <h2 id="expert-name"></h2>
-    <img id="expert-image" src="" alt="Experto">
-    <p id="expert-description"></p>
-    <p><strong>Calificación: </strong><span id="expert-rating"></span></p>
-    <p><strong>Precio por hora: </strong><span id="expert-price"></span></p>
-    <button class="button" onclick="openPaymentForm()">Contratar Ahora</button>
-  </div>
-</div>
+    const experts = [
+      { id: 1, name: "Juan Pérez" },
+      { id: 2, name: "María Gómez" },
+      { id: 3, name: "Carlos Torres" }
+    ];
 
-<!-- Modal Pago -->
-<div id="payment-modal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closePaymentForm()">&times;</span>
-    <h2>Formulario de Pago</h2>
-    <form id="payment-form">
-      <label for="card-number">Número de Tarjeta:</label>
-      <input type="text" id="card-number" required>
-      
-      <label for="expiration-date">Fecha de Expiración:</label>
-      <input type="text" id="expiration-date" placeholder="MM/AA" required>
-      
-      <label for="cvv">CVV:</label>
-      <input type="text" id="cvv" required>
-      
-      <button type="submit" class="button">Pagar</button>
-    </form>
-  </div>
-</div>
+    const areas = [
+      { id: "room", label: "Habitaciones", price: 10 },
+      { id: "kitchen", label: "Cocina", price: 15 },
+      { id: "dining", label: "Comedor", price: 12 },
+      { id: "living", label: "Sala", price: 12 },
+      { id: "terrace", label: "Terraza", price: 20 }
+    ];
 
-<!-- Contacto -->
-<footer id="contacto">
-  <div class="container">
-    <p>&copy; 2025 Xperto. Todos los derechos reservados.</p>
-  </div>
-</footer>
+    // Elementos
+    const btnBasic = document.getElementById("btnBasic");
+    const btnDeep = document.getElementById("btnDeep");
+    const stepExpert = document.getElementById("stepExpert");
+    const stepAreas = document.getElementById("stepAreas");
+    const stepSummary = document.getElementById("stepSummary");
+    const expertSelect = document.getElementById("expertSelect");
+    const btnNextAreas = document.getElementById("btnNextAreas");
+    const areasContainer = document.getElementById("areasContainer");
+    const btnCalculate = document.getElementById("btnCalculate");
+    const summaryDetails = document.getElementById("summaryDetails");
 
-<script src="script.js"></script>
+    // Desbloquear mundo profundo si tiene >3 compras
+    if (user.limpiezaPurchases > 3) {
+      btnDeep.disabled = false;
+      btnDeep.textContent = "✅ Mundo de Limpieza Profunda";
+    }
+
+    // Paso 1: Seleccionar Mundo
+    btnBasic.addEventListener("click", () => {
+      btnBasic.disabled = true;
+      btnDeep.disabled = true;
+      showExpertSelection();
+    });
+
+    btnDeep.addEventListener("click", () => {
+      btnBasic.disabled = true;
+      btnDeep.disabled = true;
+      showExpertSelection();
+    });
+
+    function showExpertSelection() {
+      stepExpert.classList.remove("hidden");
+      // Llenar select de expertos
+      experts.forEach(exp => {
+        const opt = document.createElement("option");
+        opt.value = exp.id;
+        opt.textContent = exp.name;
+        expertSelect.appendChild(opt);
+      });
+    }
+
+    // Paso 2: Seleccionar Áreas
+    btnNextAreas.addEventListener("click", () => {
+      stepExpert.classList.add("hidden");
+      stepAreas.classList.remove("hidden");
+      areasContainer.innerHTML = "";
+      areas.forEach(area => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <label>
+            ${area.label} ($${area.price} por unidad):
+            <input type="number" id="area-${area.id}" min="0" value="0">
+          </label>
+        `;
+        areasContainer.appendChild(div);
+      });
+    });
+
+    // Paso 3: Calcular y Mostrar Resumen
+    btnCalculate.addEventListener("click", () => {
+      let total = 0;
+      let details = "";
+      areas.forEach(area => {
+        const qty = parseInt(document.getElementById(`area-${area.id}`).value);
+        if (qty > 0) {
+          const subtotal = qty * area.price;
+          total += subtotal;
+          details += `<p>${qty} x ${area.label} ($${area.price}) = $${subtotal.toFixed(2)}</p>`;
+        }
+      });
+
+      if (total === 0) {
+        alert("Selecciona al menos un área.");
+        return;
+      }
+
+      const commission = total * 0.1;
+      const grandTotal = total + commission;
+
+      summaryDetails.innerHTML = `
+        ${details}
+        <hr>
+        <p>Subtotal: $${total.toFixed(2)}</p>
+        <p>Comisión 10%: $${commission.toFixed(2)}</p>
+        <h3>Total a pagar: $${grandTotal.toFixed(2)}</h3>
+      `;
+
+      stepAreas.classList.add("hidden");
+      stepSummary.classList.remove("hidden");
+    });
+  </script>
 </body>
 </html>
