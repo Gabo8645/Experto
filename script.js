@@ -1,8 +1,9 @@
-// script.js para Xperto
+// script.js para la app Xperto mejorada
 
 let selectedWorld = "";
 let selectedExpert = null;
 let selectedAreas = {};
+let historialServicios = [];
 
 const experts = [
   { nombre: "Ana", rating: 4.8, foto: "https://via.placeholder.com/100" },
@@ -17,6 +18,13 @@ const experts = [
   { nombre: "Andrea", rating: 4.6, foto: "https://via.placeholder.com/100" },
 ];
 
+function selectTab(tab) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden"));
+  document.getElementById(tab).classList.remove("hidden");
+  document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+  document.querySelector(`.bottom-nav button[data-tab='${tab}']`).classList.add("active");
+}
+
 function selectWorld(world) {
   selectedWorld = world;
   document.getElementById("worldSelection").classList.add("hidden");
@@ -27,7 +35,7 @@ function selectWorld(world) {
 function renderExperts() {
   const container = document.getElementById("expertsContainer");
   container.innerHTML = "";
-  experts.forEach((exp, index) => {
+  experts.forEach((exp) => {
     const div = document.createElement("div");
     div.className = "card expert";
     div.innerHTML = `
@@ -110,4 +118,33 @@ function confirmService() {
   document.getElementById("paymentSection").classList.add("hidden");
   document.getElementById("trackingSection").classList.remove("hidden");
   document.getElementById("trackStatus").innerText = `🧽 El experto ${selectedExpert.nombre} ha sido asignado. Pronto llegará a tu domicilio.`;
+
+  historialServicios.push({
+    experto: selectedExpert.nombre,
+    areas: selectedAreas,
+    fecha: new Date().toLocaleString(),
+    metodo: metodo.value
+  });
+  updateHistorial();
 }
+
+function updateHistorial() {
+  const hist = document.getElementById("historialContainer");
+  hist.innerHTML = "";
+  historialServicios.forEach((s, index) => {
+    const div = document.createElement("div");
+    div.className = "card historial";
+    div.innerHTML = `
+      <h4>Servicio #${index + 1}</h4>
+      <p>Experto: ${s.experto}</p>
+      <p>Áreas: ${Object.entries(s.areas).map(([k, v]) => `${k}: ${v}`).join(", ")}</p>
+      <p>Método: ${s.metodo}</p>
+      <p>Fecha: ${s.fecha}</p>
+    `;
+    hist.appendChild(div);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  selectTab("homeTab");
+});
