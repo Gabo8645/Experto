@@ -1,134 +1,117 @@
 // script.js
 
-// Datos simulados
-const user = {
-  limpiezaPurchases: 4
-};
+document.addEventListener("DOMContentLoaded", () => {
+  const pages = ["home", "promotions", "history", "profile"];
+  const navLinks = document.querySelectorAll(".bottom-nav a");
 
-const experts = [
-  {
-    id: 1,
-    name: "Juan Pérez",
-    stars: 4,
-    comments: ["Muy puntual", "Excelente limpieza"],
-    photo: "https://randomuser.me/api/portraits/men/32.jpg",
-    specialty: "Limpieza de cocinas y salas"
-  },
-  {
-    id: 2,
-    name: "María Gómez",
-    stars: 5,
-    comments: ["Muy detallista", "Recomendadísima"],
-    photo: "https://randomuser.me/api/portraits/women/45.jpg",
-    specialty: "Limpieza profunda de baños"
-  }
-];
-
-const areas = ["Habitaciones", "Cocina", "Comedor", "Sala", "Terraza"];
-
-// Elementos del DOM
-const btnBasic = document.getElementById("btnBasic");
-const btnDeep = document.getElementById("btnDeep");
-const stepExpert = document.getElementById("stepExpert");
-const expertSelect = document.getElementById("expertSelect");
-const btnNextAreas = document.getElementById("btnNextAreas");
-const stepAreas = document.getElementById("stepAreas");
-const areasContainer = document.getElementById("areasContainer");
-const btnCalculate = document.getElementById("btnCalculate");
-const stepSummary = document.getElementById("stepSummary");
-const summaryDetails = document.getElementById("summaryDetails");
-
-// Desbloquear mundo profundo
-if (user.limpiezaPurchases > 3) {
-  btnDeep.disabled = false;
-  btnDeep.textContent = "✅ Mundo de Limpieza Profunda";
-}
-
-btnBasic.addEventListener("click", () => iniciarSeleccion("basic"));
-btnDeep.addEventListener("click", () => iniciarSeleccion("deep"));
-
-function iniciarSeleccion(mundo) {
-  btnBasic.disabled = true;
-  btnDeep.disabled = true;
-  stepExpert.classList.remove("hidden");
-  mostrarExpertos();
-}
-
-function mostrarExpertos() {
-  expertSelect.innerHTML = "";
-  experts.forEach(exp => {
-    const opt = document.createElement("option");
-    opt.value = exp.id;
-    opt.textContent = `${exp.name} - ${"★".repeat(exp.stars)}${"☆".repeat(5 - exp.stars)}`;
-    expertSelect.appendChild(opt);
-  });
-}
-
-btnNextAreas.addEventListener("click", () => {
-  if (!expertSelect.value) {
-    alert("Selecciona un experto");
-    return;
-  }
-  stepExpert.classList.add("hidden");
-  stepAreas.classList.remove("hidden");
-  renderizarAreas();
-});
-
-function renderizarAreas() {
-  areasContainer.innerHTML = "";
-  areas.forEach(area => {
-    const id = area.toLowerCase();
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <label>${area}:
-        <select id="area-${id}">
-          <option value="0">0</option>
-          ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
-        </select>
-      </label>
-    `;
-    areasContainer.appendChild(div);
-  });
-}
-
-btnCalculate.addEventListener("click", () => {
-  let total = 0;
-  let details = "";
-  const precios = {
-    "Habitaciones": 10,
-    "Cocina": 15,
-    "Comedor": 12,
-    "Sala": 12,
-    "Terraza": 20
-  };
-
-  areas.forEach(area => {
-    const id = area.toLowerCase();
-    const qty = parseInt(document.getElementById(`area-${id}`).value);
-    if (qty > 0) {
-      const subtotal = qty * precios[area];
-      total += subtotal;
-      details += `<p>${qty} x ${area} ($${precios[area]}) = $${subtotal.toFixed(2)}</p>`;
-    }
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      const target = link.getAttribute("data-target");
+      showPage(target);
+    });
   });
 
-  if (total === 0) {
-    alert("Selecciona al menos un área");
-    return;
+  function showPage(pageId) {
+    pages.forEach(page => {
+      document.getElementById(page).classList.add("hidden");
+    });
+    document.getElementById(pageId).classList.remove("hidden");
+    navLinks.forEach(link => link.classList.remove("active"));
+    document.querySelector(`.bottom-nav a[data-target='${pageId}']`).classList.add("active");
   }
 
-  const commission = total * 0.1;
-  const grandTotal = total + commission;
+  // Inicializar Home por defecto
+  showPage("home");
 
-  summaryDetails.innerHTML = `
-    ${details}
-    <hr>
-    <p>Subtotal: $${total.toFixed(2)}</p>
-    <p>Comisión (10%): $${commission.toFixed(2)}</p>
-    <h3>Total a pagar: $${grandTotal.toFixed(2)}</h3>
-  `;
+  // Cargar mundos en Home
+  const worlds = [
+    { id: "basico", name: "Básico", icon: "🧹" },
+    { id: "profundo", name: "Profundo", icon: "🧼" },
+    { id: "oficinas", name: "Oficinas", icon: "🏢" },
+    { id: "hogar", name: "Hogar", icon: "🏠" },
+    { id: "alfombras", name: "Alfombras", icon: "🪟" }
+  ];
 
-  stepAreas.classList.add("hidden");
-  stepSummary.classList.remove("hidden");
+  const grid = document.getElementById("worldGrid");
+  if (grid) {
+    worlds.forEach(w => {
+      const card = document.createElement("div");
+      card.classList.add("card-world");
+      card.innerHTML = `<div class="icon-world">${w.icon}</div><span>${w.name}</span>`;
+      card.addEventListener("click", () => loadExperts(w.id));
+      grid.appendChild(card);
+    });
+  }
+
+  // Simular expertos
+  const expertList = [
+    { name: "Ana Pérez", rating: 4.5, img: "https://randomuser.me/api/portraits/women/1.jpg" },
+    { name: "Luis Gómez", rating: 4.8, img: "https://randomuser.me/api/portraits/men/2.jpg" },
+    { name: "Carla Díaz", rating: 4.9, img: "https://randomuser.me/api/portraits/women/3.jpg" },
+    { name: "Mario Ruiz", rating: 4.7, img: "https://randomuser.me/api/portraits/men/4.jpg" },
+    { name: "Sofía León", rating: 5.0, img: "https://randomuser.me/api/portraits/women/5.jpg" },
+    { name: "Daniela Romero", rating: 4.6, img: "https://randomuser.me/api/portraits/women/6.jpg" },
+    { name: "José Ortega", rating: 4.5, img: "https://randomuser.me/api/portraits/men/7.jpg" },
+    { name: "Andrea Vargas", rating: 4.8, img: "https://randomuser.me/api/portraits/women/8.jpg" },
+    { name: "Carlos Salas", rating: 4.9, img: "https://randomuser.me/api/portraits/men/9.jpg" },
+    { name: "Valeria Mora", rating: 5.0, img: "https://randomuser.me/api/portraits/women/10.jpg" }
+  ];
+
+  function loadExperts(worldId) {
+    const section = document.getElementById("home");
+    section.innerHTML = "<h2>Selecciona un experto</h2>";
+    expertList.forEach(expert => {
+      const card = document.createElement("div");
+      card.classList.add("expert-card");
+      card.innerHTML = `
+        <img class="expert-photo" src="${expert.img}" alt="${expert.name}">
+        <div>
+          <strong>${expert.name}</strong><br>
+          <span class="stars">${"★".repeat(Math.floor(expert.rating))}</span>
+        </div>
+      `;
+      card.addEventListener("click", () => selectExpert(expert));
+      section.appendChild(card);
+    });
+  }
+
+  function selectExpert(expert) {
+    alert(`Has seleccionado a ${expert.name}`);
+    // Continuar flujo hacia pantalla de fecha, pago, etc.
+    // Puedes expandir aquí según el flujo del negocio
+  }
+
+  // Historial simulado
+  const historyContainer = document.getElementById("historyList");
+  if (historyContainer) {
+    const mockHistory = [
+      { date: "2025-07-15", world: "Básico", points: 10 },
+      { date: "2025-07-05", world: "Profundo", points: 15 },
+      { date: "2025-06-30", world: "Oficinas", points: 12 }
+    ];
+    mockHistory.forEach(entry => {
+      const div = document.createElement("div");
+      div.classList.add("section");
+      div.innerHTML = `<strong>${entry.world}</strong><br>${entry.date}<br>Puntos: ${entry.points}`;
+      historyContainer.appendChild(div);
+    });
+  }
+
+  // Promociones simuladas
+  const promoContainer = document.getElementById("promotionsList");
+  if (promoContainer) {
+    const promos = [
+      "15% de descuento en limpieza profunda",
+      "Gana 2x puntos en el Mundo Básico esta semana",
+      "Invita a un amigo y recibe 5 puntos",
+      "Promoción exclusiva para nuevos clientes"
+    ];
+    promos.forEach(promo => {
+      const div = document.createElement("div");
+      div.classList.add("section");
+      div.innerHTML = `<strong>${promo}</strong>`;
+      promoContainer.appendChild(div);
+    });
+  }
 });
 
