@@ -2,58 +2,53 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Xperto - Tu Servicio de Limpieza</title>
-  <style>
-    /* Aquí va todo tu CSS que ya definiste (no lo repito para ahorrar espacio) */
-    /* Copia y pega el CSS que tienes en tu style.css dentro de este bloque */
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xperto - Servicio de Limpieza</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <header>
-    <h1>🧹 Xperto</h1>
-    <p>Tu limpieza confiable al instante</p>
+    <h1>Xperto</h1>
+    <p>Contrata tu servicio de limpieza en minutos</p>
   </header>
 
   <main>
     <section id="worldSelection">
-      <h2>Elige tu Mundo de Limpieza</h2>
-      <button class="btn" id="btnBasic" title="Limpieza Básica" onclick="selectWorld('basic')">🌍 Limpieza Básica</button>
-      <button class="btn" id="btnDeep" title="Limpieza Profunda" disabled>🧼 Limpieza Profunda 🔒</button>
-      <small id="unlockInfo" style="display:block; text-align:center; color:#777; font-size:0.9rem; margin-top:-12px;">* La limpieza profunda se desbloquea con 4+ pedidos completados</small>
+      <h2>Selecciona el tipo de limpieza</h2>
+      <div class="world-buttons">
+        <button class="btn" onclick="selectWorld('basic')">🌍 Limpieza Básica</button>
+        <button class="btn" onclick="selectWorld('deep')">🧼 Limpieza Profunda</button>
+      </div>
     </section>
 
-    <section id="expertSection" class="hidden" aria-label="Selecciona tu experto">
+    <section id="expertSection" class="hidden">
       <h2>Selecciona tu Experto</h2>
       <div id="expertsContainer"></div>
-      <button class="btn" id="btnNextExpert" onclick="goToAreas()" disabled>Siguiente</button>
+      <button class="btn primary" onclick="goToAreas()">Siguiente</button>
     </section>
 
-    <section id="areasSection" class="hidden" aria-label="Selecciona áreas y cantidad">
+    <section id="areasSection" class="hidden">
       <h2>Selecciona las áreas y cantidad</h2>
       <div id="areasContainer"></div>
-
       <label for="schedule">¿Cuándo deseas el servicio?</label>
-      <select id="schedule" name="schedule">
+      <select id="schedule">
         <option value="inmediato">Inmediato</option>
         <option value="programado">Programar Fecha</option>
       </select>
-      <input type="date" id="scheduleDate" class="hidden" name="scheduleDate" aria-label="Fecha programada" />
-
-      <button class="btn" id="btnCalculate">Calcular Total</button>
+      <input type="date" id="scheduleDate" class="hidden" />
+      <button class="btn primary" onclick="calculateTotal()">Calcular Total</button>
     </section>
 
-    <section id="summarySection" class="hidden summary" aria-live="polite" aria-atomic="true"></section>
+    <section id="summarySection" class="hidden card"></section>
 
-    <section id="paymentSection" class="hidden payment" aria-label="Método de pago">
+    <section id="paymentSection" class="hidden card">
       <h2>Método de Pago</h2>
-      <label><input type="radio" name="pay" value="tarjeta"> Tarjeta de Crédito</label>
-      <label><input type="radio" name="pay" value="efectivo"> Efectivo</label>
-      <button class="btn" id="btnConfirmPayment">Confirmar y Pagar</button>
+      <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta de Crédito</label><br>
+      <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label><br>
+      <button class="btn success" onclick="confirmService()">Confirmar y Pagar</button>
     </section>
 
-    <section id="trackingSection" class="hidden tracking" aria-live="polite" aria-atomic="true">
+    <section id="trackingSection" class="hidden card">
       <h2>Seguimiento del Servicio</h2>
       <p id="trackStatus">🕒 El experto va en camino...</p>
     </section>
@@ -63,268 +58,6 @@
     <p>&copy; 2025 Xperto. Todos los derechos reservados.</p>
   </footer>
 
-  <script>
-    // Usuario simulado con historial para desbloquear mundo profundo
-    const user = {
-      limpiezaPurchases: 4 // Cambia este número para probar desbloqueo
-    };
-
-    // Expertos - ampliado con 10 perfiles
-    const experts = [
-      { id: 1, name: "Juan Pérez", stars: 4, comments: ["Muy puntual", "Excelente limpieza"], photo: "https://randomuser.me/api/portraits/men/32.jpg", specialty: "Cocinas y salas" },
-      { id: 2, name: "María Gómez", stars: 5, comments: ["Muy detallista", "Recomendadísima"], photo: "https://randomuser.me/api/portraits/women/45.jpg", specialty: "Baños profundos" },
-      { id: 3, name: "Carlos Torres", stars: 3, comments: ["Buen trabajo"], photo: "https://randomuser.me/api/portraits/men/12.jpg", specialty: "Terrazas y exteriores" },
-      { id: 4, name: "Lucía Martínez", stars: 5, comments: ["Muy amable", "Super profesional"], photo: "https://randomuser.me/api/portraits/women/68.jpg", specialty: "Habitaciones y oficinas" },
-      { id: 5, name: "Pedro Ruiz", stars: 4, comments: ["Eficiente y rápido"], photo: "https://randomuser.me/api/portraits/men/75.jpg", specialty: "Limpieza general" },
-      { id: 6, name: "Ana López", stars: 5, comments: ["Perfecta atención"], photo: "https://randomuser.me/api/portraits/women/34.jpg", specialty: "Cocinas y electrodomésticos" },
-      { id: 7, name: "José Ramírez", stars: 3, comments: ["Confiable"], photo: "https://randomuser.me/api/portraits/men/56.jpg", specialty: "Sala y comedor" },
-      { id: 8, name: "Sofía Hernández", stars: 4, comments: ["Excelente servicio"], photo: "https://randomuser.me/api/portraits/women/29.jpg", specialty: "Terrazas y patios" },
-      { id: 9, name: "Miguel Ángel", stars: 4, comments: ["Buen trato"], photo: "https://randomuser.me/api/portraits/men/88.jpg", specialty: "Limpieza profunda" },
-      { id: 10, name: "Laura Jiménez", stars: 5, comments: ["Muy profesional"], photo: "https://randomuser.me/api/portraits/women/90.jpg", specialty: "Limpieza general" }
-    ];
-
-    // Áreas con precios distintos por unidad
-    const areas = [
-      { id: "habitaciones", label: "Habitaciones", price: 10 },
-      { id: "cocina", label: "Cocina", price: 15 },
-      { id: "comedor", label: "Comedor", price: 12 },
-      { id: "sala", label: "Sala", price: 12 },
-      { id: "terraza", label: "Terraza", price: 20 }
-    ];
-
-    // Variables para estado
-    let selectedWorld = null;
-    let selectedExpert = null;
-    let selectedAreas = {};
-    let selectedSchedule = "inmediato";
-    let selectedDate = null;
-
-    // DOM Elements
-    const btnBasic = document.getElementById("btnBasic");
-    const btnDeep = document.getElementById("btnDeep");
-    const unlockInfo = document.getElementById("unlockInfo");
-    const expertSection = document.getElementById("expertSection");
-    const expertsContainer = document.getElementById("expertsContainer");
-    const btnNextExpert = document.getElementById("btnNextExpert");
-    const areasSection = document.getElementById("areasSection");
-    const areasContainer = document.getElementById("areasContainer");
-    const scheduleSelect = document.getElementById("schedule");
-    const scheduleDateInput = document.getElementById("scheduleDate");
-    const btnCalculate = document.getElementById("btnCalculate");
-    const summarySection = document.getElementById("summarySection");
-    const paymentSection = document.getElementById("paymentSection");
-    const btnConfirmPayment = document.getElementById("btnConfirmPayment");
-    const trackingSection = document.getElementById("trackingSection");
-    const trackStatus = document.getElementById("trackStatus");
-
-    // Desbloqueo mundo profundo basado en historial
-    function updateWorldButtons() {
-      if(user.limpiezaPurchases >= 4) {
-        btnDeep.disabled = false;
-        btnDeep.textContent = "🧼 Limpieza Profunda 🔓";
-        unlockInfo.style.display = "none";
-      }
-    }
-    updateWorldButtons();
-
-    // Seleccionar mundo limpieza
-    function selectWorld(world) {
-      selectedWorld = world;
-      btnBasic.disabled = true;
-      btnDeep.disabled = true;
-
-      expertSection.classList.remove("hidden");
-      renderExperts();
-      btnNextExpert.disabled = true;
-
-      // Ocultar otras secciones
-      areasSection.classList.add("hidden");
-      summarySection.classList.add("hidden");
-      paymentSection.classList.add("hidden");
-      trackingSection.classList.add("hidden");
-
-      selectedExpert = null;
-    }
-
-    // Renderizar expertos
-    function renderExperts() {
-      expertsContainer.innerHTML = "";
-      experts.forEach(exp => {
-        const card = document.createElement("div");
-        card.className = "expert-card";
-        card.setAttribute("tabindex", "0");
-        card.innerHTML = `
-          <img src="${exp.photo}" alt="Foto de ${exp.name}" class="expert-photo" />
-          <div class="expert-info">
-            <p class="expert-name">${exp.name}</p>
-            <p class="stars">${"★".repeat(exp.stars)}${"☆".repeat(5 - exp.stars)}</p>
-            <p class="expert-specialty">${exp.specialty}</p>
-            <p class="expert-comments">${exp.comments.join(" | ")}</p>
-          </div>
-          <input type="radio" name="expert" value="${exp.id}" aria-label="Seleccionar experto ${exp.name}" />
-        `;
-        expertsContainer.appendChild(card);
-
-        // Selección por clic y teclado
-        card.addEventListener("click", () => selectExpert(exp.id));
-        card.addEventListener("keydown", (e) => {
-          if(e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            selectExpert(exp.id);
-          }
-        });
-      });
-
-      // Cuando se selecciona radio, habilitar botón siguiente
-      document.querySelectorAll('input[name="expert"]').forEach(radio => {
-        radio.addEventListener("change", (e) => {
-          selectExpert(parseInt(e.target.value));
-        });
-      });
-    }
-
-    // Seleccionar experto
-    function selectExpert(id) {
-      selectedExpert = experts.find(e => e.id === id);
-      document.querySelectorAll(".expert-card").forEach(card => {
-        card.classList.remove("selected");
-        const input = card.querySelector('input[type="radio"]');
-        if(parseInt(input.value) === id){
-          card.classList.add("selected");
-          input.checked = true;
-        } else {
-          input.checked = false;
-        }
-      });
-      btnNextExpert.disabled = false;
-    }
-
-    // Avanzar a selección de áreas
-    function goToAreas() {
-      if(!selectedExpert) {
-        alert("Selecciona un experto para continuar.");
-        return;
-      }
-      expertSection.classList.add("hidden");
-      areasSection.classList.remove("hidden");
-
-      areasContainer.innerHTML = "";
-      selectedAreas = {};
-
-      areas.forEach(area => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <label for="area-${area.id}">
-            ${area.label}:
-            <select id="area-${area.id}" name="area-${area.id}">
-              <option value="0">0</option>
-              ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
-            </select>
-          </label>
-        `;
-        areasContainer.appendChild(div);
-      });
-
-      scheduleSelect.value = "inmediato";
-      scheduleDateInput.value = "";
-      scheduleDateInput.classList.add("hidden");
-
-      // Mostrar/ocultar campo fecha según selección
-      scheduleSelect.onchange = () => {
-        selectedSchedule = scheduleSelect.value;
-        if(selectedSchedule === "programado") {
-          scheduleDateInput.classList.remove("hidden");
-          scheduleDateInput.setAttribute("required", "required");
-        } else {
-          scheduleDateInput.classList.add("hidden");
-          scheduleDateInput.removeAttribute("required");
-        }
-      };
-    }
-
-    // Calcular total y mostrar resumen
-    function calculateTotal() {
-      // Leer cantidades seleccionadas
-      selectedAreas = {};
-      let subtotal = 0;
-
-      for(const area of areas) {
-        const selectEl = document.getElementById(`area-${area.id}`);
-        const qty = parseInt(selectEl.value);
-        if(qty > 0) {
-          selectedAreas[area.label] = qty;
-          subtotal += qty * area.price;
-        }
-      }
-
-      if(subtotal === 0) {
-        alert("Selecciona al menos un área para continuar.");
-        return;
-      }
-
-      selectedSchedule = scheduleSelect.value;
-      selectedDate = scheduleDateInput.value;
-
-      if(selectedSchedule === "programado" && !selectedDate) {
-        alert("Selecciona una fecha válida para el servicio programado.");
-        return;
-      }
-
-      const commission = subtotal * 0.1;
-      const total = subtotal + commission;
-
-      // Ocultar selección áreas
-      areasSection.classList.add("hidden");
-
-      // Mostrar resumen
-      summarySection.innerHTML = `
-        <h2>Resumen del pedido</h2>
-        <p><strong>Experto:</strong> ${selectedExpert.name}</p>
-        ${Object.entries(selectedAreas).map(([area, qty]) => `<p>${qty} x ${area}</p>`).join("")}
-        <p>Subtotal: $${subtotal.toFixed(2)}</p>
-        <p>Comisión (10%): $${commission.toFixed(2)}</p>
-        <h3>Total a pagar: $${total.toFixed(2)}</h3>
-        <p>Agendado para: ${selectedSchedule === "programado" ? selectedDate : "Inmediato"}</p>
-      `;
-      summarySection.classList.remove("hidden");
-      paymentSection.classList.remove("hidden");
-    }
-
-    // Confirmar pago y simular seguimiento
-    function confirmService() {
-      const paymentMethod = document.querySelector('input[name="pay"]:checked');
-      if(!paymentMethod) {
-        alert("Selecciona un método de pago para continuar.");
-        return;
-      }
-
-      // Ocultar resumen y pago
-      summarySection.classList.add("hidden");
-      paymentSection.classList.add("hidden");
-
-      // Mostrar seguimiento
-      trackingSection.classList.remove("hidden");
-      trackStatus.textContent = "🕒 El experto va en camino...";
-
-      setTimeout(() => {
-        trackStatus.textContent = "✅ El experto ha llegado.";
-      }, 3000);
-
-      setTimeout(() => {
-        trackStatus.textContent = "🧹 El experto está limpiando...";
-      }, 6000);
-
-      setTimeout(() => {
-        trackStatus.textContent = "🏁 Limpieza finalizada. ¡Gracias por confiar en Xperto!";
-      }, 9000);
-    }
-
-    // Exponer funciones globalmente para HTML onclick
-    window.selectWorld = selectWorld;
-    window.goToAreas = goToAreas;
-    window.calculateTotal = calculateTotal;
-    window.confirmService = confirmService;
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
