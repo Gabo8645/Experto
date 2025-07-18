@@ -1,98 +1,119 @@
-// Simulamos datos del usuario y expertos
+// script.js
+
+// Datos simulados
 const user = {
-  limpiezaPurchases: 4 // Cambia este número si quieres probar el desbloqueo
+  limpiezaPurchases: 4
 };
 
 const experts = [
-  { id: 1, name: "Juan Pérez" },
-  { id: 2, name: "María Gómez" },
-  { id: 3, name: "Carlos Torres" }
+  {
+    id: 1,
+    name: "Juan Pérez",
+    stars: 4,
+    comments: ["Muy puntual", "Excelente limpieza"],
+    photo: "https://randomuser.me/api/portraits/men/32.jpg",
+    specialty: "Limpieza de cocinas y salas"
+  },
+  {
+    id: 2,
+    name: "María Gómez",
+    stars: 5,
+    comments: ["Muy detallista", "Recomendadísima"],
+    photo: "https://randomuser.me/api/portraits/women/45.jpg",
+    specialty: "Limpieza profunda de baños"
+  }
 ];
 
-const areas = [
-  { id: "room", label: "Habitaciones", price: 10 },
-  { id: "kitchen", label: "Cocina", price: 15 },
-  { id: "dining", label: "Comedor", price: 12 },
-  { id: "living", label: "Sala", price: 12 },
-  { id: "terrace", label: "Terraza", price: 20 }
-];
+const areas = ["Habitaciones", "Cocina", "Comedor", "Sala", "Terraza"];
 
 // Elementos del DOM
 const btnBasic = document.getElementById("btnBasic");
 const btnDeep = document.getElementById("btnDeep");
 const stepExpert = document.getElementById("stepExpert");
-const stepAreas = document.getElementById("stepAreas");
-const stepSummary = document.getElementById("stepSummary");
 const expertSelect = document.getElementById("expertSelect");
 const btnNextAreas = document.getElementById("btnNextAreas");
+const stepAreas = document.getElementById("stepAreas");
 const areasContainer = document.getElementById("areasContainer");
 const btnCalculate = document.getElementById("btnCalculate");
+const stepSummary = document.getElementById("stepSummary");
 const summaryDetails = document.getElementById("summaryDetails");
 
-// Desbloquear mundo profundo si aplica
+// Desbloquear mundo profundo
 if (user.limpiezaPurchases > 3) {
   btnDeep.disabled = false;
   btnDeep.textContent = "✅ Mundo de Limpieza Profunda";
 }
 
-// Paso 1: Seleccionar Mundo
-btnBasic.addEventListener("click", () => {
+btnBasic.addEventListener("click", () => iniciarSeleccion("basic"));
+btnDeep.addEventListener("click", () => iniciarSeleccion("deep"));
+
+function iniciarSeleccion(mundo) {
   btnBasic.disabled = true;
   btnDeep.disabled = true;
-  mostrarSeleccionExpertos();
-});
-
-btnDeep.addEventListener("click", () => {
-  btnBasic.disabled = true;
-  btnDeep.disabled = true;
-  mostrarSeleccionExpertos();
-});
-
-// Mostrar paso de selección de experto
-function mostrarSeleccionExpertos() {
   stepExpert.classList.remove("hidden");
-  // Llenar select de expertos
+  mostrarExpertos();
+}
+
+function mostrarExpertos() {
+  expertSelect.innerHTML = "";
   experts.forEach(exp => {
     const opt = document.createElement("option");
     opt.value = exp.id;
-    opt.textContent = exp.name;
+    opt.textContent = `${exp.name} - ${"★".repeat(exp.stars)}${"☆".repeat(5 - exp.stars)}`;
     expertSelect.appendChild(opt);
   });
 }
 
-// Paso 2: Seleccionar Áreas
 btnNextAreas.addEventListener("click", () => {
+  if (!expertSelect.value) {
+    alert("Selecciona un experto");
+    return;
+  }
   stepExpert.classList.add("hidden");
   stepAreas.classList.remove("hidden");
-  // Crear inputs de cantidad por área
+  renderizarAreas();
+});
+
+function renderizarAreas() {
   areasContainer.innerHTML = "";
   areas.forEach(area => {
+    const id = area.toLowerCase();
     const div = document.createElement("div");
     div.innerHTML = `
-      <label>
-        ${area.label} ($${area.price} por unidad):
-        <input type="number" id="area-${area.id}" min="0" value="0">
+      <label>${area}:
+        <select id="area-${id}">
+          <option value="0">0</option>
+          ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
+        </select>
       </label>
     `;
     areasContainer.appendChild(div);
   });
-});
+}
 
-// Paso 3: Calcular y mostrar resumen
 btnCalculate.addEventListener("click", () => {
   let total = 0;
   let details = "";
+  const precios = {
+    "Habitaciones": 10,
+    "Cocina": 15,
+    "Comedor": 12,
+    "Sala": 12,
+    "Terraza": 20
+  };
+
   areas.forEach(area => {
-    const qty = parseInt(document.getElementById(`area-${area.id}`).value);
+    const id = area.toLowerCase();
+    const qty = parseInt(document.getElementById(`area-${id}`).value);
     if (qty > 0) {
-      const subtotal = qty * area.price;
+      const subtotal = qty * precios[area];
       total += subtotal;
-      details += `<p>${qty} x ${area.label} ($${area.price}) = $${subtotal.toFixed(2)}</p>`;
+      details += `<p>${qty} x ${area} ($${precios[area]}) = $${subtotal.toFixed(2)}</p>`;
     }
   });
 
   if (total === 0) {
-    alert("Por favor, selecciona al menos un área.");
+    alert("Selecciona al menos un área");
     return;
   }
 
@@ -110,3 +131,4 @@ btnCalculate.addEventListener("click", () => {
   stepAreas.classList.add("hidden");
   stepSummary.classList.remove("hidden");
 });
+
