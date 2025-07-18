@@ -1,69 +1,90 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Xperto - Limpieza Profesional</title>
   <link rel="stylesheet" href="style.css" />
   <script defer src="script.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
+
   <header>
     <h1>Xperto</h1>
-    <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
+    <p id="defaultAddress" class="address-lower">Dirección: Calle Falsa 123, Ciudad</p>
   </header>
 
   <main>
+    <!-- Home / Mundo de limpieza -->
     <section id="worldSelection">
       <h2>Selecciona un mundo</h2>
       <div class="world-options">
-        <button onclick="selectWorld('basico')">
+        <button type="button" onclick="selectWorld('basico')" title="Limpieza básica">
           <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-          Básico
+          Básico<br /><small>Después de 3 servicios, se habilita Profundo</small>
         </button>
-        <button onclick="selectWorld('profundo')">
+        <button type="button" onclick="selectWorld('profundo')" title="Limpieza profunda">
           <img src="https://img.icons8.com/ios-filled/50/000000/vacuum.png" alt="Profundo" />
           Limpieza Profunda
         </button>
       </div>
     </section>
 
+    <!-- Selección de expertos -->
     <section id="expertSection" class="hidden">
       <h2>Selecciona un Xperto</h2>
       <div id="expertsContainer" class="card-container"></div>
-      <button class="btn" onclick="goToAreas()">Siguiente</button>
+      <button class="btn" id="btnNextFromExperts" onclick="goToAreas()" disabled>Siguiente</button>
     </section>
 
+    <!-- Selección de áreas y programación -->
     <section id="areasSection" class="hidden">
       <h2>¿Qué áreas quieres limpiar?</h2>
       <div id="areasContainer" class="form-group"></div>
-      <label>
-        <input type="radio" name="schedule" id="schedule" value="inmediato" checked /> Inmediato
-      </label>
-      <label>
-        <input type="radio" name="schedule" id="schedule" value="programado" /> Programado
-      </label>
-      <input type="date" id="scheduleDate" class="hidden" />
-      <button class="btn" onclick="calculateTotal()">Ver resumen</button>
+      <fieldset class="schedule-group">
+        <legend>¿Cuándo deseas el servicio?</legend>
+        <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
+        <label><input type="radio" name="schedule" value="programado" /> Programado</label>
+        <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
+      </fieldset>
+      <button class="btn" id="btnCalculateTotal">Ver resumen</button>
     </section>
 
-    <section id="summarySection" class="hidden"></section>
+    <!-- Resumen del servicio -->
+    <section id="summarySection" class="hidden summary"></section>
 
-    <section id="paymentSection" class="hidden">
+    <!-- Método de pago -->
+    <section id="paymentSection" class="hidden payment">
       <h2>Método de pago</h2>
-      <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
-      <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
-      <button class="btn" onclick="confirmService()">Confirmar</button>
+      <form id="paymentForm">
+        <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
+        <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
+
+        <div id="cardDetails" class="hidden">
+          <label>Número de tarjeta
+            <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
+          </label>
+          <label>Fecha de expiración
+            <input type="month" id="cardExpiry" />
+          </label>
+          <label>Código CVV
+            <input type="text" id="cardCVV" maxlength="4" placeholder="123" inputmode="numeric" />
+          </label>
+        </div>
+      </form>
+      <button class="btn" id="btnConfirmPayment">Confirmar</button>
     </section>
 
-    <section id="trackingSection" class="hidden">
+    <!-- Seguimiento del servicio -->
+    <section id="trackingSection" class="hidden tracking">
       <h2>Seguimiento</h2>
-      <p id="trackStatus"></p>
+      <p id="trackStatus">Asignando experto...</p>
     </section>
 
+    <!-- Promociones -->
     <section id="promosSection" class="hidden">
       <h2>Promociones</h2>
       <ul>
@@ -73,28 +94,43 @@
       </ul>
     </section>
 
+    <!-- Historial de servicios -->
     <section id="historySection" class="hidden">
       <h2>Historial de Servicios</h2>
-      <div id="historyContainer"></div>
+      <div id="historyContainer" class="card-container"></div>
     </section>
 
+    <!-- Perfil del usuario -->
     <section id="profileSection" class="hidden">
       <h2>Mi Perfil</h2>
-      <form>
-        <label>Nombre: <input type="text" placeholder="Tu nombre" /></label>
-        <label>Email: <input type="email" placeholder="correo@ejemplo.com" /></label>
-        <label>Teléfono: <input type="tel" placeholder="0999999999" /></label>
-        <label>Dirección por defecto: <input type="text" placeholder="Tu dirección" /></label>
+      <form id="profileForm">
+        <label>Nombre
+          <input type="text" id="profileName" placeholder="Tu nombre" required />
+        </label>
+        <label>Apellido
+          <input type="text" id="profileLastName" placeholder="Tu apellido" required />
+        </label>
+        <label>Email
+          <input type="email" id="profileEmail" placeholder="correo@ejemplo.com" required />
+        </label>
+        <label>Teléfono
+          <input type="tel" id="profilePhone" placeholder="0999999999" pattern="[0-9]{9,15}" required />
+        </label>
+        <label>Dirección por defecto
+          <input type="text" id="profileAddress" placeholder="Tu dirección" required />
+        </label>
+        <button type="submit" class="btn">Guardar</button>
       </form>
     </section>
   </main>
 
-  <nav class="bottom-nav">
-    <button onclick="showSection('worldSelection')">🏠</button>
-    <button onclick="showSection('promosSection')">💸</button>
-    <button onclick="showSection('historySection')">📋</button>
-    <button onclick="showSection('profileSection')">👤</button>
+  <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
+    <button type="button" id="navHome" class="active" aria-label="Home" onclick="showSection('worldSelection')">🏠</button>
+    <button type="button" id="navPromos" aria-label="Promociones" onclick="showSection('promosSection')">💸</button>
+    <button type="button" id="navHistory" aria-label="Historial" onclick="showSection('historySection')">📋</button>
+    <button type="button" id="navProfile" aria-label="Perfil" onclick="showSection('profileSection')">👤</button>
   </nav>
+
 </body>
 </html>
 
