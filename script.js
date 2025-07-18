@@ -1,150 +1,500 @@
-// script.js para la app Xperto mejorada
+// ======== Datos iniciales ========
 
-let selectedWorld = "";
-let selectedExpert = null;
-let selectedAreas = {};
-let historialServicios = [];
+// Usuario simulado (se cargará o guardará en localStorage)
+let user = {
+  name: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  address: '',
+  limpiezaPurchases: 0, // para desbloquear limpieza profunda
+  history: [] // historial de servicios contratados
+};
 
+// Mundos de limpieza
+const worlds = {
+  basico: {
+    name: "Básico",
+    icon: "https://img.icons8.com/ios-filled/50/000000/broom.png",
+    description: "Limpieza básica",
+    unlocksAt: 0
+  },
+  profundo: {
+    name: "Limpieza Profunda",
+    icon: "https://img.icons8.com/ios-filled/50/000000/vacuum.png",
+    description: "Limpieza profunda",
+    unlocksAt: 3
+  }
+};
+
+// Expertos
 const experts = [
-  { nombre: "Ana", rating: 4.8, foto: "https://via.placeholder.com/100" },
-  { nombre: "Carlos", rating: 4.7, foto: "https://via.placeholder.com/100" },
-  { nombre: "Luis", rating: 4.6, foto: "https://via.placeholder.com/100" },
-  { nombre: "Lucía", rating: 4.9, foto: "https://via.placeholder.com/100" },
-  { nombre: "Pedro", rating: 4.5, foto: "https://via.placeholder.com/100" },
-  { nombre: "María", rating: 5.0, foto: "https://via.placeholder.com/100" },
-  { nombre: "Daniel", rating: 4.4, foto: "https://via.placeholder.com/100" },
-  { nombre: "Fernanda", rating: 4.8, foto: "https://via.placeholder.com/100" },
-  { nombre: "Miguel", rating: 4.7, foto: "https://via.placeholder.com/100" },
-  { nombre: "Andrea", rating: 4.6, foto: "https://via.placeholder.com/100" },
+  { id: 1, name: "Juan Pérez", stars: 4, comments: "Limpia cocina y salas", photo: "https://randomuser.me/api/portraits/men/32.jpg", specialty: "Cocinas y salas" },
+  { id: 2, name: "María Gómez", stars: 5, comments: "Especialista en baños", photo: "https://randomuser.me/api/portraits/women/45.jpg", specialty: "Baños profundos" },
+  { id: 3, name: "Carlos Torres", stars: 3, comments: "Terrazas y exteriores impecables", photo: "https://randomuser.me/api/portraits/men/12.jpg", specialty: "Terrazas y exteriores" },
+  { id: 4, name: "Lucía Martínez", stars: 5, comments: "Habitaciones y oficinas", photo: "https://randomuser.me/api/portraits/women/68.jpg", specialty: "Habitaciones y oficinas" },
+  { id: 5, name: "Pedro Ruiz", stars: 4, comments: "Limpieza general rápida y eficiente", photo: "https://randomuser.me/api/portraits/men/75.jpg", specialty: "Limpieza general" }
 ];
 
-function selectTab(tab) {
-  document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden"));
-  document.getElementById(tab).classList.remove("hidden");
-  document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
-  document.querySelector(`.bottom-nav button[data-tab='${tab}']`).classList.add("active");
+// Áreas con precios
+const areas = [
+  { id: "habitaciones", label: "Habitaciones", price: 10 },
+  { id: "cocina", label: "Cocina", price: 15 },
+  { id: "comedor", label: "Comedor", price: 12 },
+  { id: "sala", label: "Sala", price: 12 },
+  { id: "terraza", label: "Terraza", price: 20 }
+];
+
+// ======== Estado de la aplicación ========
+let selectedWorld = null;
+let selectedExpert = null;
+let selectedAreas = {};
+let selectedSchedule = "inmediato";
+let selectedDate = null;
+let selectedPayment = null;
+
+// ======== DOM elements ========
+const defaultAddressEl = document.getElementById("defaultAddress");
+
+const worldSelectionSection = document.getElementById("worldSelection");
+const expertSection = document.getElementById("expertSection");
+const expertsContainer = document.getElementById("expertsContainer");
+const btnNextFromExperts = document.getElementById("btnNextFromExperts");
+
+const areasSection = document.getElementById("areasSection");
+const areasContainer = document.getElementById("areasContainer");
+const scheduleRadios = document.querySelectorAll('input[name="schedule"]');
+const scheduleDateInput = document.getElementById("scheduleDate");
+const btnCalculateTotal = document.getElementById("btnCalculateTotal");
+
+const summarySection = document.getElementById("summarySection");
+
+const paymentSection = document.getElementById("paymentSection");
+const paymentForm = document.getElementById("paymentForm");
+const cardDetailsDiv = document.getElementById("cardDetails");
+const btnConfirmPayment = document.getElementById("btnConfirmPayment");
+
+const trackingSection = document.getElementById("trackingSection");
+const trackStatus = document.getElementById("trackStatus");
+
+const promosSection = document.getElementById("promosSection");
+const historySection = document.getElementById("historySection");
+const historyContainer = document.getElementById("historyContainer");
+
+const profileSection = document.getElementById("profileSection");
+const profileForm = document.getElementById("profileForm");
+const profileName = document.getElementById("profileName");
+const profileLastName = document.getElementById("profileLastName");
+const profileEmail = document.getElementById("profileEmail");
+const profilePhone = document.getElementById("profilePhone");
+const profileAddress = document.getElementById("profileAddress");
+
+const navButtons = {
+  worldSelection: document.getElementById("navHome"),
+  promosSection: document.getElementById("navPromos"),
+  historySection: document.getElementById("navHistory"),
+  profileSection: document.getElementById("navProfile"),
+};
+
+// ======== Funciones para cargar y guardar usuario ========
+function loadUser() {
+  const saved = localStorage.getItem("xpertoUser");
+  if(saved) {
+    user = JSON.parse(saved);
+    profileName.value = user.name || "";
+    profileLastName.value = user.lastName || "";
+    profileEmail.value = user.email || "";
+    profilePhone.value = user.phone || "";
+    profileAddress.value = user.address || "";
+    updateDefaultAddress();
+  }
+}
+function saveUser() {
+  user.name = profileName.value.trim();
+  user.lastName = profileLastName.value.trim();
+  user.email = profileEmail.value.trim();
+  user.phone = profilePhone.value.trim();
+  user.address = profileAddress.value.trim();
+  localStorage.setItem("xpertoUser", JSON.stringify(user));
+  updateDefaultAddress();
+  alert("Perfil guardado correctamente.");
+  showSection("worldSelection");
+}
+function updateDefaultAddress() {
+  if(user.address) {
+    defaultAddressEl.textContent = `Dirección: ${user.address}`;
+    defaultAddressEl.style.marginTop = "0.5rem";
+  } else {
+    defaultAddressEl.textContent = "Por favor, configura tu dirección en Perfil.";
+    defaultAddressEl.style.marginTop = "0.5rem";
+  }
 }
 
-function selectWorld(world) {
-  selectedWorld = world;
-  document.getElementById("worldSelection").classList.add("hidden");
-  document.getElementById("expertSection").classList.remove("hidden");
+// ======== Navegación entre secciones ========
+function showSection(sectionId) {
+  // Ocultar todas las secciones principales
+  const sections = [worldSelectionSection, expertSection, areasSection, summarySection, paymentSection, trackingSection, promosSection, historySection, profileSection];
+  sections.forEach(sec => sec.classList.add("hidden"));
+
+  // Quitar clase active de todos los nav buttons
+  Object.values(navButtons).forEach(btn => btn.classList.remove("active"));
+
+  // Mostrar la sección solicitada
+  switch(sectionId) {
+    case "worldSelection":
+      worldSelectionSection.classList.remove("hidden");
+      navButtons.worldSelection.classList.add("active");
+      resetApp();
+      break;
+    case "promosSection":
+      promosSection.classList.remove("hidden");
+      navButtons.promosSection.classList.add("active");
+      break;
+    case "historySection":
+      historySection.classList.remove("hidden");
+      navButtons.historySection.classList.add("active");
+      renderHistory();
+      break;
+    case "profileSection":
+      profileSection.classList.remove("hidden");
+      navButtons.profileSection.classList.add("active");
+      break;
+  }
+}
+
+// ======== Reset app para iniciar nuevo servicio ========
+function resetApp() {
+  selectedWorld = null;
+  selectedExpert = null;
+  selectedAreas = {};
+  selectedSchedule = "inmediato";
+  selectedDate = null;
+  selectedPayment = null;
+
+  expertSection.classList.add("hidden");
+  areasSection.classList.add("hidden");
+  summarySection.classList.add("hidden");
+  paymentSection.classList.add("hidden");
+  trackingSection.classList.add("hidden");
+
+  btnNextFromExperts.disabled = true;
+  scheduleDateInput.value = "";
+  scheduleDateInput.classList.add("hidden");
+
+  // Reset expertos container (enabled buttons)
   renderExperts();
 }
 
+// ======== Selección de mundo ========
+function selectWorld(worldKey) {
+  // Chequear desbloqueo limpieza profunda
+  if(worldKey === "profundo" && user.limpiezaPurchases < worlds.profundo.unlocksAt) {
+    alert(`Debes completar al menos ${worlds.profundo.unlocksAt} servicios básicos para desbloquear limpieza profunda.`);
+    return;
+  }
+
+  selectedWorld = worldKey;
+
+  // Mostrar expertos
+  expertSection.classList.remove("hidden");
+  worldSelectionSection.classList.add("hidden");
+  areasSection.classList.add("hidden");
+  summarySection.classList.add("hidden");
+  paymentSection.classList.add("hidden");
+  trackingSection.classList.add("hidden");
+
+  renderExperts();
+}
+
+// ======== Renderizar expertos ========
 function renderExperts() {
-  const container = document.getElementById("expertsContainer");
-  container.innerHTML = "";
-  experts.forEach((exp) => {
-    const div = document.createElement("div");
-    div.className = "card expert";
-    div.innerHTML = `
-      <img src="${exp.foto}" alt="${exp.nombre}" />
-      <h4>${exp.nombre}</h4>
-      <p>⭐ ${exp.rating}</p>
+  expertsContainer.innerHTML = "";
+  selectedExpert = null;
+  btnNextFromExperts.disabled = true;
+
+  experts.forEach(exp => {
+    // Si seleccionó limpieza básico, ocultamos especialistas en limpieza profunda
+    if(selectedWorld === "basico" && exp.specialty.toLowerCase().includes("profundo")) {
+      return; // saltar
+    }
+
+    const card = document.createElement("div");
+    card.classList.add("card");
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-pressed", "false");
+    card.innerHTML = `
+      <img src="${exp.photo}" alt="Foto de ${exp.name}" />
+      <h3>${exp.name}</h3>
+      <p class="stars">${"★".repeat(exp.stars)}${"☆".repeat(5 - exp.stars)}</p>
+      <p class="comment">${exp.comments}</p>
+      <p><em>${exp.specialty}</em></p>
     `;
-    div.onclick = () => {
-      selectedExpert = exp;
-      document.querySelectorAll(".expert").forEach(e => e.classList.remove("selected"));
-      div.classList.add("selected");
-    };
-    container.appendChild(div);
+    card.addEventListener("click", () => {
+      selectExpert(exp.id);
+    });
+    card.addEventListener("keydown", (e) => {
+      if(e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        selectExpert(exp.id);
+      }
+    });
+    expertsContainer.appendChild(card);
   });
 }
 
+function selectExpert(id) {
+  selectedExpert = experts.find(e => e.id === id);
+  // marcar visualmente la selección
+  [...expertsContainer.children].forEach(card => {
+    card.classList.remove("selected");
+  });
+  const selectedCard = [...expertsContainer.children].find(card => card.querySelector("h3").textContent === selectedExpert.name);
+  if(selectedCard) selectedCard.classList.add("selected");
+  btnNextFromExperts.disabled = false;
+}
+
+// ======== Navegar a áreas ========
 function goToAreas() {
-  if (!selectedExpert) {
-    alert("Selecciona un experto");
+  if(!selectedExpert) {
+    alert("Por favor selecciona un experto.");
     return;
   }
-  document.getElementById("expertSection").classList.add("hidden");
-  document.getElementById("areasSection").classList.remove("hidden");
+  expertSection.classList.add("hidden");
+  areasSection.classList.remove("hidden");
+  summarySection.classList.add("hidden");
+  paymentSection.classList.add("hidden");
+  trackingSection.classList.add("hidden");
+
   renderAreas();
 }
 
+// ======== Renderizar áreas con input cantidad ========
 function renderAreas() {
-  const container = document.getElementById("areasContainer");
-  container.innerHTML = "";
-  const areas = ["Sala", "Cocina", "Baño", "Dormitorio"];
+  areasContainer.innerHTML = "";
+  selectedAreas = {};
+
   areas.forEach(area => {
     const label = document.createElement("label");
-    label.innerHTML = `${area}: <input type='number' min='0' value='0' id='area-${area}' />`;
-    container.appendChild(label);
-  });
-  document.getElementById("schedule").addEventListener("change", e => {
-    document.getElementById("scheduleDate").classList.toggle("hidden", e.target.value !== "programado");
+    label.innerHTML = `
+      ${area.label} ($${area.price})
+      <input type="number" min="0" max="10" value="0" data-area-id="${area.id}" />
+    `;
+    areasContainer.appendChild(label);
   });
 }
 
-function calculateTotal() {
-  const areas = ["Sala", "Cocina", "Baño", "Dormitorio"];
-  let total = 0;
-  selectedAreas = {};
-  areas.forEach(area => {
-    const val = parseInt(document.getElementById(`area-${area}`).value);
-    if (val > 0) {
-      selectedAreas[area] = val;
-      total += val * 5; // $5 por área
+// ======== Manejo de programación fecha ========
+scheduleRadios.forEach(radio => {
+  radio.addEventListener("change", () => {
+    selectedSchedule = document.querySelector('input[name="schedule"]:checked').value;
+    if(selectedSchedule === "programado") {
+      scheduleDateInput.classList.remove("hidden");
+      scheduleDateInput.required = true;
+    } else {
+      scheduleDateInput.classList.add("hidden");
+      scheduleDateInput.required = false;
+      selectedDate = null;
+      scheduleDateInput.value = "";
     }
   });
-  if (total === 0) {
-    alert("Selecciona al menos un área");
-    return;
-  }
+});
+scheduleDateInput.addEventListener("change", e => {
+  selectedDate = e.target.value;
+});
 
-  document.getElementById("areasSection").classList.add("hidden");
-  const summary = document.getElementById("summarySection");
-  summary.classList.remove("hidden");
-  summary.innerHTML = `
-    <h2>Resumen</h2>
-    <p>Experto: ${selectedExpert.nombre}</p>
-    <p>Áreas: ${Object.entries(selectedAreas).map(([k, v]) => `${k}: ${v}`).join(", ")}</p>
-    <p>Total: $${total}</p>
-    <button class='btn' onclick='goToPayment()'>Ir a Pago</button>
-  `;
-}
+// ======== Calcular total y mostrar resumen ========
+btnCalculateTotal.addEventListener("click", () => {
+  // Leer cantidades
+  selectedAreas = {};
+  let total = 0;
+  let anyAreaSelected = false;
 
-function goToPayment() {
-  document.getElementById("summarySection").classList.add("hidden");
-  document.getElementById("paymentSection").classList.remove("hidden");
-}
-
-function confirmService() {
-  const metodo = document.querySelector("input[name='pay']:checked");
-  if (!metodo) {
-    alert("Selecciona un método de pago");
-    return;
-  }
-  document.getElementById("paymentSection").classList.add("hidden");
-  document.getElementById("trackingSection").classList.remove("hidden");
-  document.getElementById("trackStatus").innerText = `🧽 El experto ${selectedExpert.nombre} ha sido asignado. Pronto llegará a tu domicilio.`;
-
-  historialServicios.push({
-    experto: selectedExpert.nombre,
-    areas: selectedAreas,
-    fecha: new Date().toLocaleString(),
-    metodo: metodo.value
+  areasContainer.querySelectorAll("input[type=number]").forEach(input => {
+    const count = parseInt(input.value) || 0;
+    if(count > 0) {
+      anyAreaSelected = true;
+      const areaId = input.dataset.areaId;
+      const area = areas.find(a => a.id === areaId);
+      selectedAreas[areaId] = count;
+      total += area.price * count;
+    }
   });
-  updateHistorial();
+
+  if(!anyAreaSelected) {
+    alert("Por favor selecciona al menos un área.");
+    return;
+  }
+
+  if(selectedSchedule === "programado" && !selectedDate) {
+    alert("Por favor selecciona una fecha para el servicio programado.");
+    return;
+  }
+
+  // Mostrar resumen
+  let summaryHTML = `<h2>Resumen del Servicio</h2>`;
+  summaryHTML += `<p><strong>Mundo:</strong> ${worlds[selectedWorld].name}</p>`;
+  summaryHTML += `<p><strong>Experto:</strong> ${selectedExpert.name}</p>`;
+  summaryHTML += `<p><strong>Dirección:</strong> ${user.address || "No configurada"}</p>`;
+  summaryHTML += `<p><strong>Áreas seleccionadas:</strong></p><ul>`;
+  for(const [areaId, count] of Object.entries(selectedAreas)) {
+    const area = areas.find(a => a.id === areaId);
+    summaryHTML += `<li>${area.label}: ${count} x $${area.price} = $${area.price * count}</li>`;
+  }
+  summaryHTML += `</ul>`;
+  summaryHTML += `<p><strong>Total:</strong> $${total}</p>`;
+  summaryHTML += `<p><strong>Programación:</strong> ${selectedSchedule === "inmediato" ? "Inmediato" : selectedDate}</p>`;
+
+  summarySection.innerHTML = summaryHTML;
+  summarySection.classList.remove("hidden");
+
+  areasSection.classList.add("hidden");
+  paymentSection.classList.remove("hidden");
+  trackingSection.classList.add("hidden");
+});
+
+// ======== Mostrar campos de tarjeta si pago es tarjeta ========
+paymentForm.addEventListener("change", (e) => {
+  if(e.target.name === "pay") {
+    selectedPayment = e.target.value;
+    if(selectedPayment === "tarjeta") {
+      cardDetailsDiv.classList.remove("hidden");
+    } else {
+      cardDetailsDiv.classList.add("hidden");
+    }
+  }
+});
+
+// ======== Confirmar pago y contratar servicio ========
+btnConfirmPayment.addEventListener("click", () => {
+  if(!selectedPayment) {
+    alert("Por favor selecciona un método de pago.");
+    return;
+  }
+
+  if(selectedPayment === "tarjeta") {
+    // Validar datos tarjeta (simple)
+    const cardNumber = document.getElementById("cardNumber").value.trim();
+    const cardExpiry = document.getElementById("cardExpiry").value;
+    const cardCVV = document.getElementById("cardCVV").value.trim();
+
+    if(cardNumber.length < 13) {
+      alert("Por favor ingresa un número de tarjeta válido.");
+      return;
+    }
+    if(!cardExpiry) {
+      alert("Por favor ingresa la fecha de expiración.");
+      return;
+    }
+    if(cardCVV.length < 3) {
+      alert("Por favor ingresa el código CVV.");
+      return;
+    }
+  }
+
+  // Guardar en historial
+  const totalCost = calculateTotalCost();
+  const now = new Date();
+  const serviceRecord = {
+    id: now.getTime(),
+    date: now.toLocaleString(),
+    world: worlds[selectedWorld].name,
+    expert: selectedExpert.name,
+    address: user.address,
+    areas: {...selectedAreas},
+    schedule: selectedSchedule === "inmediato" ? "Inmediato" : selectedDate,
+    total: totalCost,
+    paymentMethod: selectedPayment
+  };
+  user.history.push(serviceRecord);
+  if(selectedWorld === "basico") {
+    user.limpiezaPurchases++;
+  }
+  localStorage.setItem("xpertoUser", JSON.stringify(user));
+
+  // Mostrar tracking
+  paymentSection.classList.add("hidden");
+  summarySection.classList.add("hidden");
+  trackingSection.classList.remove("hidden");
+  trackStatus.textContent = "Asignando experto...";
+
+  // Simular estados de tracking
+  simulateTracking();
+
+});
+
+// ======== Calcular total para guardar ========
+function calculateTotalCost() {
+  let total = 0;
+  for(const [areaId, count] of Object.entries(selectedAreas)) {
+    const area = areas.find(a => a.id === areaId);
+    total += area.price * count;
+  }
+  return total;
 }
 
-function updateHistorial() {
-  const hist = document.getElementById("historialContainer");
-  hist.innerHTML = "";
-  historialServicios.forEach((s, index) => {
-    const div = document.createElement("div");
-    div.className = "card historial";
-    div.innerHTML = `
-      <h4>Servicio #${index + 1}</h4>
-      <p>Experto: ${s.experto}</p>
-      <p>Áreas: ${Object.entries(s.areas).map(([k, v]) => `${k}: ${v}`).join(", ")}</p>
-      <p>Método: ${s.metodo}</p>
-      <p>Fecha: ${s.fecha}</p>
+// ======== Simulación de tracking con estados y tiempos ========
+function simulateTracking() {
+  const statuses = [
+    "Asignando experto...",
+    "Experto en camino 🚗",
+    "Experto ha llegado 🏠",
+    "Limpieza en progreso 🧹",
+    "Limpieza finalizada 🎉"
+  ];
+  let index = 0;
+
+  function nextStatus() {
+    if(index < statuses.length) {
+      trackStatus.textContent = statuses[index];
+      index++;
+      setTimeout(nextStatus, 3000);
+    } else {
+      alert("Servicio completado. ¡Gracias por confiar en Xperto!");
+      showSection("worldSelection");
+      resetApp();
+    }
+  }
+  nextStatus();
+}
+
+// ======== Renderizar historial ========
+function renderHistory() {
+  historyContainer.innerHTML = "";
+  if(user.history.length === 0) {
+    historyContainer.innerHTML = "<p>No tienes servicios contratados aún.</p>";
+    return;
+  }
+  user.history.slice().reverse().forEach(item => {
+    const card = document.createElement("div");
+    card.classList.add("card");
+    let areasDesc = "";
+    for(const [areaId, count] of Object.entries(item.areas)) {
+      const area = areas.find(a => a.id === areaId);
+      areasDesc += `${area.label}: ${count}, `;
+    }
+    areasDesc = areasDesc.slice(0, -2);
+    card.innerHTML = `
+      <h3>${item.world} - ${item.expert}</h3>
+      <p><strong>Fecha:</strong> ${item.date}</p>
+      <p><strong>Dirección:</strong> ${item.address}</p>
+      <p><strong>Áreas:</strong> ${areasDesc}</p>
+      <p><strong>Programación:</strong> ${item.schedule}</p>
+      <p><strong>Total:</strong> $${item.total}</p>
+      <p><strong>Pago:</strong> ${item.paymentMethod}</p>
     `;
-    hist.appendChild(div);
+    historyContainer.appendChild(card);
   });
 }
 
+// ======== Eventos perfil ========
+profileForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  saveUser();
+});
+
+// ======== Inicialización ========
 document.addEventListener("DOMContentLoaded", () => {
-  selectTab("homeTab");
+  loadUser();
+  showSection("worldSelection");
 });
