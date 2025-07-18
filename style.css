@@ -1,215 +1,154 @@
-/* style.css */
+/* style.css mejorado para aplicación tipo Uber/Xperto */
 
-* {
-  box-sizing: border-box;
+:root {
+  --primary: #00c48c;
+  --secondary: #f0f0f0;
+  --text: #333;
+  --background: #ffffff;
+  --accent: #ffd700;
+  --radius: 12px;
+  --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f5f7fa;
-  color: #333;
   margin: 0;
-  padding: 20px;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
 }
 
-h1, h2, h3 {
-  color: #222;
-  margin-bottom: 15px;
-  font-weight: 700;
-}
-
-h1 {
-  font-size: 2.4rem;
-  margin-top: 0;
-}
-
-h2 {
-  font-size: 1.8rem;
-}
-
-h3 {
-  font-size: 1.4rem;
-  margin-top: 10px;
-}
-
-.btn {
-  background-color: #007bff;
-  border: none;
+header, footer {
+  background-color: var(--primary);
   color: white;
-  padding: 12px 28px;
-  margin: 15px 0;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  user-select: none;
+  padding: 1rem;
+  text-align: center;
 }
 
-.btn:hover:not(:disabled) {
-  background-color: #0056b3;
+main {
+  padding: 1rem;
 }
 
-.btn:disabled {
-  background-color: #bbb;
-  cursor: not-allowed;
-}
-
-.hidden {
-  display: none !important;
-}
-
-#expertSection, #areasSection, #summarySection, #paymentSection, #trackingSection {
-  width: 100%;
-  max-width: 600px;
+.card {
   background: white;
-  padding: 25px 30px;
-  border-radius: 12px;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
-  margin-top: 25px;
-  box-sizing: border-box;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin: 0.5rem 0;
+  text-align: center;
+  transition: transform 0.2s;
 }
 
-.expert-card {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 15px 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-bottom: 15px;
-  transition: box-shadow 0.3s ease;
-  cursor: pointer;
+.card:hover {
+  transform: translateY(-5px);
 }
 
-.expert-card:hover, .expert-card.selected {
-  box-shadow: 0 5px 20px rgba(0,123,255,0.3);
-  background-color: #e6f0ff;
-}
-
-.expert-photo {
-  width: 70px;
-  height: 70px;
+.card img {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #007bff;
-  flex-shrink: 0;
+  margin-bottom: 0.5rem;
 }
 
-.expert-info {
-  flex-grow: 1;
-  user-select: none;
+.card.selected {
+  border: 2px solid var(--primary);
 }
 
-.expert-name {
-  font-weight: 700;
-  font-size: 1.1rem;
-  margin: 0 0 4px 0;
-  color: #004085;
+button.btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
 }
 
-.stars {
-  color: #f4c150; /* dorado */
-  font-size: 1.1rem;
-  margin-bottom: 5px;
-  user-select: none;
-}
-
-.expert-specialty {
-  font-style: italic;
-  color: #555;
-  margin-bottom: 6px;
-}
-
-.expert-comments {
-  font-size: 0.85rem;
-  color: #666;
+button.btn:hover {
+  background-color: #009f6b;
 }
 
 label {
   display: block;
-  font-weight: 600;
-  margin: 15px 0 8px 0;
-  color: #444;
+  margin: 0.5rem 0;
+  font-weight: 500;
 }
 
-select, input[type="date"], input[type="radio"] {
-  margin-top: 6px;
-  font-size: 1rem;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1.5px solid #ccc;
-  width: 100%;
-  max-width: 150px;
-  transition: border-color 0.3s ease;
-}
-
-select:focus, input[type="date"]:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 8px rgba(0,123,255,0.25);
+input[type="number"] {
+  padding: 0.3rem;
+  width: 60px;
+  margin-left: 0.5rem;
 }
 
 input[type="radio"] {
-  width: auto;
-  margin-right: 8px;
-  vertical-align: middle;
-  cursor: pointer;
+  margin-right: 0.5rem;
 }
 
-.summary p, .summary ul {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #333;
-  margin: 6px 0;
+.hidden {
+  display: none;
 }
 
-.summary ul {
-  padding-left: 20px;
+nav.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+  border-top: 1px solid #ddd;
+  z-index: 999;
 }
 
-.payment label {
-  display: inline-block;
-  margin-right: 25px;
-  font-weight: 600;
-  cursor: pointer;
-  user-select: none;
+nav.bottom-nav button {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
 }
 
-.payment input[type="radio"]:checked + label {
-  color: #007bff;
+nav.bottom-nav button.active {
+  color: var(--primary);
 }
 
-.tracking p {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #0056b3;
-  text-align: center;
+.icon {
+  font-size: 1.2rem;
 }
 
-@media (max-width: 640px) {
-  body {
-    padding: 15px 10px;
-  }
-  .expert-card {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .expert-photo {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 10px;
-  }
-  select, input[type="date"] {
-    max-width: 100%;
-  }
-  #expertSection, #areasSection, #summarySection, #paymentSection, #trackingSection {
-    padding: 20px;
-    margin-top: 20px;
-  }
+.section {
+  margin-bottom: 4rem;
+}
+
+/* Estilo para promociones, historial y perfil */
+.promo-card, .history-item, .profile-form {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin: 0.5rem 0;
+}
+
+.profile-form input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: var(--radius);
+}
+
+h2, h3 {
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin: 0.25rem 0;
+  line-height: 1.4;
 }
