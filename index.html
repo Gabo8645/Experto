@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Servicio de Limpieza</title>
+  <meta charset="UTF-8">
+  <title>Contrata tu Servicio de Limpieza</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
       background: #f5f5f5;
     }
-    h1, h2 {
+    h1, h2, h3 {
       color: #333;
-    }
-    .hidden {
-      display: none;
     }
     .btn {
       background-color: #007bff;
       border: none;
       color: white;
       padding: 10px 20px;
-      margin: 5px 0;
+      margin: 10px 0;
       cursor: pointer;
       border-radius: 5px;
     }
@@ -28,15 +25,33 @@
       background-color: #aaa;
       cursor: not-allowed;
     }
-    label {
-      display: block;
-      margin: 10px 0;
+    .hidden {
+      display: none;
     }
-    input[type="number"] {
+    .expert-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+    }
+    .expert-photo {
       width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
     }
-    .summary {
-      background: #fff;
+    .stars {
+      color: gold;
+    }
+    select {
+      padding: 5px;
+    }
+    .summary, .payment, .tracking {
+      background: white;
       padding: 15px;
       border-radius: 5px;
       margin-top: 15px;
@@ -45,139 +60,175 @@
   </style>
 </head>
 <body>
-
   <h1>Elige tu Mundo de Limpieza</h1>
-  <button id="btnBasic" class="btn">🌍 Mundo de Limpieza Básica</button>
-  <button id="btnDeep" class="btn" disabled>🔒 Mundo de Limpieza Profunda</button>
+  <button class="btn" onclick="selectWorld('basic')">🌍 Limpieza Básica</button>
+  <button class="btn" onclick="selectWorld('deep')">🧼 Limpieza Profunda</button>
 
-  <div id="stepExpert" class="hidden">
+  <div id="expertSection" class="hidden">
     <h2>Selecciona tu Experto</h2>
-    <select id="expertSelect"></select>
-    <button id="btnNextAreas" class="btn">Siguiente</button>
+    <div id="expertsContainer"></div>
+    <button class="btn" onclick="goToAreas()">Siguiente</button>
   </div>
 
-  <div id="stepAreas" class="hidden">
+  <div id="areasSection" class="hidden">
     <h2>Selecciona las áreas y cantidad</h2>
     <div id="areasContainer"></div>
-    <button id="btnCalculate" class="btn">Calcular Total</button>
+    <label>¿Cuándo deseas el servicio?
+      <select id="schedule">
+        <option value="inmediato">Inmediato</option>
+        <option value="programado">Programar Fecha</option>
+      </select>
+    </label>
+    <input type="date" id="scheduleDate" class="hidden">
+    <button class="btn" onclick="calculateTotal()">Calcular Total</button>
   </div>
 
-  <div id="stepSummary" class="hidden summary">
-    <h2>Resumen de tu pedido</h2>
-    <div id="summaryDetails"></div>
+  <div id="summarySection" class="hidden summary"></div>
+  <div id="paymentSection" class="hidden payment">
+    <h2>Método de Pago</h2>
+    <label><input type="radio" name="pay" value="tarjeta"> Tarjeta de Crédito</label>
+    <label><input type="radio" name="pay" value="efectivo"> Efectivo</label>
+    <button class="btn" onclick="confirmService()">Confirmar y Pagar</button>
+  </div>
+
+  <div id="trackingSection" class="hidden tracking">
+    <h2>Seguimiento del Servicio</h2>
+    <p id="trackStatus">🕒 El experto va en camino...</p>
   </div>
 
   <script>
-    // Simulamos datos del usuario y expertos
-    const user = {
-      limpiezaPurchases: 4 // Cambia este número para probar el desbloqueo
-    };
-
     const experts = [
-      { id: 1, name: "Juan Pérez" },
-      { id: 2, name: "María Gómez" },
-      { id: 3, name: "Carlos Torres" }
+      {
+        id: 1,
+        name: "Juan Pérez",
+        stars: 4,
+        comments: ["Muy puntual", "Excelente limpieza"],
+        photo: "https://randomuser.me/api/portraits/men/32.jpg",
+        specialty: "Limpieza de cocinas y salas"
+      },
+      {
+        id: 2,
+        name: "María Gómez",
+        stars: 5,
+        comments: ["Muy detallista", "Recomendadísima"],
+        photo: "https://randomuser.me/api/portraits/women/45.jpg",
+        specialty: "Limpieza profunda de baños"
+      }
     ];
 
-    const areas = [
-      { id: "room", label: "Habitaciones", price: 10 },
-      { id: "kitchen", label: "Cocina", price: 15 },
-      { id: "dining", label: "Comedor", price: 12 },
-      { id: "living", label: "Sala", price: 12 },
-      { id: "terrace", label: "Terraza", price: 20 }
-    ];
+    const areas = ["Habitaciones", "Cocina", "Comedor", "Sala", "Terraza"];
 
-    // Elementos
-    const btnBasic = document.getElementById("btnBasic");
-    const btnDeep = document.getElementById("btnDeep");
-    const stepExpert = document.getElementById("stepExpert");
-    const stepAreas = document.getElementById("stepAreas");
-    const stepSummary = document.getElementById("stepSummary");
-    const expertSelect = document.getElementById("expertSelect");
-    const btnNextAreas = document.getElementById("btnNextAreas");
-    const areasContainer = document.getElementById("areasContainer");
-    const btnCalculate = document.getElementById("btnCalculate");
-    const summaryDetails = document.getElementById("summaryDetails");
+    let selectedExpert = null;
+    let selectedAreas = {};
 
-    // Desbloquear mundo profundo si tiene >3 compras
-    if (user.limpiezaPurchases > 3) {
-      btnDeep.disabled = false;
-      btnDeep.textContent = "✅ Mundo de Limpieza Profunda";
-    }
-
-    // Paso 1: Seleccionar Mundo
-    btnBasic.addEventListener("click", () => {
-      btnBasic.disabled = true;
-      btnDeep.disabled = true;
-      showExpertSelection();
-    });
-
-    btnDeep.addEventListener("click", () => {
-      btnBasic.disabled = true;
-      btnDeep.disabled = true;
-      showExpertSelection();
-    });
-
-    function showExpertSelection() {
-      stepExpert.classList.remove("hidden");
-      // Llenar select de expertos
+    function selectWorld(world) {
+      document.getElementById("expertSection").classList.remove("hidden");
+      const container = document.getElementById("expertsContainer");
+      container.innerHTML = "";
       experts.forEach(exp => {
-        const opt = document.createElement("option");
-        opt.value = exp.id;
-        opt.textContent = exp.name;
-        expertSelect.appendChild(opt);
+        const card = document.createElement("div");
+        card.className = "expert-card";
+        card.innerHTML = `
+          <img src="${exp.photo}" class="expert-photo">
+          <div>
+            <strong>${exp.name}</strong><br>
+            <span class="stars">${"★".repeat(exp.stars)}${"☆".repeat(5 - exp.stars)}</span><br>
+            <small>${exp.specialty}</small><br>
+            <em>${exp.comments.join(" | ")}</em><br>
+            <input type="radio" name="expert" value="${exp.id}"> Seleccionar
+          </div>
+        `;
+        container.appendChild(card);
       });
     }
 
-    // Paso 2: Seleccionar Áreas
-    btnNextAreas.addEventListener("click", () => {
-      stepExpert.classList.add("hidden");
-      stepAreas.classList.remove("hidden");
-      areasContainer.innerHTML = "";
-      areas.forEach(area => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <label>
-            ${area.label} ($${area.price} por unidad):
-            <input type="number" id="area-${area.id}" min="0" value="0">
-          </label>
-        `;
-        areasContainer.appendChild(div);
-      });
-    });
-
-    // Paso 3: Calcular y Mostrar Resumen
-    btnCalculate.addEventListener("click", () => {
-      let total = 0;
-      let details = "";
-      areas.forEach(area => {
-        const qty = parseInt(document.getElementById(`area-${area.id}`).value);
-        if (qty > 0) {
-          const subtotal = qty * area.price;
-          total += subtotal;
-          details += `<p>${qty} x ${area.label} ($${area.price}) = $${subtotal.toFixed(2)}</p>`;
+    function goToAreas() {
+      const radios = document.querySelectorAll('input[name="expert"]');
+      for (const r of radios) {
+        if (r.checked) {
+          selectedExpert = experts.find(e => e.id == r.value);
+          break;
         }
-      });
-
-      if (total === 0) {
-        alert("Selecciona al menos un área.");
+      }
+      if (!selectedExpert) {
+        alert("Selecciona un experto");
         return;
       }
+      document.getElementById("expertSection").classList.add("hidden");
+      document.getElementById("areasSection").classList.remove("hidden");
+      const container = document.getElementById("areasContainer");
+      container.innerHTML = "";
+      areas.forEach(area => {
+        const div = document.createElement("div");
+        const id = area.toLowerCase();
+        div.innerHTML = `
+          <label>${area}:
+            <select id="area-${id}">
+              <option value="0">0</option>
+              ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
+            </select>
+          </label>
+        `;
+        container.appendChild(div);
+      });
 
-      const commission = total * 0.1;
-      const grandTotal = total + commission;
+      const schedule = document.getElementById("schedule");
+      schedule.addEventListener("change", () => {
+        document.getElementById("scheduleDate").classList.toggle("hidden", schedule.value !== "programado");
+      });
+    }
 
-      summaryDetails.innerHTML = `
-        ${details}
-        <hr>
-        <p>Subtotal: $${total.toFixed(2)}</p>
-        <p>Comisión 10%: $${commission.toFixed(2)}</p>
-        <h3>Total a pagar: $${grandTotal.toFixed(2)}</h3>
+    function calculateTotal() {
+      let subtotal = 0;
+      selectedAreas = {};
+      areas.forEach(area => {
+        const id = area.toLowerCase();
+        const qty = parseInt(document.getElementById(`area-${id}`).value);
+        if (qty > 0) {
+          selectedAreas[area] = qty;
+          subtotal += qty * 10; // precio fijo
+        }
+      });
+      if (subtotal === 0) {
+        alert("Selecciona al menos un área");
+        return;
+      }
+      const commission = subtotal * 0.1;
+      const total = subtotal + commission;
+      const schedule = document.getElementById("schedule").value;
+      const date = document.getElementById("scheduleDate").value;
+
+      document.getElementById("areasSection").classList.add("hidden");
+      const summary = document.getElementById("summarySection");
+      summary.innerHTML = `
+        <h2>Resumen del pedido</h2>
+        <p><strong>Experto:</strong> ${selectedExpert.name}</p>
+        ${Object.entries(selectedAreas).map(([k,v]) => `<p>${v} x ${k}</p>`).join("")}
+        <p>Subtotal: $${subtotal.toFixed(2)}</p>
+        <p>Comisión: $${commission.toFixed(2)}</p>
+        <h3>Total: $${total.toFixed(2)}</h3>
+        <p>Agendado: ${schedule === "programado" ? `para el ${date}` : "Inmediato"}</p>
       `;
+      summary.classList.remove("hidden");
+      document.getElementById("paymentSection").classList.remove("hidden");
+    }
 
-      stepAreas.classList.add("hidden");
-      stepSummary.classList.remove("hidden");
-    });
+    function confirmService() {
+      const payment = document.querySelector('input[name="pay"]:checked');
+      if (!payment) {
+        alert("Selecciona un método de pago");
+        return;
+      }
+      document.getElementById("summarySection").classList.add("hidden");
+      document.getElementById("paymentSection").classList.add("hidden");
+      document.getElementById("trackingSection").classList.remove("hidden");
+
+      // Simulación de tracking
+      const status = document.getElementById("trackStatus");
+      setTimeout(() => status.textContent = "✅ El experto ha llegado" , 3000);
+      setTimeout(() => status.textContent = "🧹 El experto está limpiando..." , 6000);
+      setTimeout(() => status.textContent = "🏁 Limpieza finalizada. ¡Gracias por confiar en nosotros!" , 9000);
+    }
   </script>
 </body>
 </html>
