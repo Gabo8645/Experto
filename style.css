@@ -1,194 +1,215 @@
 /* style.css */
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 0;
+  background: #f5f7fa;
+  color: #333;
   margin: 0;
-  background-color: #f9f9f9;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h1, h2, h3 {
-  color: #333;
-  margin: 10px 0;
+  color: #222;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 2.4rem;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+h3 {
+  font-size: 1.4rem;
+  margin-top: 10px;
 }
 
 .btn {
   background-color: #007bff;
   border: none;
   color: white;
-  padding: 12px 20px;
-  margin: 10px 0;
+  padding: 12px 28px;
+  margin: 15px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
   cursor: pointer;
-  border-radius: 8px;
-  font-size: 16px;
-  width: 100%;
-  max-width: 300px;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: #0056b3;
 }
 
 .btn:disabled {
-  background-color: #aaa;
+  background-color: #bbb;
   cursor: not-allowed;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
-select, input[type="date"], input[type="radio"], input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
-  padding: 10px;
-  font-size: 14px;
-  margin: 8px 0;
+#expertSection, #areasSection, #summarySection, #paymentSection, #trackingSection {
   width: 100%;
+  max-width: 600px;
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  margin-top: 25px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-label {
-  display: block;
-  margin: 12px 0 6px;
-}
-
-.container {
-  padding: 20px;
-}
-
-.section {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  margin: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .expert-card {
   display: flex;
   align-items: center;
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  margin: 10px 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   gap: 15px;
-}
-
-.expert-photo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #ddd;
-}
-
-.stars {
-  color: #f5c518;
-  font-size: 18px;
-}
-
-.summary, .payment, .tracking, .profile, .history, .promotions {
   background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-#areasContainer div {
-  margin-bottom: 10px;
-}
-
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  background-color: #ffffff;
-  border-top: 1px solid #ddd;
-  box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.05);
-  z-index: 999;
-}
-
-.bottom-nav a {
-  flex: 1;
-  padding: 10px 0;
-  text-align: center;
-  color: #555;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.bottom-nav a.active {
-  color: #007bff;
-  font-weight: bold;
-}
-
-.bottom-nav i {
-  font-size: 20px;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.icon-world {
-  font-size: 24px;
-  margin: 10px;
-  color: #007bff;
-}
-
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.card-world {
-  background-color: #fff;
-  padding: 15px;
-  text-align: center;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease-in-out;
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+  transition: box-shadow 0.3s ease;
   cursor: pointer;
 }
 
-.card-world:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+.expert-card:hover, .expert-card.selected {
+  box-shadow: 0 5px 20px rgba(0,123,255,0.3);
+  background-color: #e6f0ff;
 }
 
-.card-world img {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
-  margin-bottom: 10px;
+.expert-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #007bff;
+  flex-shrink: 0;
 }
 
-.card-world span {
-  font-size: 14px;
+.expert-info {
+  flex-grow: 1;
+  user-select: none;
+}
+
+.expert-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 0 4px 0;
+  color: #004085;
+}
+
+.stars {
+  color: #f4c150; /* dorado */
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  user-select: none;
+}
+
+.expert-specialty {
+  font-style: italic;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.expert-comments {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin: 15px 0 8px 0;
+  color: #444;
+}
+
+select, input[type="date"], input[type="radio"] {
+  margin-top: 6px;
+  font-size: 1rem;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  width: 100%;
+  max-width: 150px;
+  transition: border-color 0.3s ease;
+}
+
+select:focus, input[type="date"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0,123,255,0.25);
+}
+
+input[type="radio"] {
+  width: auto;
+  margin-right: 8px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.summary p, .summary ul {
+  font-size: 1rem;
+  line-height: 1.5;
   color: #333;
+  margin: 6px 0;
 }
 
-.profile form {
-  display: flex;
-  flex-direction: column;
+.summary ul {
+  padding-left: 20px;
 }
 
-.profile button {
-  margin-top: 20px;
+.payment label {
+  display: inline-block;
+  margin-right: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
 }
 
-@media (max-width: 768px) {
-  .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+.payment input[type="radio"]:checked + label {
+  color: #007bff;
+}
+
+.tracking p {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #0056b3;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 15px 10px;
   }
-  .btn {
-    padding: 10px 15px;
-    font-size: 14px;
+  .expert-card {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .bottom-nav i {
-    font-size: 18px;
+  .expert-photo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+  select, input[type="date"] {
+    max-width: 100%;
+  }
+  #expertSection, #areasSection, #summarySection, #paymentSection, #trackingSection {
+    padding: 20px;
+    margin-top: 20px;
   }
 }
-
-
