@@ -1,156 +1,325 @@
-/* style.css para Xperto App - Estilo Profesional tipo Uber */
-
-body {
+/* Reset básico y fuente */
+* {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
 }
 
-header, footer {
-  background-color: #fff;
-  padding: 1rem;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  position: sticky;
-  z-index: 100;
+body {
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
 }
 
 header {
+  background-color: #ffffff;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
   top: 0;
+  z-index: 10;
 }
 
-footer {
-  bottom: 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border-top: 1px solid #ccc;
-  position: fixed;
-  width: 100%;
-  background: #fff;
+header h1 {
+  font-size: 1.8rem;
+  color: #0077cc;
+  font-weight: 700;
 }
 
-footer .nav-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 0.8rem;
+#defaultAddress {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
   color: #666;
-  cursor: pointer;
+  font-weight: 500;
 }
 
-.nav-icon.active {
-  color: #007bff;
-}
-
+/* Main content */
 main {
-  padding: 1rem;
-  padding-bottom: 80px; /* espacio para el footer */
+  flex: 1;
+  padding: 1rem 1.5rem;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 h2 {
-  color: #007bff;
   margin-bottom: 1rem;
+  color: #0077cc;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Mundo botones */
+.world-options {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.world-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  padding: 1.2rem;
+  border-radius: 16px;
+  width: 140px;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+  font-weight: 600;
+  color: #333;
+}
+
+.world-options button:hover,
+.world-options button:focus {
+  border-color: #0077cc;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(0, 119, 204, 0.3);
+  outline: none;
+}
+
+.world-options img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 0.7rem;
+}
+
+/* Expertos tarjetas */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.3rem;
 }
 
 .card {
-  background-color: #fff;
+  background: #fff;
   padding: 1rem;
-  margin: 1rem 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+  outline-offset: 4px;
+}
+
+.card:hover,
+.card:focus {
+  box-shadow: 0 8px 20px rgba(0,119,204,0.4);
+  outline: none;
+}
+
+.card.selected {
+  border: 3px solid #0077cc;
+  box-shadow: 0 10px 24px rgba(0,119,204,0.6);
+}
+
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+  margin-bottom: 0.7rem;
 }
 
-.card:hover {
-  transform: translateY(-5px);
+.card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+  color: #0077cc;
+  font-weight: 700;
 }
 
+.card .stars {
+  color: #f5c518;
+  font-size: 1rem;
+  margin: 0.3rem 0;
+  letter-spacing: 2px;
+}
+
+.card .comment {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.card em {
+  font-size: 0.85rem;
+  color: #777;
+  display: block;
+  margin-top: 0.3rem;
+}
+
+/* Botones generales */
 .btn {
   display: block;
   width: 100%;
-  padding: 0.8rem;
-  background-color: #007bff;
+  margin-top: 1.3rem;
+  padding: 0.9rem;
+  background-color: #0077cc;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  margin-top: 1rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
   cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
 }
 
-.btn:hover {
-  background-color: #0056b3;
+.btn:hover,
+.btn:focus {
+  background-color: #005fa3;
+  outline: none;
 }
 
-input[type="text"], input[type="number"], select {
-  width: 100%;
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.hidden {
-  display: none;
-}
-
-#expertsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+/* Formularios */
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
+  margin-bottom: 1.2rem;
 }
 
-.expert {
-  text-align: center;
+.form-group label {
+  flex: 1 1 100%;
+  font-weight: 600;
+  color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"] {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1.8px solid #ccc;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus {
+  border-color: #0077cc;
+  outline: none;
+}
+
+input[type="radio"] {
+  margin-right: 0.5rem;
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: border 0.3s;
 }
 
-.expert.selected {
-  border-color: #007bff;
+/* Ocultar elementos */
+.hidden {
+  display: none !important;
 }
 
-.expert img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 0.5rem;
+/* Navegación inferior */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  background: #fff;
+  border-top: 1.8px solid #ccc;
+  padding: 0.9rem 0;
+  z-index: 1000;
+  box-shadow: 0 -3px 10px rgba(0,0,0,0.05);
 }
 
-label {
-  display: block;
+.bottom-nav button {
+  background: none;
+  border: none;
+  font-size: 1.9rem;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.bottom-nav button:hover,
+.bottom-nav button:focus {
+  color: #0077cc;
+  outline: none;
+}
+
+.bottom-nav button.active {
+  color: #0077cc;
+  font-weight: 700;
+}
+
+/* Listas */
+ul {
+  padding-left: 1.2rem;
   margin-bottom: 1rem;
+  color: #444;
 }
 
-#historyList .card {
-  border-left: 4px solid #007bff;
-  padding-left: 1rem;
+/* Secciones generales */
+section {
+  margin-bottom: 2rem;
 }
 
-.promo-card {
-  background: linear-gradient(45deg, #007bff, #00c6ff);
-  color: white;
-  text-align: center;
-  font-weight: bold;
-  padding: 1rem;
-}
-
-#profileSection input {
-  background-color: #f9f9f9;
-}
-
+/* Estado de tracking */
 #trackStatus {
-  font-size: 1.2rem;
-  background: #e0ffe0;
-  border-left: 4px solid #28a745;
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 8px;
+  background-color: #e6f2ff;
+  border-left: 5px solid #0077cc;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #004a99;
+  text-align: center;
+  user-select: none;
 }
 
+/* Pagos: campos extra para tarjeta */
+#cardDetails {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f0f7ff;
+  border-radius: 12px;
+  box-shadow: inset 0 0 5px rgba(0,119,204,0.3);
+}
+
+#cardDetails label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+#cardDetails input {
+  width: 100%;
+}
+
+/* Responsive */
+@media (min-width: 600px) {
+  .form-group label {
+    flex: 1 1 48%;
+  }
+
+  .bottom-nav button {
+    font-size: 2.4rem;
+  }
+}
+
+@media (min-width: 900px) {
+  main {
+    max-width: 900px;
+  }
+}
 
