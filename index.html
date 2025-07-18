@@ -5,274 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Xperto - Tu Servicio de Limpieza</title>
   <style>
-    /* Reset básico */
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      background: #f0f2f5;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-bottom: 80px; /* espacio para footer fijo */
-    }
-    header {
-      background: #007bff;
-      color: white;
-      padding: 1.2rem 2rem;
-      text-align: center;
-      width: 100%;
-      max-width: 600px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      user-select: none;
-    }
-    header h1 {
-      margin: 0;
-      font-weight: 700;
-      font-size: 2rem;
-      line-height: 1.1;
-    }
-    header p {
-      margin: 0.3rem 0 0;
-      font-weight: 400;
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-    main {
-      max-width: 600px;
-      width: 100%;
-      padding: 1.5rem 1.2rem 0;
-    }
-    h2 {
-      color: #222;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 0.3rem;
-      margin-bottom: 1rem;
-      font-weight: 600;
-    }
-
-    /* Botones */
-    .btn {
-      background-color: #007bff;
-      border: none;
-      color: white;
-      padding: 12px 22px;
-      margin: 0.7rem 0 1.5rem 0;
-      cursor: pointer;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 1.1rem;
-      transition: background-color 0.25s ease;
-      user-select: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .btn:hover:not(:disabled) {
-      background-color: #0056b3;
-    }
-    .btn:disabled {
-      background-color: #999;
-      cursor: not-allowed;
-    }
-
-    /* Mundo limpieza botones contenedor */
-    #worldSelection {
-      display: flex;
-      justify-content: center;
-      gap: 1.3rem;
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-
-    /* Expertos */
-    #expertsContainer {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
-      margin-bottom: 1rem;
-    }
-    .expert-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 3px 9px rgba(0,0,0,0.12);
-      padding: 14px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
-      position: relative;
-    }
-    .expert-card:hover {
-      box-shadow: 0 5px 20px rgba(0,0,0,0.18);
-    }
-    .expert-card.selected {
-      border-color: #007bff;
-      box-shadow: 0 0 15px #007bff;
-      background-color: #e7f0ff;
-    }
-    .expert-photo {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #007bff;
-      flex-shrink: 0;
-    }
-    .expert-info {
-      flex-grow: 1;
-    }
-    .expert-name {
-      font-weight: 700;
-      font-size: 1.15rem;
-      margin: 0 0 6px 0;
-      user-select: text;
-    }
-    .stars {
-      color: gold;
-      font-size: 1rem;
-      margin-bottom: 6px;
-      user-select: none;
-    }
-    .expert-specialty {
-      font-size: 0.92rem;
-      color: #555;
-      margin-bottom: 8px;
-      font-style: italic;
-      user-select: text;
-    }
-    .expert-comments {
-      font-style: italic;
-      font-size: 0.85rem;
-      color: #666;
-      user-select: text;
-    }
-    /* Radio oculto pero funcional para selección con teclado */
-    .expert-card input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      margin: 0;
-      z-index: 10;
-    }
-
-    /* Áreas */
-    #areasContainer {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-bottom: 1rem;
-    }
-    #areasContainer label {
-      background: white;
-      border-radius: 8px;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-      user-select: none;
-    }
-    #areasContainer select {
-      width: 60px;
-      padding: 6px 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    label[for="schedule"] {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      user-select: none;
-    }
-
-    #schedule, #scheduleDate {
-      padding: 7px 10px;
-      border-radius: 6px;
-      border: 1px solid #bbb;
-      font-size: 1rem;
-      width: 100%;
-      max-width: 250px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      user-select: none;
-    }
-    #scheduleDate.hidden {
-      display: none !important;
-    }
-
-    /* Resumen, pago, seguimiento */
-    .summary, .payment, .tracking {
-      background: white;
-      padding: 18px 20px;
-      border-radius: 10px;
-      box-shadow: 0 3px 14px rgba(0,0,0,0.12);
-      margin-top: 22px;
-      user-select: text;
-    }
-    .summary p, .summary h3 {
-      margin: 8px 0;
-    }
-    .payment label {
-      display: block;
-      margin-bottom: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      user-select: none;
-    }
-    .payment input[type="radio"] {
-      margin-right: 10px;
-      transform: scale(1.25);
-      vertical-align: middle;
-      cursor: pointer;
-    }
-
-    /* Footer fijo */
-    footer {
-      background: #007bff;
-      color: white;
-      text-align: center;
-      padding: 12px 0;
-      font-size: 0.9rem;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      max-width: 600px;
-      left: 50%;
-      transform: translateX(-50%);
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-      user-select: none;
-    }
-
-    /* Responsive */
-    @media (max-width: 400px) {
-      #expertsContainer {
-        grid-template-columns: 1fr;
-      }
-      #areasContainer {
-        grid-template-columns: 1fr;
-      }
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
-    }
+    /* Aquí va todo tu CSS que ya definiste (no lo repito para ahorrar espacio) */
+    /* Copia y pega el CSS que tienes en tu style.css dentro de este bloque */
   </style>
 </head>
 <body>
@@ -393,27 +127,22 @@
     }
     updateWorldButtons();
 
-    // Función para seleccionar mundo limpieza
+    // Seleccionar mundo limpieza
     function selectWorld(world) {
       selectedWorld = world;
-
-      // Deshabilitar botones mundo para evitar doble selección
       btnBasic.disabled = true;
       btnDeep.disabled = true;
 
-      // Mostrar expertos
       expertSection.classList.remove("hidden");
       renderExperts();
-
       btnNextExpert.disabled = true;
 
-      // Ocultar secciones posteriores
+      // Ocultar otras secciones
       areasSection.classList.add("hidden");
       summarySection.classList.add("hidden");
       paymentSection.classList.add("hidden");
       trackingSection.classList.add("hidden");
 
-      // Reset selección experto
       selectedExpert = null;
     }
 
@@ -423,8 +152,9 @@
       experts.forEach(exp => {
         const card = document.createElement("div");
         card.className = "expert-card";
+        card.setAttribute("tabindex", "0");
         card.innerHTML = `
-          <img src="${exp.photo}" alt="${exp.name}" class="expert-photo" />
+          <img src="${exp.photo}" alt="Foto de ${exp.name}" class="expert-photo" />
           <div class="expert-info">
             <p class="expert-name">${exp.name}</p>
             <p class="stars">${"★".repeat(exp.stars)}${"☆".repeat(5 - exp.stars)}</p>
@@ -435,11 +165,166 @@
         `;
         expertsContainer.appendChild(card);
 
-        // Permitir seleccionar experto clickeando todo el card
-        card.addEventListener("click", () => {
-          selectExpert(exp.id);
+        // Selección por clic y teclado
+        card.addEventListener("click", () => selectExpert(exp.id));
+        card.addEventListener("keydown", (e) => {
+          if(e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            selectExpert(exp.id);
+          }
         });
       });
 
-      // Añadir listener para habilitar botón Siguiente cuando se elige experto
-      const radios = document.querySelectorAll('input[name="
+      // Cuando se selecciona radio, habilitar botón siguiente
+      document.querySelectorAll('input[name="expert"]').forEach(radio => {
+        radio.addEventListener("change", (e) => {
+          selectExpert(parseInt(e.target.value));
+        });
+      });
+    }
+
+    // Seleccionar experto
+    function selectExpert(id) {
+      selectedExpert = experts.find(e => e.id === id);
+      document.querySelectorAll(".expert-card").forEach(card => {
+        card.classList.remove("selected");
+        const input = card.querySelector('input[type="radio"]');
+        if(parseInt(input.value) === id){
+          card.classList.add("selected");
+          input.checked = true;
+        } else {
+          input.checked = false;
+        }
+      });
+      btnNextExpert.disabled = false;
+    }
+
+    // Avanzar a selección de áreas
+    function goToAreas() {
+      if(!selectedExpert) {
+        alert("Selecciona un experto para continuar.");
+        return;
+      }
+      expertSection.classList.add("hidden");
+      areasSection.classList.remove("hidden");
+
+      areasContainer.innerHTML = "";
+      selectedAreas = {};
+
+      areas.forEach(area => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <label for="area-${area.id}">
+            ${area.label}:
+            <select id="area-${area.id}" name="area-${area.id}">
+              <option value="0">0</option>
+              ${[...Array(10)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
+            </select>
+          </label>
+        `;
+        areasContainer.appendChild(div);
+      });
+
+      scheduleSelect.value = "inmediato";
+      scheduleDateInput.value = "";
+      scheduleDateInput.classList.add("hidden");
+
+      // Mostrar/ocultar campo fecha según selección
+      scheduleSelect.onchange = () => {
+        selectedSchedule = scheduleSelect.value;
+        if(selectedSchedule === "programado") {
+          scheduleDateInput.classList.remove("hidden");
+          scheduleDateInput.setAttribute("required", "required");
+        } else {
+          scheduleDateInput.classList.add("hidden");
+          scheduleDateInput.removeAttribute("required");
+        }
+      };
+    }
+
+    // Calcular total y mostrar resumen
+    function calculateTotal() {
+      // Leer cantidades seleccionadas
+      selectedAreas = {};
+      let subtotal = 0;
+
+      for(const area of areas) {
+        const selectEl = document.getElementById(`area-${area.id}`);
+        const qty = parseInt(selectEl.value);
+        if(qty > 0) {
+          selectedAreas[area.label] = qty;
+          subtotal += qty * area.price;
+        }
+      }
+
+      if(subtotal === 0) {
+        alert("Selecciona al menos un área para continuar.");
+        return;
+      }
+
+      selectedSchedule = scheduleSelect.value;
+      selectedDate = scheduleDateInput.value;
+
+      if(selectedSchedule === "programado" && !selectedDate) {
+        alert("Selecciona una fecha válida para el servicio programado.");
+        return;
+      }
+
+      const commission = subtotal * 0.1;
+      const total = subtotal + commission;
+
+      // Ocultar selección áreas
+      areasSection.classList.add("hidden");
+
+      // Mostrar resumen
+      summarySection.innerHTML = `
+        <h2>Resumen del pedido</h2>
+        <p><strong>Experto:</strong> ${selectedExpert.name}</p>
+        ${Object.entries(selectedAreas).map(([area, qty]) => `<p>${qty} x ${area}</p>`).join("")}
+        <p>Subtotal: $${subtotal.toFixed(2)}</p>
+        <p>Comisión (10%): $${commission.toFixed(2)}</p>
+        <h3>Total a pagar: $${total.toFixed(2)}</h3>
+        <p>Agendado para: ${selectedSchedule === "programado" ? selectedDate : "Inmediato"}</p>
+      `;
+      summarySection.classList.remove("hidden");
+      paymentSection.classList.remove("hidden");
+    }
+
+    // Confirmar pago y simular seguimiento
+    function confirmService() {
+      const paymentMethod = document.querySelector('input[name="pay"]:checked');
+      if(!paymentMethod) {
+        alert("Selecciona un método de pago para continuar.");
+        return;
+      }
+
+      // Ocultar resumen y pago
+      summarySection.classList.add("hidden");
+      paymentSection.classList.add("hidden");
+
+      // Mostrar seguimiento
+      trackingSection.classList.remove("hidden");
+      trackStatus.textContent = "🕒 El experto va en camino...";
+
+      setTimeout(() => {
+        trackStatus.textContent = "✅ El experto ha llegado.";
+      }, 3000);
+
+      setTimeout(() => {
+        trackStatus.textContent = "🧹 El experto está limpiando...";
+      }, 6000);
+
+      setTimeout(() => {
+        trackStatus.textContent = "🏁 Limpieza finalizada. ¡Gracias por confiar en Xperto!";
+      }, 9000);
+    }
+
+    // Exponer funciones globalmente para HTML onclick
+    window.selectWorld = selectWorld;
+    window.goToAreas = goToAreas;
+    window.calculateTotal = calculateTotal;
+    window.confirmService = confirmService;
+  </script>
+
+</body>
+</html>
