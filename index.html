@@ -1,63 +1,100 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Xperto - Servicio de Limpieza</title>
+  <title>Xperto - Limpieza Profesional</title>
   <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
     <h1>Xperto</h1>
-    <p>Contrata tu servicio de limpieza en minutos</p>
+    <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
   </header>
 
   <main>
     <section id="worldSelection">
-      <h2>Selecciona el tipo de limpieza</h2>
-      <div class="world-buttons">
-        <button class="btn" onclick="selectWorld('basic')">🌍 Limpieza Básica</button>
-        <button class="btn" onclick="selectWorld('deep')">🧼 Limpieza Profunda</button>
+      <h2>Selecciona un mundo</h2>
+      <div class="world-options">
+        <button onclick="selectWorld('basico')">
+          <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
+          Básico
+        </button>
+        <button onclick="selectWorld('profundo')">
+          <img src="https://img.icons8.com/ios-filled/50/000000/vacuum.png" alt="Profundo" />
+          Limpieza Profunda
+        </button>
       </div>
     </section>
 
     <section id="expertSection" class="hidden">
-      <h2>Selecciona tu Experto</h2>
-      <div id="expertsContainer"></div>
-      <button class="btn primary" onclick="goToAreas()">Siguiente</button>
+      <h2>Selecciona un Xperto</h2>
+      <div id="expertsContainer" class="card-container"></div>
+      <button class="btn" onclick="goToAreas()">Siguiente</button>
     </section>
 
     <section id="areasSection" class="hidden">
-      <h2>Selecciona las áreas y cantidad</h2>
-      <div id="areasContainer"></div>
-      <label for="schedule">¿Cuándo deseas el servicio?</label>
-      <select id="schedule">
-        <option value="inmediato">Inmediato</option>
-        <option value="programado">Programar Fecha</option>
-      </select>
+      <h2>¿Qué áreas quieres limpiar?</h2>
+      <div id="areasContainer" class="form-group"></div>
+      <label>
+        <input type="radio" name="schedule" id="schedule" value="inmediato" checked /> Inmediato
+      </label>
+      <label>
+        <input type="radio" name="schedule" id="schedule" value="programado" /> Programado
+      </label>
       <input type="date" id="scheduleDate" class="hidden" />
-      <button class="btn primary" onclick="calculateTotal()">Calcular Total</button>
+      <button class="btn" onclick="calculateTotal()">Ver resumen</button>
     </section>
 
-    <section id="summarySection" class="hidden card"></section>
+    <section id="summarySection" class="hidden"></section>
 
-    <section id="paymentSection" class="hidden card">
-      <h2>Método de Pago</h2>
-      <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta de Crédito</label><br>
-      <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label><br>
-      <button class="btn success" onclick="confirmService()">Confirmar y Pagar</button>
+    <section id="paymentSection" class="hidden">
+      <h2>Método de pago</h2>
+      <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
+      <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
+      <button class="btn" onclick="confirmService()">Confirmar</button>
     </section>
 
-    <section id="trackingSection" class="hidden card">
-      <h2>Seguimiento del Servicio</h2>
-      <p id="trackStatus">🕒 El experto va en camino...</p>
+    <section id="trackingSection" class="hidden">
+      <h2>Seguimiento</h2>
+      <p id="trackStatus"></p>
+    </section>
+
+    <section id="promosSection" class="hidden">
+      <h2>Promociones</h2>
+      <ul>
+        <li>🎁 20% de descuento en tu primer servicio</li>
+        <li>🔥 2x1 los fines de semana</li>
+        <li>🎉 Acumula puntos para desbloquear lavado de autos</li>
+      </ul>
+    </section>
+
+    <section id="historySection" class="hidden">
+      <h2>Historial de Servicios</h2>
+      <div id="historyContainer"></div>
+    </section>
+
+    <section id="profileSection" class="hidden">
+      <h2>Mi Perfil</h2>
+      <form>
+        <label>Nombre: <input type="text" placeholder="Tu nombre" /></label>
+        <label>Email: <input type="email" placeholder="correo@ejemplo.com" /></label>
+        <label>Teléfono: <input type="tel" placeholder="0999999999" /></label>
+        <label>Dirección por defecto: <input type="text" placeholder="Tu dirección" /></label>
+      </form>
     </section>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Xperto. Todos los derechos reservados.</p>
-  </footer>
-
-  <script src="script.js"></script>
+  <nav class="bottom-nav">
+    <button onclick="showSection('worldSelection')">🏠</button>
+    <button onclick="showSection('promosSection')">💸</button>
+    <button onclick="showSection('historySection')">📋</button>
+    <button onclick="showSection('profileSection')">👤</button>
+  </nav>
 </body>
 </html>
+
