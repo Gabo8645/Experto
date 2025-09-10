@@ -374,18 +374,18 @@ section {
 /* tooltip (service-info) */
 .service-info {
   position: absolute;
-  top: calc(100% + 8px);
+  top: 90%;              /* lo deja más pegado al botón */
   left: 50%;
   transform: translateX(-50%);
   width: 220px;
   background: #fff;
   border: 1px solid #0077cc;
-  border-radius: 10px;
-  padding: 0.7rem;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  z-index: 40;
+  border-radius: 12px;
+  padding: 0.8rem;
+  margin-top: 0;         /* 🔹 quita la separación extra */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 50;
   font-size: 0.9rem;
-  text-align: left;
 }
 
 /* flecha */
