@@ -330,72 +330,84 @@ section {
     max-width: 900px;
   }
 }
-/* Contenedor relativo para tooltip */
-.service-button button {
-  position: relative; /* para posicionar el ícono */
+/* contenedor relativo para posición absoluta de ícono y tooltip */
+.service-button {
+  position: relative;
+  display: inline-block;
+  margin: 0.5rem;
+  width: 140px; /* igual que los botones para mantener simetría */
+}
+
+/* botón principal (ya lo tienes, esto refuerza centramiento) */
+.service-button > button {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 1.2rem;
   border-radius: 16px;
-  width: 140px;
-  text-align: center; /* centra mejor textos largos */
+  border: 2px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-/* Icono de información dentro del botón */
+/* ícono de info — está fuera del button en DOM pero se coloca dentro visualmente */
 .info-icon {
   position: absolute;
   top: 8px;
   right: 8px;
   font-size: 16px;
+  background: rgba(0,0,0,0.06);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  line-height: 1; /* evita que se vea desalineado */
+  z-index: 30; /* por encima del botón */
+  user-select: none;
 }
 
-/* Tooltip / info del servicio */
+/* tooltip (service-info) */
 .service-info {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
   width: 220px;
   background: #fff;
   border: 1px solid #0077cc;
-  border-radius: 12px;
-  padding: 0.8rem;
-  margin-top: 6px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 50;
+  border-radius: 10px;
+  padding: 0.7rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  z-index: 40;
   font-size: 0.9rem;
   text-align: left;
 }
 
-/* --- AÑADIDO PARA LA BARRA INFERIOR CON ICONO + TEXTO --- */
-.bottom-nav button {
-  flex: 1;
-  background: none;
-  border: none;
-  outline: none;
-  display: flex;
-  flex-direction: column; /* icono arriba, texto abajo */
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: #555;
-  cursor: pointer;
+/* flecha */
+.service-info::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #0077cc transparent; /* triángulo */
 }
 
-.bottom-nav button .icon {
-  font-size: 22px; /* tamaño del ícono */
-  line-height: 1;
+/* oculto por defecto */
+.service-info.hidden {
+  display: none !important;
 }
 
-.bottom-nav button .label {
-  font-size: 11px;
-  margin-top: 2px;
-}
-
-.bottom-nav button.active {
-  color: #007bff; /* color del activo */
+/* pequeño ajuste responsive: que los botones mantengan su ancho en móviles */
+@media (max-width: 420px) {
+  .service-button {
+    width: 45%; /* dos por fila aprox. */
+  }
 }
