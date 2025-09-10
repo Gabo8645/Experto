@@ -14,53 +14,55 @@
 
   <header>
     <h1>Xperto</h1>
-    <p id="defaultAddress" class="address-lower">Dirección: Calle Falsa 123, Ciudad</p>
+    <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
   </header>
 
   <main>
-    <!-- Home / Mundo de limpieza -->
+    <!-- Selección de servicio -->
     <section id="worldSelection">
-  <h2>Selecciona el servicio:</h2>
-  <div class="world-options">
+      <h2>Selecciona el servicio:</h2>
+      <div class="world-options">
 
-    <!-- Limpieza Básica -->
-<div class="service-button">
-  <button type="button" onclick="selectWorld('basico')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-    Limpieza Básica
-    <span class="info-icon" onclick="toggleInfo(event,'infoBasico')">ℹ️</span>
-  </button>
-  <div class="service-info hidden" id="infoBasico">
-    <ul>
-      <li>Barrido y aspirado de pisos</li>
-      <li>Limpieza de superficies visibles</li>
-      <li>Limpieza de baños básica (lavabo, inodoro, espejo)</li>
-      <li>Cocina: encimeras y fregadero</li>
-      <li>Cambio de basura</li>
-    </ul>
-  </div>
-</div>
+        <!-- Limpieza Básica -->
+        <div class="service-button">
+          <button type="button" onclick="selectWorld('basico')">
+            <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
+            Limpieza Básica
+            <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoBasico')">ℹ️</span>
+          </button>
+          <div class="service-info hidden" id="infoBasico">
+            <ul>
+              <li>Barrido y aspirado de pisos</li>
+              <li>Limpieza de superficies visibles</li>
+              <li>Limpieza de baños básica</li>
+              <li>Cocina: encimeras y fregadero</li>
+              <li>Cambio de basura</li>
+            </ul>
+          </div>
+        </div>
 
-<!-- Limpieza Profunda -->
-<div class="service-button">
-  <button type="button" onclick="selectWorld('profundo')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/vacuum.png" alt="Profundo" />
-    Limpieza Profunda
-    <span class="info-icon" onclick="toggleInfo(event,'infoProfundo')">ℹ️</span>
-  </button>
-  <div class="service-info hidden" id="infoProfundo">
-    <ul>
-      <li>Todo lo incluido en la Básica</li>
-      <li>Limpieza profunda de baños y cocina</li>
-      <li>Aspirado y lavado de alfombras y tapizados</li>
-      <li>Limpieza de ventanas y persianas</li>
-      <li>Muebles por dentro y fuera (gabinetes, closets)</li>
-      <li>Eliminación de polvo en rincones, zócalos y techos</li>
-      <li>Desinfectantes más potentes en áreas críticas</li>
-    </ul>
-    <small>Se habilita después de 3 limpiezas básicas</small>
-  </div>
-</div>
+        <!-- Limpieza Profunda -->
+        <div class="service-button">
+          <button type="button" onclick="selectWorld('profundo')">
+            <img src="https://img.icons8.com/ios-filled/50/000000/vacuum.png" alt="Profundo" />
+            Limpieza Profunda
+            <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoProfundo')">ℹ️</span>
+          </button>
+          <div class="service-info hidden" id="infoProfundo">
+            <ul>
+              <li>Incluye lo de la Básica</li>
+              <li>Limpieza profunda de baños y cocina</li>
+              <li>Aspirado y lavado de alfombras</li>
+              <li>Limpieza de ventanas y persianas</li>
+              <li>Muebles por dentro y fuera</li>
+              <li>Polvo en rincones, zócalos y techos</li>
+              <li>Desinfectantes potentes</li>
+            </ul>
+            <small>Se habilita después de 3 limpiezas básicas</small>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Selección de expertos -->
     <section id="expertSection" class="hidden">
@@ -69,7 +71,7 @@
       <button class="btn" id="btnNextFromExperts" onclick="goToAreas()" disabled>Siguiente</button>
     </section>
 
-    <!-- Selección de áreas y programación -->
+    <!-- Selección de áreas -->
     <section id="areasSection" class="hidden">
       <h2>¿Cuántos espacios quieres limpiar?</h2>
       <div id="areasContainer" class="form-group"></div>
@@ -82,10 +84,10 @@
       <button class="btn" id="btnCalculateTotal">Ver resumen</button>
     </section>
 
-    <!-- Resumen del servicio -->
+    <!-- Resumen -->
     <section id="summarySection" class="hidden summary"></section>
 
-    <!-- Método de pago -->
+    <!-- Pago -->
     <section id="paymentSection" class="hidden payment">
       <h2>Método de pago</h2>
       <form id="paymentForm">
@@ -107,71 +109,71 @@
       <button class="btn" id="btnConfirmPayment">Confirmar</button>
     </section>
 
-    <!-- Seguimiento del servicio -->
+    <!-- Seguimiento -->
     <section id="trackingSection" class="hidden tracking">
       <h2>Seguimiento</h2>
       <p id="trackStatus">Asignando experto...</p>
     </section>
 
-    <!-- Promociones -->
+    <!-- Promos -->
     <section id="promosSection" class="hidden">
       <h2>Promociones</h2>
       <ul>
-        <li>🎁 20% de descuento en tu primer servicio</li>
-        <li>🔥 2x1 los fines de semana</li>
-        <li>🎉 Gratis 1 lavada de auto! Acumulando 3 servicios al mes</li>
+        <li>🎁 20% en tu primer servicio</li>
+        <li>🔥 2x1 fines de semana</li>
+        <li>🎉 1 lavada de auto gratis acumulando 3 servicios</li>
       </ul>
     </section>
 
-    <!-- Historial de servicios -->
+    <!-- Historial -->
     <section id="historySection" class="hidden">
       <h2>Historial de Servicios</h2>
       <div id="historyContainer" class="card-container"></div>
     </section>
 
-    <!-- Perfil del usuario -->
+    <!-- Perfil -->
     <section id="profileSection" class="hidden">
       <h2>Mi Perfil</h2>
       <form id="profileForm">
         <label>Nombre
-          <input type="text" id="profileName" placeholder="Tu nombre" required />
+          <input type="text" id="profileName" required />
         </label>
         <label>Apellido
-          <input type="text" id="profileLastName" placeholder="Tu apellido" required />
+          <input type="text" id="profileLastName" required />
         </label>
         <label>Email
-          <input type="email" id="profileEmail" placeholder="correo@ejemplo.com" required />
+          <input type="email" id="profileEmail" required />
         </label>
         <label>Teléfono
-          <input type="tel" id="profilePhone" placeholder="0999999999" pattern="[0-9]{9,15}" required />
+          <input type="tel" id="profilePhone" required />
         </label>
-        <label>Dirección por defecto
-          <input type="text" id="profileAddress" placeholder="Tu dirección" required />
+        <label>Dirección
+          <input type="text" id="profileAddress" required />
         </label>
         <button type="submit" class="btn">Guardar</button>
       </form>
     </section>
   </main>
 
+  <!-- Barra inferior -->
   <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
-  <button type="button" id="navHome" class="active" aria-label="Home" onclick="showSection('worldSelection')">
-    <span class="icon">🏠</span>
-    <span class="label">Inicio</span>
-  </button>
-  <button type="button" id="navPromos" aria-label="Promociones" onclick="showSection('promosSection')">
-    <span class="icon">💸</span>
-    <span class="label">Promos</span>
-  </button>
-  <button type="button" id="navHistory" aria-label="Historial" onclick="showSection('historySection')">
-    <span class="icon">📋</span>
-    <span class="label">Historial</span>
-  </button>
-  <button type="button" id="navProfile" aria-label="Perfil" onclick="showSection('profileSection')">
-    <span class="icon">👤</span>
-    <span class="label">Perfil</span>
-  </button>
-</nav>
+    <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">
+      <span class="icon">🏠</span>
+      <span class="label">Inicio</span>
+    </button>
+    <button type="button" id="navPromos" onclick="showSection('promosSection')">
+      <span class="icon">💸</span>
+      <span class="label">Promos</span>
+    </button>
+    <button type="button" id="navHistory" onclick="showSection('historySection')">
+      <span class="icon">📋</span>
+      <span class="label">Historial</span>
+    </button>
+    <button type="button" id="navProfile" onclick="showSection('profileSection')">
+      <span class="icon">👤</span>
+      <span class="label">Perfil</span>
+    </button>
+  </nav>
 
 </body>
 </html>
-
