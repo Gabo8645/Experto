@@ -498,22 +498,28 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUser();
   showSection("worldSelection");
 });
-// ======== Tooltips info servicios ========
+// ================= Tooltips info servicios =================
+function toggleInfo(event, infoId) {
+  // evita que el click cierre el tooltip por el listener global
+  event.stopPropagation();
 
-function toggleInfo(event, id) {
-  event.stopPropagation(); // evita que se dispare el botón padre
-  const infoDiv = document.getElementById(id);
-
-  // Cerrar todos los demás tooltips abiertos
-  document.querySelectorAll(".service-info").forEach(div => {
-    if(div.id !== id) div.classList.add("hidden");
+  // cerrar otros tooltips abiertos
+  document.querySelectorAll('.service-info').forEach(div => {
+    if (div.id !== infoId) div.classList.add('hidden');
   });
 
-  // Alternar el tooltip actual
-  infoDiv.classList.toggle("hidden");
+  const div = document.getElementById(infoId);
+  if (!div) return;
+  const isHidden = div.classList.contains('hidden');
+  // alternar y actualizar aria-hidden para accesibilidad
+  div.classList.toggle('hidden', !isHidden ? true : false);
+  div.setAttribute('aria-hidden', (isHidden ? 'false' : 'true'));
 }
 
-// Cerrar tooltips al hacer click fuera
-document.addEventListener("click", () => {
-  document.querySelectorAll(".service-info").forEach(div => div.classList.add("hidden"));
+// cerrar tooltips al clicar fuera
+document.addEventListener('click', () => {
+  document.querySelectorAll('.service-info').forEach(div => {
+    div.classList.add('hidden');
+    div.setAttribute('aria-hidden', 'true');
+  });
 });
