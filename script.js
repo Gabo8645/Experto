@@ -498,3 +498,23 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUser();
   showSection("worldSelection");
 });
+// ======== Tooltips info servicios ========
+
+function toggleInfo(event, infoId) {
+  event.stopPropagation(); // evita que se seleccione el servicio al hacer clic en info
+  const infoDiv = document.getElementById(infoId);
+  const allInfos = document.querySelectorAll('.service-info');
+
+  // cerrar otros tooltips
+  allInfos.forEach(info => {
+    if(info !== infoDiv) info.classList.add('hidden');
+  });
+
+  // toggle del tooltip actual
+  infoDiv.classList.toggle('hidden');
+}
+
+// Cerrar cualquier tooltip si se hace clic fuera
+document.addEventListener('click', () => {
+  document.querySelectorAll('.service-info').forEach(info => info.classList.add('hidden'));
+});
