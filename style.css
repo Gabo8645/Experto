@@ -340,7 +340,7 @@ section {
 /* Icono de información dentro del botón */
 .info-icon {
   font-size: 18px;
-  margin-left: 4px;
+  margin-left: 8px; /* un poco más de espacio */
   cursor: pointer;
   display: inline-block;
 }
@@ -361,7 +361,6 @@ section {
   z-index: 50;
   font-size: 0.9rem;
 }
-
 /* Lista dentro del tooltip */
 .service-info ul {
   padding-left: 1rem;
