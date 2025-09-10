@@ -232,34 +232,42 @@ input[type="radio"] {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  width: 100%;
+  height: 60px; /* alto típico */
   display: flex;
   justify-content: space-around;
-  background: #fff;
-  border-top: 1.8px solid #ccc;
-  padding: 0.9rem 0;
+  align-items: center;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
   z-index: 1000;
-  box-shadow: 0 -3px 10px rgba(0,0,0,0.05);
 }
 
 .bottom-nav button {
+  flex: 1; /* cada botón ocupa mismo espacio */
   background: none;
   border: none;
-  font-size: 1.9rem;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
   color: #555;
   cursor: pointer;
-  transition: color 0.3s ease;
 }
 
-.bottom-nav button:hover,
-.bottom-nav button:focus {
-  color: #0077cc;
-  outline: none;
+.bottom-nav button .icon {
+  font-size: 22px; /* tamaño del ícono */
+  line-height: 1;
+}
+
+.bottom-nav button .label {
+  font-size: 11px;
+  margin-top: 2px;
 }
 
 .bottom-nav button.active {
-  color: #0077cc;
-  font-weight: 700;
+  color: #007bff; /* color del activo */
 }
 
 /* Listas */
