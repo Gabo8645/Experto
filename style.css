@@ -340,6 +340,7 @@ section {
   padding: 1.2rem;
   border-radius: 16px;
   width: 140px;
+  text-align: center; /* centra mejor textos largos */
 }
 
 /* Icono de información dentro del botón */
@@ -347,8 +348,9 @@ section {
   position: absolute;
   top: 8px;
   right: 8px;
-  font-size: 18px;
+  font-size: 16px;
   cursor: pointer;
+  line-height: 1; /* evita que se vea desalineado */
 }
 
 /* Tooltip / info del servicio */
@@ -366,22 +368,34 @@ section {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 50;
   font-size: 0.9rem;
-}
-/* Lista dentro del tooltip */
-.service-info ul {
-  padding-left: 1rem;
-  margin: 0;
+  text-align: left;
 }
 
-/* Texto adicional */
-.service-info small {
-  display: block;
-  margin-top: 6px;
-  font-size: 0.75rem;
+/* --- AÑADIDO PARA LA BARRA INFERIOR CON ICONO + TEXTO --- */
+.bottom-nav button {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  display: flex;
+  flex-direction: column; /* icono arriba, texto abajo */
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
   color: #555;
+  cursor: pointer;
 }
 
-/* Oculto por defecto */
-.service-info.hidden {
-  display: none !important;
+.bottom-nav button .icon {
+  font-size: 22px; /* tamaño del ícono */
+  line-height: 1;
+}
+
+.bottom-nav button .label {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.bottom-nav button.active {
+  color: #007bff; /* color del activo */
 }
