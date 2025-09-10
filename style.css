@@ -330,4 +330,53 @@ section {
     max-width: 900px;
   }
 }
+/* Contenedor relativo para tooltip */
+.service-button {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
 
+/* Icono de información dentro del botón */
+.info-icon {
+  font-size: 18px;
+  margin-left: 4px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* Tooltip / info del servicio */
+.service-info {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  background: #fff;
+  border: 1px solid #0077cc;
+  border-radius: 12px;
+  padding: 0.8rem;
+  margin-top: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 50;
+  font-size: 0.9rem;
+}
+
+/* Lista dentro del tooltip */
+.service-info ul {
+  padding-left: 1rem;
+  margin: 0;
+}
+
+/* Texto adicional */
+.service-info small {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+/* Oculto por defecto */
+.service-info.hidden {
+  display: none !important;
+}
