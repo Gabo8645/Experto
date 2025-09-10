@@ -500,21 +500,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 // ======== Tooltips info servicios ========
 
-function toggleInfo(event, infoId) {
-  event.stopPropagation(); // evita que se seleccione el servicio al hacer clic en info
-  const infoDiv = document.getElementById(infoId);
-  const allInfos = document.querySelectorAll('.service-info');
+function toggleInfo(event, id) {
+  event.stopPropagation(); // evita que se dispare el botón padre
+  const infoDiv = document.getElementById(id);
 
-  // cerrar otros tooltips
-  allInfos.forEach(info => {
-    if(info !== infoDiv) info.classList.add('hidden');
+  // Cerrar todos los demás tooltips abiertos
+  document.querySelectorAll(".service-info").forEach(div => {
+    if(div.id !== id) div.classList.add("hidden");
   });
 
-  // toggle del tooltip actual
-  infoDiv.classList.toggle('hidden');
+  // Alternar el tooltip actual
+  infoDiv.classList.toggle("hidden");
 }
 
-// Cerrar cualquier tooltip si se hace clic fuera
-document.addEventListener('click', () => {
-  document.querySelectorAll('.service-info').forEach(info => info.classList.add('hidden'));
+// Cerrar tooltips al hacer click fuera
+document.addEventListener("click", () => {
+  document.querySelectorAll(".service-info").forEach(div => div.classList.add("hidden"));
 });
