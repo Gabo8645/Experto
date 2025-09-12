@@ -453,3 +453,39 @@ section {
   margin: 4px 0;
   font-size: 14px;
 }
+.space-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.space-selector button {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.space-selector button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+.space-selector button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+#spacesInput {
+  width: 50px;
+  text-align: center;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  pointer-events: none;
+}
