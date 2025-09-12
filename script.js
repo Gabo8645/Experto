@@ -523,3 +523,47 @@ document.addEventListener('click', () => {
     div.setAttribute('aria-hidden', 'true');
   });
 });
+let spaces = 1;
+let selectedService = 'basico'; // se actualizará al seleccionar un servicio
+const maxSpaces = 10;
+
+const spacesInput = document.getElementById('spacesInput');
+const totalSpaces = document.getElementById('totalSpaces');
+const totalCost = document.getElementById('totalCost');
+const btnDecrease = document.getElementById('btnDecrease');
+const btnIncrease = document.getElementById('btnIncrease');
+
+const servicePrices = {
+  basico: 30,
+  profundo: 50
+};
+
+function selectWorld(service) {
+  selectedService = service;
+  updateSpaces();
+  // Aquí puedes mantener tu código existente
+}
+
+function increaseSpaces() {
+  if (spaces < maxSpaces) {
+    spaces++;
+    updateSpaces();
+  }
+}
+
+function decreaseSpaces() {
+  if (spaces > 1) {
+    spaces--;
+    updateSpaces();
+  }
+}
+
+function updateSpaces() {
+  spacesInput.value = spaces;
+  totalSpaces.textContent = spaces;
+  totalCost.textContent = (spaces * servicePrices[selectedService]).toFixed(2);
+
+  // Deshabilitar botones si se llega al límite
+  btnDecrease.disabled = spaces === 1;
+  btnIncrease.disabled = spaces === maxSpaces;
+}
