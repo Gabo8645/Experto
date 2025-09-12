@@ -429,3 +429,27 @@ section {
   color: red;
   font-weight: bold;
 }
+/* Lo que está incluido ✅ */
+.included::before {
+  content: "✔️ ";
+  color: green;
+  font-weight: bold;
+}
+
+/* Lo que no está incluido ❌ */
+.not-included::before {
+  content: "❌ ";
+  color: red;
+  font-weight: bold;
+}
+
+/* Opcional: dar espacio y estilo uniforme */
+.service-info ul {
+  list-style: none; /* quita los puntos */
+  padding-left: 0;
+}
+
+.service-info li {
+  margin: 4px 0;
+  font-size: 14px;
+}
