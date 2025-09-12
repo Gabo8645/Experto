@@ -411,3 +411,21 @@ section {
     width: 45%; /* dos por fila aprox. */
   }
 }
+/* Iconos de servicios incluidos / no incluidos */
+.service-info ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.service-info li.included::before {
+  content: "✔ ";
+  color: green;
+  font-weight: bold;
+}
+
+.service-info li.not-included::before {
+  content: "✖ ";
+  color: red;
+  font-weight: bold;
+}
