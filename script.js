@@ -34,23 +34,24 @@ const experts = [
   { id: 3, name: "Carlos Torres", stars: 3, comments: "Terrazas y exteriores impecables", photo: "https://randomuser.me/api/portraits/men/12.jpg", specialty: "Terrazas y exteriores" },
   { id: 4, name: "Lucía Martínez", stars: 5, comments: "Habitaciones y oficinas", photo: "https://randomuser.me/api/portraits/women/68.jpg", specialty: "Habitaciones y oficinas" },
   { id: 5, name: "Pedro Ruiz", stars: 4, comments: "Limpieza general rápida y eficiente", photo: "https://randomuser.me/api/portraits/men/75.jpg", specialty: "Limpieza general" }
-};
+];
+
+// Áreas con precios
+const areas = [
+  { id: "habitaciones", label: "Habitaciones", price: 10 },
+  { id: "cocina", label: "Cocina", price: 15 },
+  { id: "comedor", label: "Comedor", price: 12 },
+  { id: "sala", label: "Sala", price: 12 },
+  { id: "terraza", label: "Terraza", price: 20 }
+];
 
 // ======== Estado de la aplicación ========
 let selectedWorld = null;
 let selectedExpert = null;
+let selectedAreas = {};
 let selectedSchedule = "inmediato";
 let selectedDate = null;
 let selectedPayment = null;
-
-let spaces = 1;
-let selectedService = 'basico';
-const maxSpaces = 10;
-
-const servicePrices = {
-  basico: 30,
-  profundo: 50
-};
 
 // ======== DOM elements ========
 const defaultAddressEl = document.getElementById("defaultAddress");
@@ -60,17 +61,11 @@ const expertSection = document.getElementById("expertSection");
 const expertsContainer = document.getElementById("expertsContainer");
 const btnNextFromExperts = document.getElementById("btnNextFromExperts");
 
-const areasSection = document.getElementById("areasSection"); // ahora es la parte de espacios
-const btnCalculateTotal = document.getElementById("btnCalculateTotal");
-
-const spacesInput = document.getElementById('spacesInput');
-const totalSpaces = document.getElementById('totalSpaces');
-const totalCost = document.getElementById('totalCost');
-const btnDecrease = document.getElementById('btnDecrease');
-const btnIncrease = document.getElementById('btnIncrease');
-
+const areasSection = document.getElementById("areasSection");
+const areasContainer = document.getElementById("areasContainer");
 const scheduleRadios = document.querySelectorAll('input[name="schedule"]');
 const scheduleDateInput = document.getElementById("scheduleDate");
+const btnCalculateTotal = document.getElementById("btnCalculateTotal");
 
 const summarySection = document.getElementById("summarySection");
 
@@ -137,11 +132,14 @@ function updateDefaultAddress() {
 
 // ======== Navegación entre secciones ========
 function showSection(sectionId) {
+  // Ocultar todas las secciones principales
   const sections = [worldSelectionSection, expertSection, areasSection, summarySection, paymentSection, trackingSection, promosSection, historySection, profileSection];
   sections.forEach(sec => sec.classList.add("hidden"));
 
+  // Quitar clase active de todos los nav buttons
   Object.values(navButtons).forEach(btn => btn.classList.remove("active"));
 
+  // Mostrar la sección solicitada
   switch(sectionId) {
     case "worldSelection":
       worldSelectionSection.classList.remove("hidden");
@@ -168,10 +166,10 @@ function showSection(sectionId) {
 function resetApp() {
   selectedWorld = null;
   selectedExpert = null;
+  selectedAreas = {};
   selectedSchedule = "inmediato";
   selectedDate = null;
   selectedPayment = null;
-  spaces = 1;
 
   expertSection.classList.add("hidden");
   areasSection.classList.add("hidden");
@@ -183,25 +181,29 @@ function resetApp() {
   scheduleDateInput.value = "";
   scheduleDateInput.classList.add("hidden");
 
+  // Reset expertos container (enabled buttons)
   renderExperts();
-  updateSpaces();
 }
 
 // ======== Selección de mundo ========
 function selectWorld(worldKey) {
+  // Chequear desbloqueo limpieza profunda
   if(worldKey === "profundo" && user.limpiezaPurchases < worlds.profundo.unlocksAt) {
     alert(`Debes completar al menos ${worlds.profundo.unlocksAt} servicios básicos para desbloquear limpieza profunda.`);
     return;
   }
 
   selectedWorld = worldKey;
-  selectedService = worldKey;
 
+  // Mostrar expertos
   expertSection.classList.remove("hidden");
   worldSelectionSection.classList.add("hidden");
+  areasSection.classList.add("hidden");
+  summarySection.classList.add("hidden");
+  paymentSection.classList.add("hidden");
+  trackingSection.classList.add("hidden");
 
   renderExperts();
-  updateSpaces();
 }
 
 // ======== Renderizar expertos ========
@@ -211,8 +213,9 @@ function renderExperts() {
   btnNextFromExperts.disabled = true;
 
   experts.forEach(exp => {
+    // Si seleccionó limpieza básico, ocultamos especialistas en limpieza profunda
     if(selectedWorld === "basico" && exp.specialty.toLowerCase().includes("profundo")) {
-      return;
+      return; // saltar
     }
 
     const card = document.createElement("div");
@@ -242,6 +245,7 @@ function renderExperts() {
 
 function selectExpert(id) {
   selectedExpert = experts.find(e => e.id === id);
+  // marcar visualmente la selección
   [...expertsContainer.children].forEach(card => {
     card.classList.remove("selected");
   });
@@ -250,7 +254,7 @@ function selectExpert(id) {
   btnNextFromExperts.disabled = false;
 }
 
-// ======== Navegar a espacios ========
+// ======== Navegar a áreas ========
 function goToAreas() {
   if(!selectedExpert) {
     alert("Por favor selecciona un experto.");
@@ -258,30 +262,26 @@ function goToAreas() {
   }
   expertSection.classList.add("hidden");
   areasSection.classList.remove("hidden");
+  summarySection.classList.add("hidden");
+  paymentSection.classList.add("hidden");
+  trackingSection.classList.add("hidden");
+
+  renderAreas();
 }
 
-// ======== Manejo de espacios con + y - ========
-function increaseSpaces() {
-  if (spaces < maxSpaces) {
-    spaces++;
-    updateSpaces();
-  }
-}
+// ======== Renderizar áreas con input cantidad ========
+function renderAreas() {
+  areasContainer.innerHTML = "";
+  selectedAreas = {};
 
-function decreaseSpaces() {
-  if (spaces > 1) {
-    spaces--;
-    updateSpaces();
-  }
-}
-
-function updateSpaces() {
-  spacesInput.value = spaces;
-  totalSpaces.textContent = spaces;
-  totalCost.textContent = (spaces * servicePrices[selectedService]).toFixed(2);
-
-  btnDecrease.disabled = spaces === 1;
-  btnIncrease.disabled = spaces === maxSpaces;
+  areas.forEach(area => {
+    const label = document.createElement("label");
+    label.innerHTML = `
+      ${area.label} ($${area.price})
+      <input type="number" min="0" max="10" value="0" data-area-id="${area.id}" />
+    `;
+    areasContainer.appendChild(label);
+  });
 }
 
 // ======== Manejo de programación fecha ========
@@ -305,18 +305,43 @@ scheduleDateInput.addEventListener("change", e => {
 
 // ======== Calcular total y mostrar resumen ========
 btnCalculateTotal.addEventListener("click", () => {
-  const total = spaces * servicePrices[selectedService];
+  // Leer cantidades
+  selectedAreas = {};
+  let total = 0;
+  let anyAreaSelected = false;
+
+  areasContainer.querySelectorAll("input[type=number]").forEach(input => {
+    const count = parseInt(input.value) || 0;
+    if(count > 0) {
+      anyAreaSelected = true;
+      const areaId = input.dataset.areaId;
+      const area = areas.find(a => a.id === areaId);
+      selectedAreas[areaId] = count;
+      total += area.price * count;
+    }
+  });
+
+  if(!anyAreaSelected) {
+    alert("Por favor selecciona al menos un área.");
+    return;
+  }
 
   if(selectedSchedule === "programado" && !selectedDate) {
     alert("Por favor selecciona una fecha para el servicio programado.");
     return;
   }
 
+  // Mostrar resumen
   let summaryHTML = `<h2>Resumen del Servicio</h2>`;
   summaryHTML += `<p><strong>Mundo:</strong> ${worlds[selectedWorld].name}</p>`;
   summaryHTML += `<p><strong>Experto:</strong> ${selectedExpert.name}</p>`;
   summaryHTML += `<p><strong>Dirección:</strong> ${user.address || "No configurada"}</p>`;
-  summaryHTML += `<p><strong>Espacios seleccionados:</strong> ${spaces}</p>`;
+  summaryHTML += `<p><strong>Áreas seleccionadas:</strong></p><ul>`;
+  for(const [areaId, count] of Object.entries(selectedAreas)) {
+    const area = areas.find(a => a.id === areaId);
+    summaryHTML += `<li>${area.label}: ${count} x $${area.price} = $${area.price * count}</li>`;
+  }
+  summaryHTML += `</ul>`;
   summaryHTML += `<p><strong>Total:</strong> $${total}</p>`;
   summaryHTML += `<p><strong>Programación:</strong> ${selectedSchedule === "inmediato" ? "Inmediato" : selectedDate}</p>`;
 
@@ -325,6 +350,7 @@ btnCalculateTotal.addEventListener("click", () => {
 
   areasSection.classList.add("hidden");
   paymentSection.classList.remove("hidden");
+  trackingSection.classList.add("hidden");
 });
 
 // ======== Mostrar campos de tarjeta si pago es tarjeta ========
@@ -347,6 +373,7 @@ btnConfirmPayment.addEventListener("click", () => {
   }
 
   if(selectedPayment === "tarjeta") {
+    // Validar datos tarjeta (simple)
     const cardNumber = document.getElementById("cardNumber").value.trim();
     const cardExpiry = document.getElementById("cardExpiry").value;
     const cardCVV = document.getElementById("cardCVV").value.trim();
@@ -365,7 +392,8 @@ btnConfirmPayment.addEventListener("click", () => {
     }
   }
 
-  const totalCost = spaces * servicePrices[selectedService];
+  // Guardar en historial
+  const totalCost = calculateTotalCost();
   const now = new Date();
   const serviceRecord = {
     id: now.getTime(),
@@ -373,7 +401,7 @@ btnConfirmPayment.addEventListener("click", () => {
     world: worlds[selectedWorld].name,
     expert: selectedExpert.name,
     address: user.address,
-    spaces: spaces,
+    areas: {...selectedAreas},
     schedule: selectedSchedule === "inmediato" ? "Inmediato" : selectedDate,
     total: totalCost,
     paymentMethod: selectedPayment
@@ -384,15 +412,28 @@ btnConfirmPayment.addEventListener("click", () => {
   }
   localStorage.setItem("xpertoUser", JSON.stringify(user));
 
+  // Mostrar tracking
   paymentSection.classList.add("hidden");
   summarySection.classList.add("hidden");
   trackingSection.classList.remove("hidden");
   trackStatus.textContent = "Asignando experto...";
 
+  // Simular estados de tracking
   simulateTracking();
+
 });
 
-// ======== Simulación de tracking ========
+// ======== Calcular total para guardar ========
+function calculateTotalCost() {
+  let total = 0;
+  for(const [areaId, count] of Object.entries(selectedAreas)) {
+    const area = areas.find(a => a.id === areaId);
+    total += area.price * count;
+  }
+  return total;
+}
+
+// ======== Simulación de tracking con estados y tiempos ========
 function simulateTracking() {
   const statuses = [
     "Asignando experto...",
@@ -427,11 +468,17 @@ function renderHistory() {
   user.history.slice().reverse().forEach(item => {
     const card = document.createElement("div");
     card.classList.add("card");
+    let areasDesc = "";
+    for(const [areaId, count] of Object.entries(item.areas)) {
+      const area = areas.find(a => a.id === areaId);
+      areasDesc += `${area.label}: ${count}, `;
+    }
+    areasDesc = areasDesc.slice(0, -2);
     card.innerHTML = `
       <h3>${item.world} - ${item.expert}</h3>
       <p><strong>Fecha:</strong> ${item.date}</p>
       <p><strong>Dirección:</strong> ${item.address}</p>
-      <p><strong>Espacios:</strong> ${item.spaces}</p>
+      <p><strong>Áreas:</strong> ${areasDesc}</p>
       <p><strong>Programación:</strong> ${item.schedule}</p>
       <p><strong>Total:</strong> $${item.total}</p>
       <p><strong>Pago:</strong> ${item.paymentMethod}</p>
@@ -451,3 +498,83 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUser();
   showSection("worldSelection");
 });
+// ================= Tooltips info servicios =================
+function toggleInfo(event, infoId) {
+  // evita que el click cierre el tooltip por el listener global
+  event.stopPropagation();
+
+  // cerrar otros tooltips abiertos
+  document.querySelectorAll('.service-info').forEach(div => {
+    if (div.id !== infoId) div.classList.add('hidden');
+  });
+
+  const div = document.getElementById(infoId);
+  if (!div) return;
+  const isHidden = div.classList.contains('hidden');
+  // alternar y actualizar aria-hidden para accesibilidad
+  div.classList.toggle('hidden', !isHidden ? true : false);
+  div.setAttribute('aria-hidden', (isHidden ? 'false' : 'true'));
+}
+
+// cerrar tooltips al clicar fuera
+document.addEventListener('click', () => {
+  document.querySelectorAll('.service-info').forEach(div => {
+    div.classList.add('hidden');
+    div.setAttribute('aria-hidden', 'true');
+  });
+});
+let spaces = 1;
+let selectedService = 'basico'; // se actualizará al seleccionar un servicio
+const maxSpaces = 10;
+
+const spacesInput = document.getElementById('spacesInput');
+const totalSpaces = document.getElementById('totalSpaces');
+const totalCost = document.getElementById('totalCost');
+const btnDecrease = document.getElementById('btnDecrease');
+const btnIncrease = document.getElementById('btnIncrease');
+
+const servicePrices = {
+  basico: 30,
+  profundo: 50
+};
+function selectWorld(worldKey) {
+  // Bloqueo limpieza profunda
+  if(worldKey === "profundo" && user.limpiezaPurchases < worlds.profundo.unlocksAt) {
+    alert(`Debes completar al menos ${worlds.profundo.unlocksAt} servicios básicos para desbloquear limpieza profunda.`);
+    return;
+  }
+
+  selectedWorld = worldKey;
+  selectedService = worldKey; // para el cálculo de espacios
+
+  // Mostrar expertos
+  expertSection.classList.remove("hidden");
+  worldSelectionSection.classList.add("hidden");
+
+  renderExperts();
+  updateSpaces(); // para actualizar el contador de espacios y costo
+}
+
+function increaseSpaces() {
+  if (spaces < maxSpaces) {
+    spaces++;
+    updateSpaces();
+  }
+}
+
+function decreaseSpaces() {
+  if (spaces > 1) {
+    spaces--;
+    updateSpaces();
+  }
+}
+
+function updateSpaces() {
+  spacesInput.value = spaces;
+  totalSpaces.textContent = spaces;
+  totalCost.textContent = (spaces * servicePrices[selectedService]).toFixed(2);
+
+  // Deshabilitar botones si se llega al límite
+  btnDecrease.disabled = spaces === 1;
+  btnIncrease.disabled = spaces === maxSpaces;
+}
