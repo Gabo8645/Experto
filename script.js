@@ -537,11 +537,22 @@ const servicePrices = {
   basico: 30,
   profundo: 50
 };
+function selectWorld(worldKey) {
+  // Bloqueo limpieza profunda
+  if(worldKey === "profundo" && user.limpiezaPurchases < worlds.profundo.unlocksAt) {
+    alert(`Debes completar al menos ${worlds.profundo.unlocksAt} servicios básicos para desbloquear limpieza profunda.`);
+    return;
+  }
 
-function selectWorld(service) {
-  selectedService = service;
-  updateSpaces();
-  // Aquí puedes mantener tu código existente
+  selectedWorld = worldKey;
+  selectedService = worldKey; // para el cálculo de espacios
+
+  // Mostrar expertos
+  expertSection.classList.remove("hidden");
+  worldSelectionSection.classList.add("hidden");
+
+  renderExperts();
+  updateSpaces(); // para actualizar el contador de espacios y costo
 }
 
 function increaseSpaces() {
