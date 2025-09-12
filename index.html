@@ -78,7 +78,15 @@
     <!-- Selección de áreas -->
     <section id="areasSection" class="hidden">
       <h2>¿Cuántos espacios quieres limpiar?</h2>
-      <div id="areasContainer" class="form-group"></div>
+      <div id="areasContainer" class="form-group">
+  <div class="space-selector">
+    <button type="button" id="btnDecrease" onclick="decreaseSpaces()">-</button>
+    <input type="text" id="spacesInput" value="1" readonly />
+    <button type="button" id="btnIncrease" onclick="increaseSpaces()">+</button>
+  </div>
+  <p>Total espacios seleccionados: <span id="totalSpaces">1</span></p>
+  <p>Costo total: $<span id="totalCost">30.00</span></p>
+</div>
       <fieldset class="schedule-group">
         <legend>¿Cuándo deseas el servicio?</legend>
         <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
