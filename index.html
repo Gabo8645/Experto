@@ -22,45 +22,49 @@
     <section id="worldSelection">
       <h2>Selecciona el servicio:</h2>
       <div class="world-options">
+<!-- Limpieza Básica -->
+<div class="service-button">
+  <button type="button" onclick="selectWorld('basico')">
+    <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
+    Limpieza Básica
+    <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoBasico')">ℹ️</span>
+  </button>
+  <div class="service-info hidden" id="infoBasico">
+    <ul>
+      <li class="included">Barrido y aspirado de pisos</li>
+      <li class="included">Limpieza de superficies visibles</li>
+      <li class="included">Limpieza de baños básica</li>
+      <li class="included">Cocina: encimeras y fregadero</li>
+      <li class="included">Cambio de basura</li>
+      <li class="not-included">Aspirado y lavado de alfombras</li>
+      <li class="not-included">Limpieza de ventanas y persianas</li>
+      <li class="not-included">Muebles por dentro y fuera</li>
+      <li class="not-included">Desinfectantes potentes</li>
+    </ul>
+  </div>
+</div>
 
-        <!-- Limpieza Básica -->
-        <div class="service-button">
-          <button type="button" onclick="selectWorld('basico')">
-            <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-            Limpieza Básica
-            <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoBasico')">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoBasico">
-            <ul>
-              <li>Barrido y aspirado de pisos</li>
-              <li>Limpieza de superficies visibles</li>
-              <li>Limpieza de baños básica</li>
-              <li>Cocina: encimeras y fregadero</li>
-              <li>Cambio de basura</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Limpieza Profunda -->
-        <div class="service-button">
-          <button type="button" onclick="selectWorld('profundo')">
-            <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
-            Limpieza Profunda
-            <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoProfundo')">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoProfundo">
-            <ul>
-              <li>Incluye lo de la Básica</li>
-              <li>Limpieza profunda de baños y cocina</li>
-              <li>Aspirado y lavado de alfombras</li>
-              <li>Limpieza de ventanas y persianas</li>
-              <li>Muebles por dentro y fuera</li>
-              <li>Polvo en rincones, zócalos y techos</li>
-              <li>Desinfectantes potentes</li>
-            </ul>
-            <small>Se habilita después de 3 limpiezas básicas</small>
-          </div>
-        </div>
+<!-- Limpieza Profunda -->
+<div class="service-button">
+  <button type="button" onclick="selectWorld('profundo')">
+    <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
+    Limpieza Profunda
+    <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoProfundo')">ℹ️</span>
+  </button>
+  <div class="service-info hidden" id="infoProfundo">
+    <ul>
+      <li class="included">Incluye lo de la Básica</li>
+      <li class="included">Limpieza profunda de baños y cocina</li>
+      <li class="included">Aspirado y lavado de alfombras</li>
+      <li class="included">Limpieza de ventanas y persianas</li>
+      <li class="included">Muebles por dentro y fuera</li>
+      <li class="included">Polvo en rincones, zócalos y techos</li>
+      <li class="included">Desinfectantes potentes</li>
+    </ul>
+    <small>Se habilita después de 3 limpiezas básicas</small>
+  </div>
+</div>
+        
       </div>
     </section>
 
