@@ -27,7 +27,7 @@
         <div class="service-button" onclick="selectWorld('basico')">
           <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
           <span>Limpieza Básica</span>
-          <span class="info-icon" onclick="toggleInfo(event, 'infoBasico')">ℹ️</span>
+          <span class="info-icon" onclick="event.stopPropagation();">ℹ️</span>
           <div class="service-info hidden" id="infoBasico">
             <ul>
               <li class="included">Barrido y aspirado de pisos</li>
@@ -47,7 +47,7 @@
         <div class="service-button" onclick="selectWorld('profundo')">
           <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
           <span>Limpieza Profunda</span>
-          <span class="info-icon" onclick="toggleInfo(event, 'infoProfundo')">ℹ️</span>
+          <span class="info-icon" onclick="event.stopPropagation();">ℹ️</span>
           <div class="service-info hidden" id="infoProfundo">
             <ul>
               <li class="included">Incluye lo de la Básica</li>
@@ -65,7 +65,7 @@
         <div class="service-button" id="btnAuto" onclick="selectWorld('auto')">
           <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
           <span>Lavada de Auto</span>
-          <span class="info-icon" onclick="toggleInfo(event, 'infoAuto')">ℹ️</span>
+          <span class="info-icon" onclick="event.stopPropagation();">ℹ️</span>
           <div class="service-info hidden" id="infoAuto">
             <ul>
               <li class="included">Lavado exterior</li>
@@ -143,7 +143,7 @@
           <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
         </fieldset>
 
-        <div id="cardDetails">
+        <div id="cardDetails" class="hidden">
           <label>Número de tarjeta
             <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
           </label>
