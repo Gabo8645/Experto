@@ -498,7 +498,106 @@ profileForm.addEventListener("submit", (e) => {
   e.preventDefault();
   saveUser();
 });
+// ======== Variables y estado Lavada de Auto ========
+let carCount = 1;
+let carType = 'sedan';
+const maxCars = 10;
 
+const carsInput = document.getElementById('carsInput');
+const totalCarsEl = document.getElementById('totalCars');
+const totalCarCostEl = document.getElementById('totalCarCost');
+
+const btnCarIncrease = document.getElementById('btnCarIncrease');
+const btnCarDecrease = document.getElementById('btnCarDecrease');
+
+// ======== Funciones para manejar cantidad de autos ========
+function increaseCars() {
+  if(carCount < maxCars) carCount++;
+  updateCars();
+}
+
+function decreaseCars() {
+  if(carCount > 1) carCount--;
+  updateCars();
+}
+
+function updateCars() {
+  carsInput.value = carCount;
+  totalCarsEl.textContent = carCount;
+
+  let basePrice = 10; // sedán
+  if(carType === 'crossover') basePrice = 13;
+  if(carType === 'suv') basePrice = 16;
+  if(carType === 'camioneta') basePrice = 19;
+
+  const total = basePrice + (carCount - 1) * 3;
+  totalCarCostEl.textContent = total.toFixed(2);
+
+  btnCarDecrease.disabled = carCount === 1;
+  btnCarIncrease.disabled = carCount === maxCars;
+}
+
+// ======== Detectar cambio de tipo de auto ========
+document.querySelectorAll('input[name="carType"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    carType = document.querySelector('input[name="carType"]:checked').value;
+    updateCars();
+  });
+});
+
+// ======== Función para ir al resumen de auto ========
+function goToCarSummary() {
+  const carTotal = parseFloat(totalCarCostEl.textContent);
+
+  let summaryHTML = `<h2>Resumen del Servicio</h2>`;
+  summaryHTML += `<p><strong>Mundo:</strong> ${worlds[selectedWorld].name}</p>`;
+  summaryHTML += `<p><strong>Experto:</strong> ${selectedExpert.name}</p>`;
+  summaryHTML += `<p><strong>Dirección:</strong> ${user.address || "No configurada"}</p>`;
+  summaryHTML += `<p><strong>Tipo de Auto:</strong> ${carType}</p>`;
+  summaryHTML += `<p><strong>Cantidad de Autos:</strong> ${carCount}</p>`;
+  summaryHTML += `<p><strong>Total:</strong> $${carTotal.toFixed(2)}</p>`;
+
+  summarySection.innerHTML = summaryHTML;
+  summarySection.classList.remove("hidden");
+
+  document.getElementById('areasSection').classList.add("hidden");
+  document.getElementById('carSection').classList.add("hidden");
+  paymentSection.classList.remove("hidden");
+  trackingSection.classList.add("hidden");
+}
+
+// ======== Modificación de selectWorld para manejar autos ========
+function selectWorld(worldKey) {
+  if(worldKey === "profundo" && user.limpiezaPurchases < worlds.profundo.unlocksAt) {
+    alert(`Debes completar al menos ${worlds.profundo.unlocksAt} servicios básicos para desbloquear limpieza profunda.`);
+    return;
+  }
+
+  selectedWorld = worldKey;
+  selectedService = worldKey;
+
+  expertSection.classList.remove("hidden");
+  worldSelectionSection.classList.add("hidden");
+  areasSection.classList.add("hidden");
+  summarySection.classList.add("hidden");
+  paymentSection.classList.add("hidden");
+  trackingSection.classList.add("hidden");
+
+  renderExperts();
+
+  if(worldKey === 'auto') {
+    // Mostrar sección de autos
+    document.getElementById('carSection').classList.remove('hidden');
+    carCount = 1;
+    carType = 'sedan';
+    updateCars();
+  } else {
+    // Mostrar sección de áreas
+    document.getElementById('carSection').classList.add('hidden');
+    spaces = 1;
+    updateSpaces();
+  }
+}
 // ======== Inicialización ========
 document.addEventListener("DOMContentLoaded", () => {
   loadUser();
