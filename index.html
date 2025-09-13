@@ -18,7 +18,7 @@
   </header>
 
   <main>
-    <!-- Selección de servicio -->
+    <!-- ================= Selección de servicio ================= -->
     <section id="worldSelection">
       <h2>Selecciona el servicio</h2>
       <div class="world-options vertical">
@@ -83,44 +83,54 @@
       </div>
     </section>
 
-    <!-- Selección de expertos -->
+    <!-- ================= Selección de Xpertos ================= -->
     <section id="expertSection" class="hidden">
       <h2>Selecciona un Xperto</h2>
       <div id="expertsContainer" class="card-container">
-        <!-- 5 Xpertos -->
-        <div class="expert-card">
+        <div class="card">
           <img src="https://images.unsplash.com/photo-1603415526960-f7e0328b2d69?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 1" />
-          <p>María G.</p>
-          <p>⭐⭐⭐⭐⭐</p>
+          <h3>María G.</h3>
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <div class="comment"><em>Muy profesional y puntual</em></div>
         </div>
-        <div class="expert-card">
+        <div class="card">
           <img src="https://images.unsplash.com/photo-1603415763943-67aa0196e9d5?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 2" />
-          <p>Carlos M.</p>
-          <p>⭐⭐⭐⭐</p>
+          <h3>Carlos M.</h3>
+          <div class="stars">⭐⭐⭐⭐</div>
+          <div class="comment"><em>Servicio excelente</em></div>
         </div>
-        <div class="expert-card">
+        <div class="card">
           <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 3" />
-          <p>Ana P.</p>
-          <p>⭐⭐⭐⭐⭐</p>
+          <h3>Ana P.</h3>
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <div class="comment"><em>Muy detallista</em></div>
         </div>
-        <div class="expert-card">
+        <div class="card">
           <img src="https://images.unsplash.com/photo-1603415527008-6e937bd27ee3?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 4" />
-          <p>Jorge L.</p>
-          <p>⭐⭐⭐⭐</p>
+          <h3>Jorge L.</h3>
+          <div class="stars">⭐⭐⭐⭐</div>
+          <div class="comment"><em>Atento y rápido</em></div>
         </div>
-        <div class="expert-card">
+        <div class="card">
           <img src="https://images.unsplash.com/photo-1603415526323-14dfc5e04837?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 5" />
-          <p>Lucía R.</p>
-          <p>⭐⭐⭐⭐⭐</p>
+          <h3>Lucía R.</h3>
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <div class="comment"><em>Excelente comunicación</em></div>
         </div>
       </div>
       <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
     </section>
 
-    <!-- Selección de áreas -->
+    <!-- ================= Selección de áreas ================= -->
     <section id="areasSection" class="hidden">
       <h2>Selecciona áreas</h2>
-      <div id="areasContainer" class="form-group"></div>
+      <div id="areasContainer" class="form-group">
+        <label><input type="checkbox" value="cocina" /> Cocina</label>
+        <label><input type="checkbox" value="baños" /> Baños</label>
+        <label><input type="checkbox" value="habitaciones" /> Habitaciones</label>
+        <label><input type="checkbox" value="salas" /> Sala</label>
+      </div>
+
       <fieldset class="schedule-group">
         <legend>¿Cuándo deseas el servicio?</legend>
         <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
@@ -130,37 +140,40 @@
       <button class="btn" id="btnCalculateTotal">Ver resumen</button>
     </section>
 
-    <!-- Selección de autos -->
+    <!-- ================= Selección de autos ================= -->
     <section id="carSection" class="hidden">
       <h2>Selecciona tu auto</h2>
       <div class="car-type-selector">
-        <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($10)</label>
-        <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover ($15)</label>
-        <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV ($20)</label>
-        <label><input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta ($18)</label>
+        <label><input type="radio" name="carType" value="sedan" checked /> Sedán ($10)</label>
+        <label><input type="radio" name="carType" value="crossover" /> Crossover ($15)</label>
+        <label><input type="radio" name="carType" value="suv" /> SUV ($20)</label>
+        <label><input type="radio" name="carType" value="camioneta" /> Camioneta ($18)</label>
       </div>
+
       <h3>Cantidad de autos</h3>
-      <select id="carsInputSelect" onchange="updateCarsFromSelect()">
+      <select id="carsInputSelect">
         <option value="1" selected>1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
       </select>
+
       <p>Total autos seleccionados: <span id="totalCars">1</span></p>
       <p>Costo total: $<span id="totalCarCost">10.00</span></p>
       <button class="btn" id="btnNextFromCars">Siguiente</button>
     </section>
 
-    <!-- Resumen -->
+    <!-- ================= Resumen ================= -->
     <section id="summarySection" class="hidden summary"></section>
 
-    <!-- Pago -->
+    <!-- ================= Pago ================= -->
     <section id="paymentSection" class="hidden payment">
       <h2>Método de pago</h2>
       <form id="paymentForm">
         <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
         <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
+
         <div id="cardDetails" class="hidden">
           <label>Número de tarjeta
             <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
@@ -175,10 +188,9 @@
       </form>
       <button class="btn" id="btnConfirmPayment">Confirmar</button>
     </section>
-
   </main>
 
-  <!-- Barra inferior -->
+  <!-- ================= Barra inferior ================= -->
   <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
     <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">🏠 Inicio</button>
     <button type="button" id="navPromos" onclick="showSection('promosSection')">💸 Promos</button>
