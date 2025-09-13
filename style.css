@@ -53,10 +53,8 @@ main {
   flex: 1;
   padding: 1.5rem 1.2rem;
   max-width: 900px;
-  margin: 0 auto;
+  margin: 120px auto 90px auto;
   width: 100%;
-  margin-top: 100px;
-  margin-bottom: 100px;
 }
 
 /* ===== HEADINGS ===== */
@@ -89,7 +87,7 @@ section.active {
 
 .service-button {
   width: 160px;
-  position: relative;
+  position: relative; /* importante para tooltips */
 }
 
 .service-button > button {
@@ -106,6 +104,7 @@ section.active {
   cursor: pointer;
   transition: all 0.35s ease;
   box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  position: relative;
 }
 
 .service-button > button::before {
