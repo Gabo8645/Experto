@@ -90,7 +90,7 @@
   <section id="expertSection" class="hidden">
     <h2>Selecciona un Xperto</h2>
     <div id="expertsContainer" class="card-container"></div>
-    <button class="btn" id="btnNextFromExperts" onclick="goToAreas()" disabled>Siguiente</button>
+    <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
   </section>
 
   <!-- Selección de áreas -->
@@ -128,7 +128,7 @@
     <p>Total autos seleccionados: <span id="totalCars">1</span></p>
     <p>Costo total: $<span id="totalCarCost">10.00</span></p>
 
-    <button class="btn" id="btnNextFromCars" onclick="goToCarSummary()">Siguiente</button>
+    <button class="btn" id="btnNextFromCars">Siguiente</button>
   </section>
 
   <!-- Resumen -->
@@ -221,13 +221,6 @@
     <span class="label">Perfil</span>
   </button>
 </nav>
-
-<script>
-function toggleInfo(event,id){
-  const el=document.getElementById(id);
-  if(el) el.classList.toggle("hidden");
-}
-</script>
 
 </body>
 </html>
