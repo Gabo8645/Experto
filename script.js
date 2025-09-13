@@ -46,7 +46,8 @@ const DOM = {
   profileForm: document.getElementById("profileForm"),
   paymentForm: document.getElementById("paymentForm"),
   cardDetails: document.getElementById("cardDetails"),
-  defaultAddress: document.getElementById("defaultAddress")
+  defaultAddress: document.getElementById("defaultAddress"),
+  userName: document.getElementById("userName") // 👈 nuevo
 };
 
 // ===================== TOOLTIP INFO =====================
@@ -83,12 +84,22 @@ function showSection(sectionId) {
 if (DOM.profileForm) {
   DOM.profileForm.addEventListener("submit", e => {
     e.preventDefault();
-    user.name = document.getElementById("profileName").value;
-    user.lastName = document.getElementById("profileLastName").value;
+    user.name = document.getElementById("profileName").value.trim();
+    user.lastName = document.getElementById("profileLastName").value.trim();
     user.email = document.getElementById("profileEmail").value;
     user.phone = document.getElementById("profilePhone").value;
     user.address = document.getElementById("profileAddress").value;
+
+    // Actualizar header
     DOM.defaultAddress.textContent = `Dirección: ${user.address}`;
+    if (user.name) {
+      DOM.userName.textContent = `Hola, ${user.name} 👋`;
+    }
+
+    // Guardar en localStorage
+    localStorage.setItem("xpertoName", user.name + " " + user.lastName);
+    localStorage.setItem("xpertoAddress", user.address);
+
     alert("Perfil guardado correctamente!");
   });
 }
@@ -329,3 +340,16 @@ updateCarsFromSelect();
 updateCarCost();
 showSection("worldSelection");
 checkAutoAvailability();
+
+// Recuperar datos guardados en localStorage
+window.addEventListener("DOMContentLoaded", () => {
+  const savedName = localStorage.getItem("xpertoName");
+  const savedAddress = localStorage.getItem("xpertoAddress");
+  if (savedName && DOM.userName) {
+    const firstName = savedName.split(" ")[0];
+    DOM.userName.textContent = `Hola, ${firstName} 👋`;
+  }
+  if (savedAddress && DOM.defaultAddress) {
+    DOM.defaultAddress.textContent = `Dirección: ${savedAddress}`;
+  }
+});
