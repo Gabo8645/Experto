@@ -83,9 +83,9 @@ const totalCarsEl = document.getElementById('totalCars');
 const totalCarCostEl = document.getElementById('totalCarCost');
 const btnCarIncrease = document.getElementById('btnCarIncrease');
 const btnCarDecrease = document.getElementById('btnCarDecrease');
-const scheduleDateInput = document.getElementById("scheduleDate");
+const scheduleDateInput = document.getElementById("scheduleDateInput");
 const btnCalculateTotal = document.getElementById("btnCalculateTotal");
-const carSection = document.getElementById('carSection');
+const carSection = document.getElementById('autoSection');
 
 // ======== Funciones usuario ========
 function loadUser() {
@@ -171,18 +171,11 @@ function selectWorld(worldKey) {
   selectedWorld = worldKey;
   selectedService = worldKey;
 
-  if(worldKey === 'auto'){
-    // Para auto, vamos directo a la selección de autos
-    showSection('carSection');
-    areasSection.classList.add('hidden');
-    expertSection.classList.add('hidden');
-  } else {
-    // Para limpieza, mostramos selección de expertos primero
-    expertSection.classList.remove('hidden');
-    areasSection.classList.add('hidden');
-    carSection.classList.add('hidden');
-    renderExperts();
-  }
+  // Mostrar selección de experto siempre primero
+  expertSection.classList.remove('hidden');
+  areasSection.classList.add('hidden');
+  carSection.classList.add('hidden');
+  renderExperts();
 }
 
 // ======== Expertos ========
@@ -220,8 +213,17 @@ function goToAreas() {
     alert("Selecciona un experto antes de continuar.");
     return;
   }
+
   expertSection.classList.add("hidden");
-  areasSection.classList.remove("hidden");
+
+  if(selectedService === 'auto'){
+    // Para Auto, mostrar sección de selección de auto y cantidad
+    carSection.classList.remove('hidden');
+    updateCars();
+  } else {
+    areasSection.classList.remove("hidden");
+    updateSpaces();
+  }
 }
 
 // ======== Contador de espacios ========
@@ -255,12 +257,14 @@ document.querySelectorAll('input[name="carType"]').forEach(r=>r.addEventListener
 }));
 
 // ======== Tooltips info ========
-function toggleInfo(e,id){
-  // Esto evita que se active el botón de limpieza
-  e.stopPropagation();
-  const tooltip=document.getElementById(id);
-  tooltip.classList.toggle('hidden');
-}
+document.querySelectorAll('.infoBtn').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    e.stopPropagation();
+    const id = btn.getAttribute('data-tooltip');
+    const tooltip = document.getElementById(id);
+    if(tooltip) tooltip.classList.toggle('hidden');
+  });
+});
 
 // ======== Horario ========
 document.querySelectorAll('input[name="schedule"]').forEach(r=>{
@@ -287,6 +291,7 @@ btnCalculateTotal.addEventListener('click', ()=>{
   summarySection.innerHTML=summaryHTML;
   summarySection.classList.remove('hidden');
   areasSection.classList.add('hidden');
+  carSection.classList.add('hidden');
 });
 
 // ======== Pago ========
