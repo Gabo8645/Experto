@@ -13,9 +13,9 @@ let currentService = null;
 let selectedExpert = null;
 let spacesCount = 1;
 let carsCount = 1;
-let baseCost = 30;
 let selectedAreas = {}; // Áreas dinámicas
-let carType = "sedan"; // Tipo de auto seleccionado
+let carType = "sedan";
+let selectedPayment = null;
 
 // ===================== DOM =====================
 const DOM = {
@@ -45,6 +45,8 @@ const DOM = {
   trackStatus: document.getElementById("trackStatus"),
   btnAuto: document.getElementById("btnAuto"),
   profileForm: document.getElementById("profileForm"),
+  cardDetails: document.getElementById("cardDetails"),
+  paymentRadios: document.querySelectorAll('input[name="pay"]')
 };
 
 // ===================== TOOLTIP INFO =====================
@@ -52,7 +54,6 @@ document.querySelectorAll(".info-icon").forEach(icon => {
   const infoDiv = icon.parentElement.nextElementSibling;
   if (infoDiv) icon.setAttribute("data-target", infoDiv.id);
 });
-
 document.querySelectorAll(".info-icon").forEach(btn => {
   btn.addEventListener("click", e => {
     e.stopPropagation();
@@ -70,7 +71,6 @@ function showSection(sectionId) {
   document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
   const section = document.getElementById(sectionId);
   if (section) section.classList.remove("hidden");
-
   document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.remove("active"));
   const navBtn = document.querySelector(
     `#nav${sectionId.charAt(0).toUpperCase() + sectionId.slice(1).replace("Section","")}`
@@ -132,9 +132,8 @@ function loadExperts() {
 if (DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
     if (!selectedExpert) return;
-    if (currentService === "auto") {
-      showSection("carSection");
-    } else {
+    if (currentService === "auto") showSection("carSection");
+    else {
       renderAreas();
       showSection("areasSection");
     }
@@ -159,15 +158,24 @@ function renderAreas() {
     selectedAreas[area.id] = 0;
     const div = document.createElement("div");
     div.className = "area-item";
-    div.innerHTML = `<span>${area.label} ($${area.price})</span>`;
+    div.innerHTML = `
+      <span>${area.label} ($${area.price})</span>
+      <button type="button" onclick="changeAreaCount('${area.id}', -1)">-</button>
+      <span id="count-${area.id}">0</span>
+      <button type="button" onclick="changeAreaCount('${area.id}', 1)">+</button>
+    `;
     container.appendChild(div);
   });
 }
 
-// ===================== ESPACIOS =====================
-function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
-function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
+function changeAreaCount(areaId, delta) {
+  selectedAreas[areaId] = Math.max(0, Math.min(10, selectedAreas[areaId] + delta));
+  document.getElementById(`count-${areaId}`).textContent = selectedAreas[areaId];
+  updateSpaces();
+}
+
 function updateSpaces() {
+  spacesCount = Object.values(selectedAreas).reduce((a,b)=>a+b,0);
   DOM.spacesInput.value = spacesCount;
   DOM.totalSpaces.textContent = spacesCount;
   let total = 0;
@@ -188,7 +196,7 @@ if (DOM.btnCalculateTotal) {
       user.limpiezaPurchases.profundo++;
       checkAutoAvailability();
     }
-    // Guardar en historial
+    // Guardar historial
     if(currentService !== "auto") {
       user.history.push({
         service: currentService,
@@ -207,12 +215,7 @@ if (DOM.btnCalculateTotal) {
 }
 
 // ===================== AUTOS =====================
-function selectCar(type) {
-  carType = type;
-  document.querySelectorAll('.car-option').forEach(el => el.classList.remove('selected'));
-  document.getElementById(`car-${type}`).classList.add('selected');
-  updateCarTotal();
-}
+function selectCar(type) { carType = type; updateCarTotal(); }
 
 function increaseCars() { carsCount = Math.min(10, carsCount + 1); updateCarTotal(); }
 function decreaseCars() { carsCount = Math.max(1, carsCount - 1); updateCarTotal(); }
@@ -225,9 +228,10 @@ function updateCarTotal() {
   DOM.totalCarCost.textContent = (carsCount * cost).toFixed(2);
 }
 
-// Botón siguiente autos
+// ===================== BOTÓN SIGUIENTE AUTOS =====================
 if (DOM.btnNextFromCars) {
   DOM.btnNextFromCars.addEventListener("click", () => {
+    if (carsCount < 1) { alert("Debes seleccionar al menos 1 auto"); return; }
     generateSummary("auto");
     user.limpiezaPurchases.auto++;
     user.history.push({
@@ -246,11 +250,7 @@ if (DOM.btnNextFromCars) {
 }
 
 // ===================== DESBLOQUEO AUTO =====================
-function checkAutoAvailability() {
-  if (DOM.btnAuto) {
-    DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
-  }
-}
+function checkAutoAvailability() { if(DOM.btnAuto) DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1; }
 
 // ===================== RESUMEN =====================
 function generateSummary(service) {
@@ -282,7 +282,22 @@ function generateSummary(service) {
 }
 
 // ===================== PAGO =====================
-function goToPayment() { showSection("paymentSection"); }
+DOM.paymentRadios.forEach(radio=>{
+  radio.addEventListener("change", ()=>{
+    selectedPayment = document.querySelector('input[name="pay"]:checked')?.value;
+    DOM.cardDetails.classList.toggle("hidden", selectedPayment !== "tarjeta");
+  });
+});
+
+function goToPayment() {
+  if(!selectedPayment) { alert("Debes seleccionar un método de pago"); return; }
+  if(selectedPayment === "tarjeta"){
+    const cardNumber = document.getElementById("cardNumber").value.trim();
+    if(!cardNumber){ alert("Ingresa los datos de tu tarjeta"); return; }
+  }
+  showSection("paymentSection");
+}
+
 if (DOM.btnConfirmPayment) {
   DOM.btnConfirmPayment.addEventListener("click", () => {
     startTracking();
@@ -311,7 +326,7 @@ function startTracking() {
 function renderHistory() {
   if (!DOM.historyContainer) return;
   DOM.historyContainer.innerHTML = "";
-  user.history.forEach((h, idx) => {
+  user.history.forEach(h => {
     const div = document.createElement("div");
     div.className = "card";
     let content = `<p><strong>Servicio:</strong> ${h.service}</p>
@@ -321,10 +336,7 @@ function renderHistory() {
     if (h.areas) {
       content += `<p><strong>Áreas:</strong></p><ul>`;
       for (const [id, count] of Object.entries(h.areas)) {
-        if (count > 0) {
-          const area = areas.find(a => a.id === id);
-          content += `<li>${area.label}: ${count}</li>`;
-        }
+        if (count > 0) content += `<li>${areas.find(a=>a.id===id).label}: ${count}</li>`;
       }
       content += `</ul>`;
     }
