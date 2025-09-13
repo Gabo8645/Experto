@@ -28,9 +28,6 @@ const DOM = {
   historySection: document.getElementById("historySection"),
   profileSection: document.getElementById("profileSection"),
   scheduleDateInput: document.getElementById("scheduleDate"),
-  spacesInput: document.getElementById("spacesInput"),
-  totalSpaces: document.getElementById("totalSpaces"),
-  totalCost: document.getElementById("totalCost"),
   carsInput: document.getElementById("carsInput"),
   totalCars: document.getElementById("totalCars"),
   totalCarCost: document.getElementById("totalCarCost"),
@@ -41,13 +38,21 @@ const DOM = {
   expertsContainer: document.getElementById("expertsContainer"),
   historyContainer: document.getElementById("historyContainer"),
   trackStatus: document.getElementById("trackStatus"),
+  btnAuto: document.getElementById("btnAuto"),
 };
 
 // ===================== TOOLTIP INFO =====================
-function toggleInfo(event,id){
-  const el=document.getElementById(id);
-  if(el) el.classList.toggle("hidden");
-}
+document.querySelectorAll(".info-icon").forEach(btn => {
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    const id = btn.getAttribute("data-target");
+    if (!id) return;
+    document.querySelectorAll(".service-info").forEach(el => {
+      if (el.id !== id) el.classList.add("hidden");
+    });
+    document.getElementById(id).classList.toggle("hidden");
+  });
+});
 
 // ===================== NAVEGACIÓN =====================
 function showSection(sectionId) {
@@ -68,6 +73,7 @@ function selectWorld(service) {
   selectedExpert = null;
   loadExperts();
   showSection("expertSection");
+  checkAutoAvailability();
 }
 
 // ===================== EXPERTOS =====================
@@ -96,6 +102,7 @@ function loadExperts() {
   });
 }
 
+// ===================== BOTÓN SIGUIENTE EXPERTOS =====================
 if (DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
     if (!selectedExpert) return;
@@ -157,7 +164,16 @@ function updateCars() {
 if (DOM.btnNextFromCars) {
   DOM.btnNextFromCars.addEventListener("click", () => {
     generateSummary("auto");
+    user.limpiezaPurchases.auto++;
+    checkAutoAvailability();
   });
+}
+
+// ===================== CHECK AUTO DISPONIBLE =====================
+function checkAutoAvailability() {
+  if (DOM.btnAuto) {
+    DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
+  }
 }
 
 // ===================== RESUMEN =====================
@@ -173,6 +189,11 @@ function generateSummary(service) {
       }
     }
     html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
+    // Aumenta contador de limpiezas para desbloquear Auto
+    if (service === "profundo") {
+      user.limpiezaPurchases.profundo++;
+      checkAutoAvailability();
+    }
   } else if (service === "auto") {
     let type = document.querySelector('input[name="carType"]:checked').value;
     let cost = DOM.totalCarCost.textContent;
@@ -218,3 +239,4 @@ function startTracking() {
 // ===================== INIT =====================
 updateCars();
 showSection("worldSelection");
+checkAutoAvailability();
