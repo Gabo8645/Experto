@@ -24,11 +24,11 @@
       <h2>Selecciona el servicio:</h2>
       <div class="world-options">
         <!-- Limpieza Básica -->
-        <button class="service-button" type="button" onclick="selectWorld('basico')">
+        <div class="service-button" onclick="selectWorld('basico')">
           <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-          Limpieza Básica
+          <span>Limpieza Básica</span>
           <span class="info-icon" onclick="toggleInfo(event, 'infoBasico')">ℹ️</span>
-          <div class="service-info" id="infoBasico">
+          <div class="service-info hidden" id="infoBasico">
             <ul>
               <li class="included">Barrido y aspirado de pisos</li>
               <li class="included">Limpieza de superficies visibles</li>
@@ -41,14 +41,14 @@
               <li class="not-included">Desinfectantes potentes</li>
             </ul>
           </div>
-        </button>
+        </div>
 
         <!-- Limpieza Profunda -->
-        <button class="service-button" type="button" onclick="selectWorld('profundo')">
+        <div class="service-button" onclick="selectWorld('profundo')">
           <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
-          Limpieza Profunda
+          <span>Limpieza Profunda</span>
           <span class="info-icon" onclick="toggleInfo(event, 'infoProfundo')">ℹ️</span>
-          <div class="service-info" id="infoProfundo">
+          <div class="service-info hidden" id="infoProfundo">
             <ul>
               <li class="included">Incluye lo de la Básica</li>
               <li class="included">Limpieza profunda de baños y cocina</li>
@@ -59,14 +59,14 @@
               <li class="included">Desinfectantes potentes</li>
             </ul>
           </div>
-        </button>
+        </div>
 
         <!-- Lavada de Auto -->
-        <button class="service-button" type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
+        <div class="service-button" id="btnAuto" onclick="selectWorld('auto')">
           <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
-          Lavada de Auto
+          <span>Lavada de Auto</span>
           <span class="info-icon" onclick="toggleInfo(event, 'infoAuto')">ℹ️</span>
-          <div class="service-info" id="infoAuto">
+          <div class="service-info hidden" id="infoAuto">
             <ul>
               <li class="included">Lavado exterior</li>
               <li class="included">Aspirado interior</li>
@@ -74,7 +74,7 @@
             </ul>
             <small>Se habilita después de 1 limpieza profunda</small>
           </div>
-        </button>
+        </div>
       </div>
     </section>
 
