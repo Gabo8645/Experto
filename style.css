@@ -124,6 +124,11 @@ section.hidden {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.info-icon:hover {
+  background: rgba(0,119,204,0.15);
 }
 
 .service-info {
@@ -137,7 +142,7 @@ section.hidden {
   border-radius: 14px;
   padding: 0.9rem;
   box-shadow: 0 10px 24px rgba(0,0,0,0.15);
-  z-index: 50;
+  z-index: 200;
   font-size: 0.9rem;
   animation: fadeIn 0.25s ease;
 }
