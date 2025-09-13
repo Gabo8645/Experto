@@ -12,209 +12,204 @@
 </head>
 <body>
 
-  <header>
-    <h1>Xperto</h1>
-    <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
-  </header>
+<header>
+  <h1>Xperto</h1>
+  <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
+</header>
 
-  <main>
-    <!-- Selección de servicio -->
-    <section id="worldSelection">
-      <h2>Selecciona el servicio:</h2>
-      <div class="world-options">
-        <!-- Limpieza Básica -->
-        <div class="service-button">
-          <button type="button" onclick="selectWorld('basico')">
-            <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-            Limpieza Básica
-            <span class="info-icon">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoBasico">
-            <ul>
-              <li class="included">Barrido y aspirado de pisos</li>
-              <li class="included">Limpieza de superficies visibles</li>
-              <li class="included">Limpieza de baños básica</li>
-              <li class="included">Cocina: encimeras y fregadero</li>
-              <li class="included">Cambio de basura</li>
-              <li class="not-included">Aspirado y lavado de alfombras</li>
-              <li class="not-included">Limpieza de ventanas y persianas</li>
-              <li class="not-included">Muebles por dentro y fuera</li>
-              <li class="not-included">Desinfectantes potentes</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Limpieza Profunda -->
-        <div class="service-button">
-          <button type="button" onclick="selectWorld('profundo')">
-            <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
-            Limpieza Profunda
-            <span class="info-icon">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoProfundo">
-            <ul>
-              <li class="included">Incluye lo de la Básica</li>
-              <li class="included">Limpieza profunda de baños y cocina</li>
-              <li class="included">Aspirado y lavado de alfombras</li>
-              <li class="included">Limpieza de ventanas y persianas</li>
-              <li class="included">Muebles por dentro y fuera</li>
-              <li class="included">Polvo en rincones, zócalos y techos</li>
-              <li class="included">Desinfectantes potentes</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Lavada de Auto -->
-        <div class="service-button">
-          <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
-            <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
-            Lavada de Auto
-            <span class="info-icon">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoAuto">
-            <ul>
-              <li class="included">Lavado exterior</li>
-              <li class="included">Aspirado interior</li>
-              <li class="not-included">Pulido</li>
-            </ul>
-            <small>Se habilita después de 1 limpieza profunda</small>
-          </div>
+<main>
+  <!-- ==================== 1. Selección de servicio ==================== -->
+  <section id="worldSelection">
+    <h2>Selecciona el servicio:</h2>
+    <div class="world-options">
+      <div class="service-button">
+        <button type="button" onclick="selectWorld('basico')">
+          <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
+          Limpieza Básica
+          <span class="info-icon">ℹ️</span>
+        </button>
+        <div class="service-info hidden" id="infoBasico">
+          <ul>
+            <li class="included">Barrido y aspirado de pisos</li>
+            <li class="included">Limpieza de superficies visibles</li>
+            <li class="included">Limpieza de baños básica</li>
+            <li class="included">Cocina: encimeras y fregadero</li>
+            <li class="included">Cambio de basura</li>
+            <li class="not-included">Aspirado y lavado de alfombras</li>
+            <li class="not-included">Limpieza de ventanas y persianas</li>
+            <li class="not-included">Muebles por dentro y fuera</li>
+            <li class="not-included">Desinfectantes potentes</li>
+          </ul>
         </div>
       </div>
-    </section>
 
-    <!-- Selección de expertos -->
-    <section id="expertSection" class="hidden">
-      <h2>Selecciona un Xperto</h2>
-      <div id="expertsContainer" class="card-container"></div>
-      <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
-    </section>
-
-    <!-- Selección de áreas -->
-    <section id="areasSection" class="hidden">
-      <h2>Selecciona áreas</h2>
-      <div id="areasContainer" class="form-group"></div>
-
-      <fieldset class="schedule-group">
-        <legend>¿Cuándo deseas el servicio?</legend>
-        <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
-        <label><input type="radio" name="schedule" value="programado" /> Programado</label>
-        <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
-      </fieldset>
-
-      <button class="btn" id="btnCalculateTotal">Ver resumen</button>
-    </section>
-
-    <!-- Selección de autos -->
-    <section id="carSection" class="hidden">
-      <h2>Selecciona tu auto</h2>
-      <div class="car-type-selector">
-        <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($10)</label>
-        <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas ($15)</label>
-        <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV 3 filas ($20)</label>
-        <label><input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta ($18)</label>
+      <div class="service-button">
+        <button type="button" onclick="selectWorld('profundo')">
+          <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
+          Limpieza Profunda
+          <span class="info-icon">ℹ️</span>
+        </button>
+        <div class="service-info hidden" id="infoProfundo">
+          <ul>
+            <li class="included">Incluye lo de la Básica</li>
+            <li class="included">Limpieza profunda de baños y cocina</li>
+            <li class="included">Aspirado y lavado de alfombras</li>
+            <li class="included">Limpieza de ventanas y persianas</li>
+            <li class="included">Muebles por dentro y fuera</li>
+            <li class="included">Polvo en rincones, zócalos y techos</li>
+            <li class="included">Desinfectantes potentes</li>
+          </ul>
+        </div>
       </div>
 
-      <h3>Cantidad de autos</h3>
-      <select id="carsInputSelect" onchange="updateCarsFromSelect()">
-        <option value="1" selected>1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-      </select>
-
-      <p>Total autos seleccionados: <span id="totalCars">1</span></p>
-      <p>Costo total: $<span id="totalCarCost">10.00</span></p>
-
-      <button class="btn" id="btnNextFromCars">Siguiente</button>
-    </section>
-
-    <!-- Resumen -->
-    <section id="summarySection" class="hidden summary"></section>
-
-    <!-- Pago -->
-    <section id="paymentSection" class="hidden payment">
-      <h2>Método de pago</h2>
-      <form id="paymentForm">
-        <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
-        <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
-
-        <div id="cardDetails" class="hidden">
-          <label>Número de tarjeta
-            <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
-          </label>
-          <label>Fecha de expiración
-            <input type="month" id="cardExpiry" />
-          </label>
-          <label>Código CVV
-            <input type="text" id="cardCVV" maxlength="4" placeholder="123" inputmode="numeric" />
-          </label>
+      <div class="service-button">
+        <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
+          <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
+          Lavada de Auto
+          <span class="info-icon">ℹ️</span>
+        </button>
+        <div class="service-info hidden" id="infoAuto">
+          <ul>
+            <li class="included">Lavado exterior</li>
+            <li class="included">Aspirado interior</li>
+            <li class="not-included">Pulido</li>
+          </ul>
+          <small>Se habilita después de 1 limpieza profunda</small>
         </div>
-      </form>
-      <button class="btn" id="btnConfirmPayment">Confirmar</button>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Seguimiento -->
-    <section id="trackingSection" class="hidden tracking">
-      <h2>Seguimiento</h2>
-      <p id="trackStatus">Asignando experto...</p>
-    </section>
+  <!-- ==================== 2. Selección de expertos ==================== -->
+  <section id="expertSection" class="hidden">
+    <h2>Selecciona un Xperto</h2>
+    <div id="expertsContainer" class="card-container"></div>
+    <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
+  </section>
 
-    <!-- Promos -->
-    <section id="promosSection" class="hidden">
-      <h2>Promociones</h2>
-      <ul>
-        <li>🎁 20% en tu primer servicio</li>
-        <li>🔥 2x1 fines de semana</li>
-        <li>🎉 Gratis 1 lavada de auto al completar 3 servicios</li>
-      </ul>
-    </section>
+  <!-- ==================== 3. Selección de áreas ==================== -->
+  <section id="areasSection" class="hidden">
+    <h2>Selecciona áreas</h2>
+    <div id="areasContainer" class="form-group"></div>
 
-    <!-- Historial -->
-    <section id="historySection" class="hidden">
-      <h2>Historial de Servicios</h2>
-      <div id="historyContainer" class="card-container"></div>
-    </section>
+    <fieldset class="schedule-group">
+      <legend>¿Cuándo deseas el servicio?</legend>
+      <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
+      <label><input type="radio" name="schedule" value="programado" /> Programado</label>
+      <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
+    </fieldset>
 
-    <!-- Perfil -->
-    <section id="profileSection" class="hidden">
-      <h2>Mi Perfil</h2>
-      <form id="profileForm">
-        <label>Nombre <input type="text" id="profileName" required /></label>
-        <label>Apellido <input type="text" id="profileLastName" required /></label>
-        <label>Email <input type="email" id="profileEmail" required /></label>
-        <label>Teléfono <input type="tel" id="profilePhone" required /></label>
-        <label>Dirección <input type="text" id="profileAddress" required /></label>
-        <button type="submit" class="btn">Guardar</button>
-      </form>
-    </section>
-  </main>
+    <button class="btn" id="btnCalculateTotal">Ver resumen</button>
+  </section>
 
-  <!-- Barra inferior -->
-  <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
-    <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">
-      <span class="icon">🏠</span>
-      <span class="label">Inicio</span>
-    </button>
-    <button type="button" id="navPromos" onclick="showSection('promosSection')">
-      <span class="icon">💸</span>
-      <span class="label">Promos</span>
-    </button>
-    <button type="button" id="navHistory" onclick="showSection('historySection')">
-      <span class="icon">📋</span>
-      <span class="label">Historial</span>
-    </button>
-    <button type="button" id="navProfile" onclick="showSection('profileSection')">
-      <span class="icon">👤</span>
-      <span class="label">Perfil</span>
-    </button>
-  </nav>
+  <!-- ==================== 4. Selección de autos ==================== -->
+  <section id="carSection" class="hidden">
+    <h2>Selecciona tu auto</h2>
+    <div class="car-type-selector">
+      <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($10)</label>
+      <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas ($15)</label>
+      <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV 3 filas ($20)</label>
+      <label><input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta ($18)</label>
+    </div>
+
+    <h3>Cantidad de autos</h3>
+    <select id="carsInputSelect" onchange="updateCarsFromSelect()">
+      <option value="1" selected>1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+    </select>
+
+    <p>Total autos seleccionados: <span id="totalCars">1</span></p>
+    <p>Costo total: $<span id="totalCarCost">10.00</span></p>
+
+    <button class="btn" id="btnNextFromCars">Siguiente</button>
+  </section>
+
+  <!-- ==================== 5. Resumen ==================== -->
+  <section id="summarySection" class="hidden summary"></section>
+
+  <!-- ==================== 6. Pago ==================== -->
+  <section id="paymentSection" class="hidden payment">
+    <h2>Método de pago</h2>
+    <form id="paymentForm">
+      <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
+      <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
+
+      <div id="cardDetails" class="hidden">
+        <label>Número de tarjeta
+          <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
+        </label>
+        <label>Fecha de expiración
+          <input type="month" id="cardExpiry" />
+        </label>
+        <label>Código CVV
+          <input type="text" id="cardCVV" maxlength="4" placeholder="123" inputmode="numeric" />
+        </label>
+      </div>
+    </form>
+    <button class="btn" id="btnConfirmPayment">Confirmar</button>
+  </section>
+
+  <!-- ==================== 7. Seguimiento ==================== -->
+  <section id="trackingSection" class="hidden tracking">
+    <h2>Seguimiento</h2>
+    <p id="trackStatus">Asignando experto...</p>
+  </section>
+
+  <!-- ==================== Fuera del flujo (Promos, Historial, Perfil) ==================== -->
+  <section id="promosSection" class="hidden">
+    <h2>Promociones</h2>
+    <ul>
+      <li>🎁 20% en tu primer servicio</li>
+      <li>🔥 2x1 fines de semana</li>
+      <li>🎉 Gratis 1 lavada de auto al completar 3 servicios</li>
+    </ul>
+  </section>
+
+  <section id="historySection" class="hidden">
+    <h2>Historial de Servicios</h2>
+    <div id="historyContainer" class="card-container"></div>
+  </section>
+
+  <section id="profileSection" class="hidden">
+    <h2>Mi Perfil</h2>
+    <form id="profileForm">
+      <label>Nombre <input type="text" id="profileName" required /></label>
+      <label>Apellido <input type="text" id="profileLastName" required /></label>
+      <label>Email <input type="email" id="profileEmail" required /></label>
+      <label>Teléfono <input type="tel" id="profilePhone" required /></label>
+      <label>Dirección <input type="text" id="profileAddress" required /></label>
+      <button type="submit" class="btn">Guardar</button>
+    </form>
+  </section>
+</main>
+
+<!-- ==================== Barra inferior ==================== -->
+<nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
+  <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">
+    <span class="icon">🏠</span>
+    <span class="label">Inicio</span>
+  </button>
+  <button type="button" id="navPromos" onclick="showSection('promosSection')">
+    <span class="icon">💸</span>
+    <span class="label">Promos</span>
+  </button>
+  <button type="button" id="navHistory" onclick="showSection('historySection')">
+    <span class="icon">📋</span>
+    <span class="label">Historial</span>
+  </button>
+  <button type="button" id="navProfile" onclick="showSection('profileSection')">
+    <span class="icon">👤</span>
+    <span class="label">Perfil</span>
+  </button>
+</nav>
 
 </body>
 </html>
