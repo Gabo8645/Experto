@@ -83,8 +83,9 @@ const totalCarsEl = document.getElementById('totalCars');
 const totalCarCostEl = document.getElementById('totalCarCost');
 const btnCarIncrease = document.getElementById('btnCarIncrease');
 const btnCarDecrease = document.getElementById('btnCarDecrease');
-const scheduleDateInput = document.getElementById('scheduleDate');
-const btnCalculateTotal = document.getElementById('btnCalculateTotal');
+const scheduleDateInput = document.getElementById("scheduleDate");
+const btnCalculateTotal = document.getElementById("btnCalculateTotal");
+const carSection = document.getElementById('carSection');
 
 // ======== Funciones usuario ========
 function loadUser() {
@@ -118,7 +119,7 @@ function updateDefaultAddress() {
 
 // ======== Navegación ========
 function showSection(sectionId) {
-  const sections = [worldSelectionSection, expertSection, areasSection, summarySection, paymentSection, trackingSection, historySection, profileSection];
+  const sections = [worldSelectionSection, expertSection, areasSection, summarySection, paymentSection, trackingSection, historySection, profileSection, carSection];
   sections.forEach(sec => sec.classList.add("hidden"));
   Object.values(navButtons).forEach(btn => btn.classList.remove("active"));
 
@@ -137,24 +138,6 @@ function showSection(sectionId) {
       profileSection.classList.remove("hidden");
       navButtons.profileSection.classList.add("active");
       break;
-    case "areasSection":
-      areasSection.classList.remove("hidden");
-      break;
-    case "carSection":
-      document.getElementById('carSection').classList.remove('hidden');
-      break;
-    case "expertSection":
-      expertSection.classList.remove("hidden");
-      break;
-    case "summarySection":
-      summarySection.classList.remove("hidden");
-      break;
-    case "paymentSection":
-      paymentSection.classList.remove("hidden");
-      break;
-    case "trackingSection":
-      trackingSection.classList.remove("hidden");
-      break;
   }
 }
 
@@ -170,6 +153,7 @@ function resetApp() {
   summarySection.classList.add("hidden");
   paymentSection.classList.add("hidden");
   trackingSection.classList.add("hidden");
+  carSection.classList.add("hidden");
   btnNextFromExperts.disabled = true;
   renderExperts();
   updateSpaces();
@@ -188,14 +172,17 @@ function selectWorld(worldKey) {
   selectedService = worldKey;
 
   if(worldKey === 'auto'){
+    // Para auto, vamos directo a la selección de autos
     showSection('carSection');
     areasSection.classList.add('hidden');
+    expertSection.classList.add('hidden');
   } else {
-    showSection('areasSection');
-    document.getElementById('carSection').classList.add('hidden');
+    // Para limpieza, mostramos selección de expertos primero
+    expertSection.classList.remove('hidden');
+    areasSection.classList.add('hidden');
+    carSection.classList.add('hidden');
+    renderExperts();
   }
-
-  showSection('expertSection');
 }
 
 // ======== Expertos ========
@@ -226,6 +213,15 @@ function selectExpert(id){
   const card = [...expertsContainer.children].find(c=>c.querySelector("h3").textContent===selectedExpert.name);
   if(card) card.classList.add("selected");
   btnNextFromExperts.disabled=false;
+}
+
+function goToAreas() {
+  if(!selectedExpert){
+    alert("Selecciona un experto antes de continuar.");
+    return;
+  }
+  expertSection.classList.add("hidden");
+  areasSection.classList.remove("hidden");
 }
 
 // ======== Contador de espacios ========
@@ -259,14 +255,11 @@ document.querySelectorAll('input[name="carType"]').forEach(r=>r.addEventListener
 }));
 
 // ======== Tooltips info ========
-let openTooltip = null;
-function toggleInfo(e, id){
-  const tooltip = document.getElementById(id);
-  if(openTooltip && openTooltip !== tooltip){
-    openTooltip.classList.add('hidden'); // Cierra tooltip abierto
-  }
+function toggleInfo(e,id){
+  // Esto evita que se active el botón de limpieza
+  e.stopPropagation();
+  const tooltip=document.getElementById(id);
   tooltip.classList.toggle('hidden');
-  openTooltip = tooltip.classList.contains('hidden') ? null : tooltip;
 }
 
 // ======== Horario ========
@@ -294,7 +287,6 @@ btnCalculateTotal.addEventListener('click', ()=>{
   summarySection.innerHTML=summaryHTML;
   summarySection.classList.remove('hidden');
   areasSection.classList.add('hidden');
-  document.getElementById('carSection').classList.add('hidden');
 });
 
 // ======== Pago ========
