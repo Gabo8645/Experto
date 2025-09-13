@@ -91,6 +91,7 @@ function loadUser(){
     DOM.profileAddress.value = user.address || "";
   }
   updateDefaultAddress();
+  updateWorldButtons(); // <-- activa Auto si corresponde
 }
 
 function saveUser(){
@@ -107,6 +108,12 @@ function saveUser(){
 
 function updateDefaultAddress(){
   DOM.defaultAddressEl.textContent = user.address ? `Dirección: ${user.address}` : "Por favor, configura tu dirección en Perfil.";
+}
+
+// ======== Habilitar Auto automáticamente ========
+function updateWorldButtons() {
+  const autoBtn = document.getElementById("btnAuto");
+  if(autoBtn) autoBtn.disabled = user.limpiezaPurchases >= worlds.profundo.unlocksAt ? false : true;
 }
 
 // ======== Navegación ========
@@ -178,7 +185,7 @@ DOM.btnNextFromExperts.addEventListener("click", ()=>{
   renderAreasInputs();
 });
 
-// ======== Áreas con contadores ========
+// ======== Áreas con contadores y tooltips únicos ========
 function renderAreasInputs(){
   DOM.areasContainer.innerHTML=""; selectedAreas={};
   areas.forEach(area=>{
@@ -195,12 +202,27 @@ function renderAreasInputs(){
     selectedAreas[area.id]=0;
   });
 
-  // Tooltips
+  setupTooltips();
+}
+
+function setupTooltips() {
+  let openTooltip = null;
   document.querySelectorAll(".infoBtn").forEach(btn=>{
-    btn.addEventListener("click", ()=>document.getElementById(btn.dataset.tooltip).classList.toggle("hidden"));
+    btn.addEventListener("click", e=>{
+      e.stopPropagation();
+      const tooltip = document.getElementById(btn.dataset.tooltip);
+      if(openTooltip && openTooltip !== tooltip) openTooltip.classList.add("hidden");
+      tooltip.classList.toggle("hidden");
+      openTooltip = tooltip.classList.contains("hidden") ? null : tooltip;
+    });
+  });
+
+  document.addEventListener("click", ()=>{
+    if(openTooltip){ openTooltip.classList.add("hidden"); openTooltip=null; }
   });
 }
 
+// ======== Contadores de áreas ========
 function increaseArea(id){ if(selectedAreas[id]<10){ selectedAreas[id]++; document.getElementById(`area_${id}`).value=selectedAreas[id]; } }
 function decreaseArea(id){ if(selectedAreas[id]>0){ selectedAreas[id]--; document.getElementById(`area_${id}`).value=selectedAreas[id]; } }
 
@@ -278,6 +300,7 @@ DOM.btnConfirmPayment.addEventListener("click", ()=>{
   user.history.push(serviceRecord);
   if(selectedWorld==="basico") user.limpiezaPurchases++;
   localStorage.setItem("xpertoUser", JSON.stringify(user));
+  updateWorldButtons(); // <-- revisa si Auto se activa
 
   DOM.summarySection.classList.add("hidden");
   DOM.paymentSection.classList.add("hidden");
@@ -309,19 +332,4 @@ function renderHistory(){
                     <p><strong>Servicio:</strong> ${item.world}</p>
                     <p><strong>Experto:</strong> ${item.expert}</p>
                     <p><strong>Dirección:</strong> ${item.address}</p>
-                    <p><strong>Áreas:</strong> ${areasDesc}</p>
-                    <p><strong>Programación:</strong> ${item.schedule}</p>
-                    <p><strong>Total:</strong> $${item.total}</p>
-                    <p><strong>Pago:</strong> ${item.paymentMethod}</p>`;
-    DOM.historyContainer.appendChild(card);
-  });
-}
-
-// ======== Perfil ========
-DOM.profileForm.addEventListener("submit", e=>{ e.preventDefault(); saveUser(); });
-
-// ======== Inicialización ========
-window.addEventListener("DOMContentLoaded", ()=>{
-  loadUser();
-  showSection("worldSelection");
-});
+                    <p><strong>Áreas:</strong>
