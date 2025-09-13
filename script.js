@@ -5,14 +5,15 @@ let user = {
   email: "",
   phone: "",
   address: "",
-  limpiezaPurchases: { basico: 0, profundo: 0, auto: 0 }
+  limpiezaPurchases: { basico: 0, profundo: 0, auto: 0 },
+  history: []
 };
 
 let currentService = null;
 let selectedExpert = null;
 let spacesCount = 1;
 let carsCount = 1;
-let paymentMethod = null;
+let baseCost = 30;
 let selectedAreas = {}; // Áreas dinámicas
 
 // ===================== DOM =====================
@@ -39,11 +40,12 @@ const DOM = {
   btnNextFromCars: document.getElementById("btnNextFromCars"),
   btnConfirmPayment: document.getElementById("btnConfirmPayment"),
   expertsContainer: document.getElementById("expertsContainer"),
-  areasContainer: document.getElementById("areasContainer"),
-  cardDetails: document.getElementById("cardDetails"),
   historyContainer: document.getElementById("historyContainer"),
   trackStatus: document.getElementById("trackStatus"),
+  btnAuto: document.getElementById("btnAuto"),
   profileForm: document.getElementById("profileForm"),
+  paymentForm: document.getElementById("paymentForm"),
+  cardDetails: document.getElementById("cardDetails"),
   defaultAddress: document.getElementById("defaultAddress")
 };
 
@@ -93,9 +95,9 @@ if (DOM.profileForm) {
 
 // ===================== EXPERTOS =====================
 const experts = [
-  { name: "Juan Pérez", rating: 4.8, photo: "https://randomuser.me/api/portraits/men/1.jpg", activities: "Limpieza de baños, pisos y cocina" },
-  { name: "María López", rating: 4.9, photo: "https://randomuser.me/api/portraits/women/2.jpg", activities: "Limpieza profunda y organización de espacios" },
-  { name: "Carlos Ruiz", rating: 4.7, photo: "https://randomuser.me/api/portraits/men/3.jpg", activities: "Lavado de autos y limpieza de interiores" }
+  { name: "Juan Pérez", rating: 4.8, activities: "Barrido, aspirado y limpieza general", photo: "https://randomuser.me/api/portraits/men/1.jpg" },
+  { name: "María López", rating: 4.9, activities: "Limpieza profunda, desinfección, cocina y baños", photo: "https://randomuser.me/api/portraits/women/2.jpg" },
+  { name: "Carlos Ruiz", rating: 4.7, activities: "Aspirado de alfombras, lavado de pisos y muebles", photo: "https://randomuser.me/api/portraits/men/3.jpg" }
 ];
 
 function loadExperts() {
@@ -118,26 +120,13 @@ function loadExperts() {
   });
 }
 
-// ===================== SELECCIONAR SERVICIO =====================
+// ===================== FLUJO =====================
 function selectWorld(service) {
   currentService = service;
   selectedExpert = null;
   loadExperts();
   showSection("expertSection");
   checkAutoAvailability();
-}
-
-// ===================== BOTÓN SIGUIENTE EXPERTOS =====================
-if (DOM.btnNextFromExperts) {
-  DOM.btnNextFromExperts.addEventListener("click", () => {
-    if (!selectedExpert) return alert("Selecciona un experto");
-    if (currentService === "auto") {
-      showSection("carSection");
-    } else {
-      renderAreas();
-      showSection("areasSection");
-    }
-  });
 }
 
 // ===================== ÁREAS =====================
@@ -151,7 +140,9 @@ const areas = [
 ];
 
 function renderAreas() {
-  DOM.areasContainer.innerHTML = "";
+  const container = document.getElementById("areasContainer");
+  if (!container) return;
+  container.innerHTML = "";
   areas.forEach(area => {
     selectedAreas[area.id] = 0;
     const div = document.createElement("div");
@@ -161,155 +152,137 @@ function renderAreas() {
       <button onclick="changeAreaCount('${area.id}', -1)">-</button>
       <span id="count-${area.id}">0</span>
       <button onclick="changeAreaCount('${area.id}', 1)">+</button>`;
-    DOM.areasContainer.appendChild(div);
+    container.appendChild(div);
   });
 }
 
 function changeAreaCount(areaId, delta) {
   selectedAreas[areaId] = Math.max(0, Math.min(10, selectedAreas[areaId] + delta));
   document.getElementById(`count-${areaId}`).textContent = selectedAreas[areaId];
-  updateSpaces();
 }
 
-// ===================== BOTÓN VER RESUMEN =====================
-if (DOM.btnCalculateTotal) {
-  DOM.btnCalculateTotal.addEventListener("click", () => {
-    // Validar que se haya seleccionado al menos un área
-    const totalSelected = Object.values(selectedAreas).reduce((a,b)=>a+b,0);
-    if(totalSelected === 0) return alert("Selecciona al menos un área");
-    generateSummary(currentService);
-    if (currentService === "basico") user.limpiezaPurchases.basico++;
-    if (currentService === "profundo") user.limpiezaPurchases.profundo++;
-    checkAutoAvailability();
+// ===================== BOTONES =====================
+if (DOM.btnNextFromExperts) {
+  DOM.btnNextFromExperts.addEventListener("click", () => {
+    if (!selectedExpert) return;
+    if (currentService === "auto") {
+      showSection("carSection");
+    } else {
+      renderAreas();
+      showSection("areasSection");
+    }
   });
 }
 
-// ===================== FUNCIONES ESPACIOS =====================
+if (DOM.btnCalculateTotal) {
+  DOM.btnCalculateTotal.addEventListener("click", () => {
+    generateSummary(currentService);
+    if (currentService === "basico") user.limpiezaPurchases.basico++;
+    if (currentService === "profundo") user.limpiezaPurchases.profundo++;
+    if (currentService !== "auto") checkAutoAvailability();
+  });
+}
+
+// ===================== ESPACIOS =====================
+function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
+function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
 function updateSpaces() {
-  let total = 0;
-  for (const [id, count] of Object.entries(selectedAreas)) {
-    const area = areas.find(a => a.id === id);
-    if (area) total += area.price * count;
-  }
-  DOM.totalCost.textContent = total.toFixed(2);
+  DOM.spacesInput.value = spacesCount;
+  DOM.totalSpaces.textContent = spacesCount;
 }
 
 // ===================== AUTOS =====================
 function updateCarCost() {
-  const type = document.querySelector('input[name="carType"]:checked').value;
+  let type = document.querySelector('input[name="carType"]:checked').value;
   let cost = 10;
-  if(type === "crossover") cost = 15;
-  if(type === "suv") cost = 20;
-  if(type === "camioneta") cost = 18;
+  if (type === "crossover") cost = 15;
+  if (type === "suv") cost = 20;
+  if (type === "camioneta") cost = 18;
   DOM.totalCarCost.textContent = (carsCount * cost).toFixed(2);
 }
 
-function updateCarsFromSelect(){
+function updateCarsFromSelect() {
   carsCount = parseInt(DOM.carsInputSelect.value);
   DOM.totalCars.textContent = carsCount;
   updateCarCost();
 }
 
-// ===================== BOTÓN SIGUIENTE AUTOS =====================
-if(DOM.btnNextFromCars){
+if (DOM.btnNextFromCars) {
   DOM.btnNextFromCars.addEventListener("click", () => {
     generateSummary("auto");
     user.limpiezaPurchases.auto++;
+    checkAutoAvailability();
   });
 }
 
 // ===================== DESBLOQUEO AUTO =====================
-function checkAutoAvailability(){
-  const btn = document.getElementById("btnAuto");
-  if(btn) btn.disabled = user.limpiezaPurchases.profundo < 1;
+function checkAutoAvailability() {
+  if (DOM.btnAuto) {
+    DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
+  }
 }
 
 // ===================== RESUMEN =====================
-function generateSummary(service){
+function generateSummary(service) {
   let html = `<h2>Resumen del servicio</h2>`;
-  html += `<p><strong>Dirección:</strong> ${user.address || "No definida"}</p>`;
-  html += `<p><strong>Experto:</strong> ${selectedExpert?.name || ""}</p>`;
+  html += `<p><strong>Dirección:</strong> ${user.address}</p>`;
+  html += `<p><strong>Experto:</strong> ${selectedExpert ? selectedExpert.name : "No asignado"}</p>`;
 
-  if(service === "basico" || service === "profundo"){
+  if (service === "basico" || service === "profundo") {
     let total = 0;
-    html += "<h3>Áreas seleccionadas:</h3>";
-    for(const [id,count] of Object.entries(selectedAreas)){
-      if(count>0){
-        const area = areas.find(a=>a.id===id);
+    for (const [id, count] of Object.entries(selectedAreas)) {
+      if (count > 0) {
+        const area = areas.find(a => a.id === id);
         total += area.price * count;
-        html += `<p>${area.label}: ${count} x $${area.price} = $${(area.price*count).toFixed(2)}</p>`;
+        html += `<p>${area.label}: ${count} x $${area.price}</p>`;
       }
     }
     html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
-  } else if(service === "auto"){
-    const type = document.querySelector('input[name="carType"]:checked').value;
-    const cost = DOM.totalCarCost.textContent;
+  } else if (service === "auto") {
+    let type = document.querySelector('input[name="carType"]:checked').value;
+    let cost = DOM.totalCarCost.textContent;
     html += `<p><strong>Servicio:</strong> Lavada de Auto</p>`;
     html += `<p><strong>Tipo:</strong> ${type}</p>`;
     html += `<p><strong>Autos:</strong> ${carsCount}</p>`;
     html += `<p><strong>Total:</strong> $${cost}</p>`;
   }
+
   html += `<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
   DOM.summarySection.innerHTML = html;
   showSection("summarySection");
 
   // Guardar en historial
-  addToHistory(service);
-}
-
-function addToHistory(service){
-  const history = DOM.historyContainer;
-  const now = new Date().toLocaleString();
-  let description = "";
-
-  if(service === "basico" || service === "profundo"){
-    description = Object.entries(selectedAreas)
-      .filter(([_,c])=>c>0)
-      .map(([id,c])=>`${areas.find(a=>a.id===id).label}: ${c}`)
-      .join(", ");
-  } else if(service === "auto"){
-    const type = document.querySelector('input[name="carType"]:checked').value;
-    description = `Tipo: ${type}, Autos: ${carsCount}`;
-  }
-
-  const div = document.createElement("div");
-  div.className = "card";
-  div.innerHTML = `<p><strong>${service}</strong> - ${now}</p><p>${description}</p><p>Experto: ${selectedExpert?.name || ""}</p>`;
-  history.prepend(div);
+  let historyEntry = { service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() };
+  user.history.push(historyEntry);
+  renderHistory();
 }
 
 // ===================== PAGO =====================
-function goToPayment(){ showSection("paymentSection"); }
+function goToPayment() { showSection("paymentSection"); }
 
-document.querySelectorAll('input[name="pay"]').forEach(radio=>{
-  radio.addEventListener('change',()=>{
-    paymentMethod = document.querySelector('input[name="pay"]:checked')?.value;
-    if(paymentMethod === "tarjeta"){
-      DOM.cardDetails.classList.remove("hidden");
-    } else {
-      DOM.cardDetails.classList.add("hidden");
-    }
+document.querySelectorAll('input[name="pay"]').forEach(r => {
+  r.addEventListener("change", () => {
+    if (r.value === "tarjeta" && r.checked) DOM.cardDetails.classList.remove("hidden");
+    else DOM.cardDetails.classList.add("hidden");
   });
 });
 
-if(DOM.btnConfirmPayment){
-  DOM.btnConfirmPayment.addEventListener("click",()=>{
-    paymentMethod = document.querySelector('input[name="pay"]:checked')?.value;
-    if(!paymentMethod) return alert("Selecciona un método de pago");
-
-    if(paymentMethod === "tarjeta"){
-      const number = document.getElementById("cardNumber").value.trim();
-      const expiry = document.getElementById("cardExpiry").value.trim();
+if (DOM.btnConfirmPayment) {
+  DOM.btnConfirmPayment.addEventListener("click", () => {
+    const selectedPay = document.querySelector('input[name="pay"]:checked');
+    if (!selectedPay) { alert("Elija un método de pago"); return; }
+    if (selectedPay.value === "tarjeta") {
+      const num = document.getElementById("cardNumber").value.trim();
+      const exp = document.getElementById("cardExpiry").value;
       const cvv = document.getElementById("cardCVV").value.trim();
-      if(!number || !expiry || !cvv) return alert("Ingresa todos los datos de la tarjeta");
+      if (!num || !exp || !cvv) { alert("Complete los datos de tarjeta"); return; }
     }
-
     startTracking();
   });
 }
 
 // ===================== TRACKING =====================
-function startTracking(){
+function startTracking() {
   showSection("trackingSection");
   const steps = [
     "🧑‍🔧 Experto asignado",
@@ -319,15 +292,39 @@ function startTracking(){
     "🎉 Gracias por elegirnos Xperto, porque tu tiempo vale más"
   ];
   let i = 0;
-  const interval = setInterval(()=>{
+  const interval = setInterval(() => {
     DOM.trackStatus.textContent = steps[i];
     i++;
-    if(i>=steps.length) clearInterval(interval);
-  },2000);
+    if (i >= steps.length) clearInterval(interval);
+  }, 2000);
 }
 
+// ===================== HISTORIAL =====================
+function renderHistory() {
+  DOM.historyContainer.innerHTML = "";
+  user.history.forEach(entry => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<p><strong>Servicio:</strong> ${entry.service}</p>
+                     <p><strong>Experto:</strong> ${entry.expert}</p>
+                     <p><strong>Dirección:</strong> ${entry.address}</p>
+                     <p><strong>Fecha:</strong> ${entry.date}</p>`;
+    DOM.historyContainer.appendChild(div);
+  });
+}
+
+// ===================== PROGRAMADO =====================
+document.querySelectorAll('input[name="schedule"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (radio.value === 'programado' && radio.checked) DOM.scheduleDateInput.classList.remove('hidden');
+    else if (radio.value === 'inmediato' && radio.checked) {
+      DOM.scheduleDateInput.classList.add('hidden');
+      DOM.scheduleDateInput.value = "";
+    }
+  });
+});
+
 // ===================== INIT =====================
-loadExperts();
 updateCarsFromSelect();
 updateCarCost();
 showSection("worldSelection");
