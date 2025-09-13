@@ -14,20 +14,21 @@
 
   <header>
     <h1>Xperto</h1>
-    <p id="userName">Hola 👋</p>
     <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
   </header>
 
   <main>
-    <!-- SELECCIÓN DE SERVICIO -->
-    <section id="worldSelection" class="active">
-      <h2>Selecciona el servicio:</h2>
-      <div class="world-options">
+    <!-- Selección de servicio -->
+    <section id="worldSelection">
+      <h2>Selecciona el servicio</h2>
+      <div class="world-options vertical">
         <!-- Limpieza Básica -->
-        <div class="service-button" onclick="selectWorld('basico')">
-          <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-          <span>Limpieza Básica</span>
-          <span class="info-icon" onclick="event.stopPropagation();">ℹ️</span>
+        <div class="service-button">
+          <button type="button" onclick="selectWorld('basico')">
+            <img src="https://images.unsplash.com/photo-1590987999591-1f0bb2cb9f72?crop=entropy&cs=tinysrgb&fit=max&h=80&w=80" alt="Básico" />
+            Limpieza Básica
+            <span class="info-icon">ℹ️</span>
+          </button>
           <div class="service-info hidden" id="infoBasico">
             <ul>
               <li class="included">Barrido y aspirado de pisos</li>
@@ -44,10 +45,12 @@
         </div>
 
         <!-- Limpieza Profunda -->
-        <div class="service-button" onclick="selectWorld('profundo')">
-          <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
-          <span>Limpieza Profunda</span>
-          <span class="info-icon" onclick="event.stopPropagation();">ℹ️</span>
+        <div class="service-button">
+          <button type="button" onclick="selectWorld('profundo')">
+            <img src="https://images.unsplash.com/photo-1581579184038-2f0d5d91b558?crop=entropy&cs=tinysrgb&fit=max&h=80&w=80" alt="Profundo" />
+            Limpieza Profunda
+            <span class="info-icon">ℹ️</span>
+          </button>
           <div class="service-info hidden" id="infoProfundo">
             <ul>
               <li class="included">Incluye lo de la Básica</li>
@@ -62,10 +65,12 @@
         </div>
 
         <!-- Lavada de Auto -->
-        <div class="service-button" id="btnAuto" onclick="selectWorld('auto')">
-          <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
-          <span>Lavada de Auto</span>
-          <span class="info-icon" onclick="event.stopPropagation();">ℹ️</span>
+        <div class="service-button">
+          <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
+            <img src="https://images.unsplash.com/photo-1603722582177-14499bbd0e7b?crop=entropy&cs=tinysrgb&fit=max&h=80&w=80" alt="Lavada de Auto" />
+            Lavada de Auto
+            <span class="info-icon">ℹ️</span>
+          </button>
           <div class="service-info hidden" id="infoAuto">
             <ul>
               <li class="included">Lavado exterior</li>
@@ -78,38 +83,62 @@
       </div>
     </section>
 
-    <!-- SELECCIÓN DE EXPERTOS -->
-    <section id="expertSection">
+    <!-- Selección de expertos -->
+    <section id="expertSection" class="hidden">
       <h2>Selecciona un Xperto</h2>
-      <div id="expertsContainer" class="card-container"></div>
+      <div id="expertsContainer" class="card-container">
+        <!-- 5 Xpertos -->
+        <div class="expert-card">
+          <img src="https://images.unsplash.com/photo-1603415526960-f7e0328b2d69?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 1" />
+          <p>María G.</p>
+          <p>⭐⭐⭐⭐⭐</p>
+        </div>
+        <div class="expert-card">
+          <img src="https://images.unsplash.com/photo-1603415763943-67aa0196e9d5?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 2" />
+          <p>Carlos M.</p>
+          <p>⭐⭐⭐⭐</p>
+        </div>
+        <div class="expert-card">
+          <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 3" />
+          <p>Ana P.</p>
+          <p>⭐⭐⭐⭐⭐</p>
+        </div>
+        <div class="expert-card">
+          <img src="https://images.unsplash.com/photo-1603415527008-6e937bd27ee3?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 4" />
+          <p>Jorge L.</p>
+          <p>⭐⭐⭐⭐</p>
+        </div>
+        <div class="expert-card">
+          <img src="https://images.unsplash.com/photo-1603415526323-14dfc5e04837?crop=entropy&cs=tinysrgb&fit=max&h=100&w=100" alt="Xperto 5" />
+          <p>Lucía R.</p>
+          <p>⭐⭐⭐⭐⭐</p>
+        </div>
+      </div>
       <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
     </section>
 
-    <!-- SELECCIÓN DE ÁREAS -->
-    <section id="areasSection">
+    <!-- Selección de áreas -->
+    <section id="areasSection" class="hidden">
       <h2>Selecciona áreas</h2>
       <div id="areasContainer" class="form-group"></div>
-
       <fieldset class="schedule-group">
         <legend>¿Cuándo deseas el servicio?</legend>
         <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
         <label><input type="radio" name="schedule" value="programado" /> Programado</label>
         <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
       </fieldset>
-
       <button class="btn" id="btnCalculateTotal">Ver resumen</button>
     </section>
 
-    <!-- SELECCIÓN DE AUTOS -->
-    <section id="carSection">
+    <!-- Selección de autos -->
+    <section id="carSection" class="hidden">
       <h2>Selecciona tu auto</h2>
       <div class="car-type-selector">
         <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($10)</label>
-        <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas ($15)</label>
-        <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV 3 filas ($20)</label>
+        <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover ($15)</label>
+        <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV ($20)</label>
         <label><input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta ($18)</label>
       </div>
-
       <h3>Cantidad de autos</h3>
       <select id="carsInputSelect" onchange="updateCarsFromSelect()">
         <option value="1" selected>1</option>
@@ -117,32 +146,21 @@
         <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
       </select>
-
       <p>Total autos seleccionados: <span id="totalCars">1</span></p>
       <p>Costo total: $<span id="totalCarCost">10.00</span></p>
-
       <button class="btn" id="btnNextFromCars">Siguiente</button>
     </section>
 
-    <!-- RESUMEN -->
-    <section id="summarySection" class="summary"></section>
+    <!-- Resumen -->
+    <section id="summarySection" class="hidden summary"></section>
 
-    <!-- PAGO -->
-    <section id="paymentSection" class="payment">
+    <!-- Pago -->
+    <section id="paymentSection" class="hidden payment">
       <h2>Método de pago</h2>
       <form id="paymentForm">
-        <fieldset>
-          <legend>Selecciona método de pago</legend>
-          <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
-          <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
-        </fieldset>
-
+        <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
+        <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
         <div id="cardDetails" class="hidden">
           <label>Número de tarjeta
             <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
@@ -158,63 +176,14 @@
       <button class="btn" id="btnConfirmPayment">Confirmar</button>
     </section>
 
-    <!-- SEGUIMIENTO -->
-    <section id="trackingSection" class="tracking">
-      <h2>Seguimiento</h2>
-      <p id="trackStatus">Asignando experto...</p>
-    </section>
-
-    <!-- PROMOS -->
-    <section id="promosSection">
-      <h2>Promociones</h2>
-      <ul>
-        <li>🎁 20% en tu primer servicio</li>
-        <li>🔥 2x1 fines de semana</li>
-        <li>🎉 Gratis 1 lavada de auto al completar 3 servicios</li>
-      </ul>
-    </section>
-
-    <!-- HISTORIAL -->
-    <section id="historySection">
-      <h2>Historial de Servicios</h2>
-      <div id="historyContainer" class="card-container"></div>
-    </section>
-
-    <!-- PERFIL -->
-    <section id="profileSection">
-      <h2>Mi Perfil</h2>
-      <form id="profileForm">
-        <fieldset>
-          <legend>Información personal</legend>
-          <label>Nombre <input type="text" id="profileName" required /></label>
-          <label>Apellido <input type="text" id="profileLastName" required /></label>
-          <label>Email <input type="email" id="profileEmail" required /></label>
-          <label>Teléfono <input type="tel" id="profilePhone" required /></label>
-          <label>Dirección <input type="text" id="profileAddress" required /></label>
-        </fieldset>
-        <button type="submit" class="btn">Guardar</button>
-      </form>
-    </section>
   </main>
 
-  <!-- BOTTOM NAV -->
+  <!-- Barra inferior -->
   <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
-    <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">
-      <span class="icon">🏠</span>
-      <span class="label">Inicio</span>
-    </button>
-    <button type="button" id="navPromos" onclick="showSection('promosSection')">
-      <span class="icon">💸</span>
-      <span class="label">Promos</span>
-    </button>
-    <button type="button" id="navHistory" onclick="showSection('historySection')">
-      <span class="icon">📋</span>
-      <span class="label">Historial</span>
-    </button>
-    <button type="button" id="navProfile" onclick="showSection('profileSection')">
-      <span class="icon">👤</span>
-      <span class="label">Perfil</span>
-    </button>
+    <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">🏠 Inicio</button>
+    <button type="button" id="navPromos" onclick="showSection('promosSection')">💸 Promos</button>
+    <button type="button" id="navHistory" onclick="showSection('historySection')">📋 Historial</button>
+    <button type="button" id="navProfile" onclick="showSection('profileSection')">👤 Perfil</button>
   </nav>
 
 </body>
