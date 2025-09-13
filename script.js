@@ -14,7 +14,7 @@ let selectedExpert = null;
 let spacesCount = 1;
 let carsCount = 1;
 let baseCost = 30;
-let selectedAreas = {}; // Áreas dinámicas
+let selectedAreas = {};
 
 // ===================== DOM =====================
 const DOM = {
@@ -47,7 +47,7 @@ const DOM = {
   paymentForm: document.getElementById("paymentForm"),
   cardDetails: document.getElementById("cardDetails"),
   defaultAddress: document.getElementById("defaultAddress"),
-  userName: document.getElementById("userName") // 👈 nuevo
+  userName: document.getElementById("userName")
 };
 
 // ===================== TOOLTIP INFO =====================
@@ -90,13 +90,9 @@ if (DOM.profileForm) {
     user.phone = document.getElementById("profilePhone").value;
     user.address = document.getElementById("profileAddress").value;
 
-    // Actualizar header
     DOM.defaultAddress.textContent = `Dirección: ${user.address}`;
-    if (user.name) {
-      DOM.userName.textContent = `Hola, ${user.name} 👋`;
-    }
+    if (user.name) DOM.userName.textContent = `Hola, ${user.name} 👋`;
 
-    // Guardar en localStorage
     localStorage.setItem("xpertoName", user.name + " " + user.lastName);
     localStorage.setItem("xpertoAddress", user.address);
 
@@ -176,12 +172,8 @@ function changeAreaCount(areaId, delta) {
 if (DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
     if (!selectedExpert) return;
-    if (currentService === "auto") {
-      showSection("carSection");
-    } else {
-      renderAreas();
-      showSection("areasSection");
-    }
+    if (currentService === "auto") showSection("carSection");
+    else { renderAreas(); showSection("areasSection"); }
   });
 }
 
@@ -204,7 +196,9 @@ function updateSpaces() {
 
 // ===================== AUTOS =====================
 function updateCarCost() {
-  let type = document.querySelector('input[name="carType"]:checked').value;
+  const selected = document.querySelector('input[name="carType"]:checked');
+  if (!selected) return;
+  let type = selected.value;
   let cost = 10;
   if (type === "crossover") cost = 15;
   if (type === "suv") cost = 20;
@@ -228,9 +222,7 @@ if (DOM.btnNextFromCars) {
 
 // ===================== DESBLOQUEO AUTO =====================
 function checkAutoAvailability() {
-  if (DOM.btnAuto) {
-    DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
-  }
+  if (DOM.btnAuto) DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
 }
 
 // ===================== RESUMEN =====================
@@ -250,7 +242,8 @@ function generateSummary(service) {
     }
     html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
   } else if (service === "auto") {
-    let type = document.querySelector('input[name="carType"]:checked').value;
+    const selected = document.querySelector('input[name="carType"]:checked');
+    let type = selected ? selected.value : "N/A";
     let cost = DOM.totalCarCost.textContent;
     html += `<p><strong>Servicio:</strong> Lavada de Auto</p>`;
     html += `<p><strong>Tipo:</strong> ${type}</p>`;
@@ -262,9 +255,8 @@ function generateSummary(service) {
   DOM.summarySection.innerHTML = html;
   showSection("summarySection");
 
-  // Guardar en historial
-  let historyEntry = { service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() };
-  user.history.push(historyEntry);
+  // Guardar historial
+  user.history.push({ service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() });
   renderHistory();
 }
 
@@ -323,12 +315,12 @@ function renderHistory() {
     DOM.historyContainer.appendChild(div);
   });
 }
-
 // ===================== PROGRAMADO =====================
 document.querySelectorAll('input[name="schedule"]').forEach(radio => {
   radio.addEventListener('change', () => {
-    if (radio.value === 'programado' && radio.checked) DOM.scheduleDateInput.classList.remove('hidden');
-    else if (radio.value === 'inmediato' && radio.checked) {
+    if (radio.value === 'programado' && radio.checked) {
+      DOM.scheduleDateInput.classList.remove('hidden');
+    } else if (radio.value === 'inmediato' && radio.checked) {
       DOM.scheduleDateInput.classList.add('hidden');
       DOM.scheduleDateInput.value = "";
     }
@@ -340,16 +332,3 @@ updateCarsFromSelect();
 updateCarCost();
 showSection("worldSelection");
 checkAutoAvailability();
-
-// Recuperar datos guardados en localStorage
-window.addEventListener("DOMContentLoaded", () => {
-  const savedName = localStorage.getItem("xpertoName");
-  const savedAddress = localStorage.getItem("xpertoAddress");
-  if (savedName && DOM.userName) {
-    const firstName = savedName.split(" ")[0];
-    DOM.userName.textContent = `Hola, ${firstName} 👋`;
-  }
-  if (savedAddress && DOM.defaultAddress) {
-    DOM.defaultAddress.textContent = `Dirección: ${savedAddress}`;
-  }
-});
