@@ -61,13 +61,13 @@ section {
   margin-bottom: 2rem;
 }
 
-/* ================= Botones de servicios (vertical tipo Uber) ================= */
+/* ================= Botones de servicios verticales tipo Uber ================= */
 .world-options {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .service-button {
@@ -79,7 +79,7 @@ section {
 .service-button > button {
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: row; /* horizontal tipo app */
   align-items: center;
   justify-content: flex-start;
   gap: 1rem;
@@ -102,9 +102,10 @@ section {
 }
 
 .service-button img {
-  width: 50px;
-  height: 50px;
-  object-fit: contain;
+  width: 60px;
+  height: 60px;
+  object-fit: cover; /* que no se deforme */
+  border-radius: 12px;
 }
 
 /* ================= Info icon y tooltip ================= */
@@ -180,7 +181,6 @@ section {
   font-size: 14px;
 }
 
-/* ================= Animación tooltips ================= */
 @keyframes fadeIn {
   from {opacity: 0; transform: translate(-50%, -10px);}
   to {opacity: 1; transform: translate(-50%, 0);}
@@ -363,4 +363,79 @@ input[type="radio"] {
   left: 0;
   width: 100%;
   height: 60px;
-  display:
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+}
+
+.bottom-nav button {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+.bottom-nav button .icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.bottom-nav button .label {
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.bottom-nav button.active {
+  color: #007bff;
+}
+
+/* ================= Seguimiento ================= */
+#trackStatus {
+  background-color: #e6f2ff;
+  border-left: 5px solid #0077cc;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #004a99;
+  text-align: center;
+  user-select: none;
+}
+
+/* ================= Pagos ================= */
+#cardDetails {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f0f7ff;
+  border-radius: 12px;
+  box-shadow: inset 0 0 5px rgba(0,119,204,0.3);
+}
+
+#cardDetails label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+#cardDetails input {
+  width: 100%;
+}
+
+/* ================= Responsive ================= */
+@media (min-width: 600px) {
+  .form-group label {
+    flex: 1 1 48%;
+  }
+}
+
+@media (max-width: 
