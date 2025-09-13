@@ -11,9 +11,7 @@ let user = {
 
 let currentService = null;
 let selectedExpert = null;
-let spacesCount = 1;
 let carsCount = 1;
-let baseCost = 30;
 let selectedAreas = {}; // Áreas dinámicas
 
 // ===================== DOM =====================
@@ -29,8 +27,6 @@ const DOM = {
   historySection: document.getElementById("historySection"),
   profileSection: document.getElementById("profileSection"),
   scheduleDateInput: document.getElementById("scheduleDate"),
-  spacesInput: document.getElementById("spacesInput"),
-  totalSpaces: document.getElementById("totalSpaces"),
   carsInputSelect: document.getElementById("carsInputSelect"),
   totalCars: document.getElementById("totalCars"),
   totalCarCost: document.getElementById("totalCarCost"),
@@ -73,7 +69,6 @@ function showSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) section.classList.add("active");
 
-  // Bottom nav
   document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.remove("active"));
   const navBtn = document.querySelector(
     `#nav${sectionId.charAt(0).toUpperCase() + sectionId.slice(1).replace("Section","")}`
@@ -184,14 +179,6 @@ if(DOM.btnCalculateTotal) {
   });
 }
 
-// ===================== ESPACIOS =====================
-function increaseSpaces() { spacesCount = Math.min(10, spacesCount+1); updateSpaces(); }
-function decreaseSpaces() { spacesCount = Math.max(1, spacesCount-1); updateSpaces(); }
-function updateSpaces() {
-  if(DOM.spacesInput) DOM.spacesInput.value = spacesCount;
-  if(DOM.totalSpaces) DOM.totalSpaces.textContent = spacesCount;
-}
-
 // ===================== AUTOS =====================
 function updateCarCost() {
   let typeEl = document.querySelector('input[name="carType"]:checked');
@@ -252,6 +239,7 @@ function generateSummary(service) {
 
   html+=`<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
   if(DOM.summarySection) DOM.summarySection.innerHTML = html;
+
   showSection("summarySection");
 
   // historial
