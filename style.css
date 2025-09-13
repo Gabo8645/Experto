@@ -1,4 +1,4 @@
-/* Reset y fuente */
+/* ===== RESET & BASE ===== */
 * {
   margin: 0;
   padding: 0;
@@ -7,8 +7,8 @@
 }
 
 body {
-  background-color: #f8f9fa;
-  color: #333;
+  background: #f9fafc;
+  color: #2b2b2b;
   line-height: 1.6;
   min-height: 100vh;
   display: flex;
@@ -16,41 +16,43 @@ body {
   font-size: 16px;
 }
 
-/* Header */
+/* ===== HEADER ===== */
 header {
-  background-color: #0077cc; /* Azul institucional */
+  background: linear-gradient(135deg, #0077cc, #005fa3);
   padding: 1rem 1.5rem;
   text-align: center;
-  border-bottom: none;
   position: sticky;
   top: 0;
   z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); /* sombra sutil */
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
 }
 
 header h1 {
-  font-size: 1.8rem;
-  color: #fff; /* Xperto en blanco */
-  font-weight: 700;
+  font-size: 1.9rem;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.3rem;
 }
 
 #userName {
   font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 0.2rem;
-  color: #fff; /* Hola en blanco */
+  color: #e6f2ff;
 }
 
 #defaultAddress {
   font-size: 0.9rem;
-  opacity: 0.95;
-  color: #fff; /* Dirección en blanco */
+  opacity: 0.9;
+  color: #f0f8ff;
 }
 
-/* Main content */
+/* ===== MAIN CONTENT ===== */
 main {
   flex: 1;
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 1.5rem;
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
@@ -58,17 +60,17 @@ main {
 
 h2 {
   margin-bottom: 1rem;
-  color: #0077cc;
-  font-size: 1.5rem;
-  font-weight: 600;
+  color: #004a99;
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
-/* Secciones */
+/* ===== SECTIONS ===== */
 section {
   margin-bottom: 2rem;
 }
 
-/* Botones de servicios */
+/* ===== SERVICE BUTTONS ===== */
 .world-options {
   display: flex;
   gap: 1.5rem;
@@ -80,8 +82,7 @@ section {
 .service-button {
   position: relative;
   display: inline-block;
-  margin: 0.5rem;
-  width: 140px;
+  width: 150px;
 }
 
 .service-button > button {
@@ -89,71 +90,69 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 1.2rem;
-  border-radius: 16px;
-  border: 2px solid #ccc;
+  padding: 1.4rem 1rem;
+  border-radius: 18px;
+  border: none;
   background: #fff;
-  cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .service-button > button:hover,
 .service-button > button:focus {
-  border-color: #0077cc;
-  transform: translateY(-5px);
-  box-shadow: 0 6px 14px rgba(0, 119, 204, 0.3);
-  outline: none;
+  background: #f0f7ff;
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 119, 204, 0.25);
 }
 
 .service-button img {
-  width: 50px;
-  height: 50px;
-  margin-bottom: 0.7rem;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.6rem;
 }
 
-/* Info icon y tooltip */
+/* ===== INFO ICON + TOOLTIP ===== */
 .info-icon {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 16px;
-  background: rgba(0,0,0,0.06);
+  top: 10px;
+  right: 10px;
+  font-size: 14px;
+  background: #0077cc;
+  color: #fff;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 30;
-  user-select: none;
 }
 
 .service-info {
   position: absolute;
-  top: 90%;
+  top: 95%;
   left: 50%;
   transform: translateX(-50%);
-  width: 220px;
+  width: 240px;
   background: #fff;
-  border: 1px solid #0077cc;
-  border-radius: 12px;
-  padding: 0.8rem;
-  margin-top: 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 50;
+  border: 1.5px solid #0077cc;
+  border-radius: 14px;
+  padding: 0.9rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
   font-size: 0.9rem;
+  animation: fadeIn 0.3s ease;
 }
 
 .service-info::after {
   content: "";
   position: absolute;
-  top: -6px;
+  top: -7px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 6px;
+  border-width: 7px;
   border-style: solid;
   border-color: transparent transparent #0077cc transparent;
 }
@@ -164,67 +163,63 @@ section {
 
 .service-info ul {
   list-style: none;
-  padding-left: 0;
-  margin: 0;
 }
 
 .service-info li.included::before {
   content: "✔ ";
-  color: green;
+  color: #28a745;
   font-weight: bold;
 }
 
 .service-info li.not-included::before {
   content: "✖ ";
-  color: red;
+  color: #dc3545;
   font-weight: bold;
 }
 
 .service-info li {
-  margin: 4px 0;
+  margin: 5px 0;
   font-size: 14px;
 }
 
-/* Tarjetas de expertos */
+/* ===== CARDS EXPERTOS ===== */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1.3rem;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.4rem;
 }
 
 .card {
   background: #fff;
   padding: 1rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 18px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   text-align: center;
   cursor: pointer;
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .card:hover,
 .card:focus {
-  box-shadow: 0 8px 20px rgba(0,119,204,0.4);
-  transform: translateY(-4px);
-  outline: none;
+  transform: translateY(-6px);
+  box-shadow: 0 8px 22px rgba(0, 119, 204, 0.25);
 }
 
 .card.selected {
   border: 3px solid #0077cc;
-  box-shadow: 0 10px 24px rgba(0,119,204,0.6);
+  box-shadow: 0 10px 26px rgba(0, 119, 204, 0.35);
 }
 
 .card img {
   width: 100%;
-  height: 120px;
+  height: 130px;
   object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 0.7rem;
+  border-radius: 14px;
+  margin-bottom: 0.6rem;
 }
 
 .card h3 {
   font-size: 1.1rem;
-  margin-bottom: 0.3rem;
   color: #0077cc;
   font-weight: 700;
 }
@@ -238,51 +233,42 @@ section {
 .card .comment {
   font-size: 0.9rem;
   color: #555;
-  margin-top: 0.5rem;
   font-style: italic;
+  margin-top: 0.4rem;
 }
 
-.card em {
-  font-size: 0.85rem;
-  color: #777;
-  display: block;
-  margin-top: 0.3rem;
-}
-
-/* Botones generales */
+/* ===== BUTTONS ===== */
 .btn {
   display: block;
   width: 100%;
   margin-top: 1.3rem;
-  padding: 0.9rem;
-  background-color: #0077cc;
+  padding: 1rem;
+  background: linear-gradient(135deg, #0077cc, #005fa3);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 1.1rem;
-  cursor: pointer;
   font-weight: 700;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .btn:hover,
 .btn:focus {
-  background-color: #005fa3;
-  outline: none;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 119, 204, 0.3);
 }
 
-/* Formularios */
+/* ===== FORMS ===== */
 .form-group {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.2rem;
 }
 
 .form-group label {
   flex: 1 1 100%;
   font-weight: 600;
-  color: #333;
 }
 
 input[type="text"],
@@ -292,112 +278,63 @@ input[type="date"],
 input[type="number"],
 input[type="month"] {
   width: 100%;
-  padding: 0.65rem 0.8rem;
-  border: 1.8px solid #ccc;
+  padding: 0.7rem 0.9rem;
+  border: 2px solid #e0e0e0;
   border-radius: 12px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: border 0.3s ease;
 }
 
 input:focus {
   border-color: #0077cc;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.2);
 }
 
 input[type="radio"] {
-  margin-right: 0.5rem;
+  margin-right: 0.4rem;
   cursor: pointer;
 }
 
-/* Ocultar elementos */
-.hidden {
-  display: none !important;
-}
-
-/* Contadores + / - */
-.space-selector {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.space-selector button {
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
-  cursor: pointer;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f0f0f0;
-  transition: background-color 0.2s;
-}
-
-.space-selector button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-
-.space-selector button:hover:not(:disabled) {
-  background-color: #e0e0e0;
-}
-
-#spacesInput,
-#carsInput {
-  width: 50px;
-  text-align: center;
-  font-size: 18px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  pointer-events: none;
-}
-
-/* Navegación inferior */
+/* ===== NAVIGATION (BOTTOM) ===== */
 .bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 64px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: #fff;
+  background: #fff;
   border-top: 1px solid #ddd;
   z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .bottom-nav button {
   flex: 1;
   background: none;
   border: none;
-  outline: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   font-size: 14px;
   color: #555;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
 
 .bottom-nav button .icon {
   font-size: 22px;
-  line-height: 1;
-}
-
-.bottom-nav button .label {
-  font-size: 11px;
-  margin-top: 2px;
 }
 
 .bottom-nav button.active {
   color: #0077cc;
+  font-weight: 700;
 }
 
-/* Seguimiento */
+/* ===== TRACKING ===== */
 #trackStatus {
   background-color: #e6f2ff;
   border-left: 5px solid #0077cc;
@@ -407,29 +344,24 @@ input[type="radio"] {
   font-weight: 600;
   color: #004a99;
   text-align: center;
-  user-select: none;
 }
 
-/* Pagos */
+/* ===== PAGOS ===== */
 #cardDetails {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #f0f7ff;
   border-radius: 12px;
-  box-shadow: inset 0 0 5px rgba(0,119,204,0.3);
+  box-shadow: inset 0 0 5px rgba(0, 119, 204, 0.25);
 }
 
 #cardDetails label {
   display: block;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.7rem;
   font-weight: 600;
 }
 
-#cardDetails input {
-  width: 100%;
-}
-
-/* Responsive */
+/* ===== RESPONSIVE ===== */
 @media (min-width: 600px) {
   .form-group label {
     flex: 1 1 48%;
@@ -438,6 +370,12 @@ input[type="radio"] {
 
 @media (max-width: 420px) {
   .service-button {
-    width: 45%;
+    width: 46%;
   }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
