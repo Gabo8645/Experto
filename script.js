@@ -14,7 +14,7 @@ let spacesCount = 1;
 let carsCount = 1;
 let baseCost = 30;
 let selectedAreas = {}; // Áreas dinámicas
-let history = [];
+let paymentMethod = null;
 
 // ===================== DOM =====================
 const DOM = {
@@ -44,9 +44,8 @@ const DOM = {
   trackStatus: document.getElementById("trackStatus"),
   btnAuto: document.getElementById("btnAuto"),
   profileForm: document.getElementById("profileForm"),
-  defaultAddress: document.getElementById("defaultAddress"),
-  paymentForm: document.getElementById("paymentForm"),
-  cardDetails: document.getElementById("cardDetails")
+  cardDetails: document.getElementById("cardDetails"),
+  defaultAddress: document.getElementById("defaultAddress")
 };
 
 // ===================== TOOLTIP INFO =====================
@@ -74,7 +73,9 @@ function showSection(sectionId) {
   if (section) section.classList.remove("hidden");
 
   document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.remove("active"));
-  const navBtn = document.getElementById("nav" + sectionId.charAt(0).toUpperCase() + sectionId.slice(1));
+  const navBtn = document.querySelector(
+    `#nav${sectionId.charAt(0).toUpperCase() + sectionId.slice(1).replace("Section","")}`
+  );
   if (navBtn) navBtn.classList.add("active");
 }
 
@@ -87,7 +88,7 @@ if (DOM.profileForm) {
     user.email = document.getElementById("profileEmail").value;
     user.phone = document.getElementById("profilePhone").value;
     user.address = document.getElementById("profileAddress").value;
-    DOM.defaultAddress.textContent = "Dirección: " + user.address;
+    DOM.defaultAddress.textContent = `Dirección: ${user.address}`;
     alert("Perfil guardado correctamente!");
   });
 }
@@ -97,20 +98,15 @@ function selectWorld(service) {
   currentService = service;
   selectedExpert = null;
   loadExperts();
-  if(service === "auto") {
-    showSection("carSection");
-  } else {
-    renderAreas();
-    showSection("expertSection");
-  }
+  showSection("expertSection");
   checkAutoAvailability();
 }
 
 // ===================== EXPERTOS =====================
 const experts = [
-  { name: "Juan Pérez", rating: 4.8, photo: "https://randomuser.me/api/portraits/men/1.jpg" },
-  { name: "María López", rating: 4.9, photo: "https://randomuser.me/api/portraits/women/2.jpg" },
-  { name: "Carlos Ruiz", rating: 4.7, photo: "https://randomuser.me/api/portraits/men/3.jpg" },
+  { name: "Juan Pérez", rating: 4.8, photo: "https://randomuser.me/api/portraits/men/1.jpg", activities: ["Limpieza de baños", "Cocina", "Sala"] },
+  { name: "María López", rating: 4.9, photo: "https://randomuser.me/api/portraits/women/2.jpg", activities: ["Habitaciones", "Lavado de autos"] },
+  { name: "Carlos Ruiz", rating: 4.7, photo: "https://randomuser.me/api/portraits/men/3.jpg", activities: ["Cocina profunda", "Alfombras", "Ventanas"] },
 ];
 
 function loadExperts() {
@@ -121,7 +117,8 @@ function loadExperts() {
     card.innerHTML = `
       <img src="${exp.photo}" alt="${exp.name}" class="expert-photo"/>
       <h3>${exp.name}</h3>
-      <p>⭐ ${exp.rating}</p>`;
+      <p>⭐ ${exp.rating}</p>
+      <p><strong>Actividades:</strong> ${exp.activities.join(", ")}</p>`;
     card.onclick = () => {
       selectedExpert = exp;
       document.querySelectorAll("#expertsContainer .card").forEach(c => c.classList.remove("selected"));
@@ -135,9 +132,13 @@ function loadExperts() {
 // ===================== BOTÓN SIGUIENTE EXPERTOS =====================
 if (DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
-    if (!selectedExpert) return;
-    renderAreas();
-    showSection("areasSection");
+    if (!selectedExpert) return alert("Selecciona un experto para continuar");
+    if (currentService === "auto") {
+      showSection("carSection");
+    } else {
+      renderAreas();
+      showSection("areasSection");
+    }
   });
 }
 
@@ -177,6 +178,9 @@ function changeAreaCount(areaId, delta) {
 // ===================== BOTÓN VER RESUMEN =====================
 if (DOM.btnCalculateTotal) {
   DOM.btnCalculateTotal.addEventListener("click", () => {
+    if (!selectedExpert) return alert("Selecciona un experto antes de continuar");
+    let totalSelected = Object.values(selectedAreas).reduce((acc, val) => acc + val, 0);
+    if(totalSelected === 0) return alert("Selecciona al menos un área");
     generateSummary(currentService);
     if (currentService === "basico") user.limpiezaPurchases.basico++;
     if (currentService === "profundo") user.limpiezaPurchases.profundo++;
@@ -185,7 +189,11 @@ if (DOM.btnCalculateTotal) {
 }
 
 // ===================== FUNCIONES DE ESPACIOS =====================
+function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
+function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
 function updateSpaces() {
+  DOM.spacesInput.value = spacesCount;
+  DOM.totalSpaces.textContent = spacesCount;
   let total = 0;
   for (const [id, count] of Object.entries(selectedAreas)) {
     const area = areas.find(a => a.id === id);
@@ -196,11 +204,11 @@ function updateSpaces() {
 
 // ===================== AUTOS =====================
 function updateCarCost() {
-  const type = document.querySelector('input[name="carType"]:checked').value;
+  const type = document.querySelector('input[name="carType"]:checked')?.value || "sedan";
   let cost = 10;
-  if (type === "crossover") cost = 15;
-  if (type === "suv") cost = 20;
-  if (type === "camioneta") cost = 18;
+  if(type === "crossover") cost = 15;
+  if(type === "suv") cost = 20;
+  if(type === "camioneta") cost = 18;
   DOM.totalCarCost.textContent = (carsCount * cost).toFixed(2);
 }
 
@@ -215,72 +223,80 @@ if (DOM.btnNextFromCars) {
   DOM.btnNextFromCars.addEventListener("click", () => {
     generateSummary("auto");
     user.limpiezaPurchases.auto++;
-    checkAutoAvailability();
   });
 }
 
 // ===================== DESBLOQUEO AUTO =====================
 function checkAutoAvailability() {
-  if (DOM.btnAuto) {
-    DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
-  }
+  if (DOM.btnAuto) DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
 }
 
 // ===================== RESUMEN =====================
 function generateSummary(service) {
   let html = `<h2>Resumen del servicio</h2>`;
-  html += `<p><strong>Dirección:</strong> ${user.address || "No registrada"}</p>`;
-  if(service !== "auto" && selectedExpert) {
-    html += `<p><strong>Experto:</strong> ${selectedExpert.name} ⭐${selectedExpert.rating}</p>`;
-  }
+  html += `<p><strong>Dirección:</strong> ${user.address || "No ingresada"}</p>`;
+  html += `<p><strong>Experto:</strong> ${selectedExpert.name}</p>`;
 
-  if (service === "basico" || service === "profundo") {
+  if(service === "basico" || service === "profundo") {
     let total = 0;
-    for (const [id, count] of Object.entries(selectedAreas)) {
-      if (count > 0) {
+    for(const [id, count] of Object.entries(selectedAreas)) {
+      if(count > 0) {
         const area = areas.find(a => a.id === id);
         total += area.price * count;
         html += `<p>${area.label}: ${count} x $${area.price}</p>`;
       }
     }
     html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
-  } else if (service === "auto") {
+  } else if(service === "auto") {
     const type = document.querySelector('input[name="carType"]:checked').value;
     const cost = DOM.totalCarCost.textContent;
     html += `<p><strong>Servicio:</strong> Lavada de Auto</p>`;
     html += `<p><strong>Tipo:</strong> ${type}</p>`;
-    html += `<p><strong>Autos:</strong> ${carsCount}</p>`;
+    html += `<p><strong>Cantidad de autos:</strong> ${carsCount}</p>`;
     html += `<p><strong>Total:</strong> $${cost}</p>`;
   }
-
-  // Guardar en historial
-  history.push({ service, expert: selectedExpert?.name || "-", total: DOM.totalCost.textContent || DOM.totalCarCost.textContent, date: new Date().toLocaleString() });
-  renderHistory();
-
   html += `<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
   DOM.summarySection.innerHTML = html;
   showSection("summarySection");
+  addToHistory(service);
+}
+
+// ===================== HISTORIAL =====================
+function addToHistory(service) {
+  const container = DOM.historyContainer;
+  const existing = Array.from(container.children).some(c => c.dataset.service === service && c.dataset.expert === selectedExpert.name);
+  if(existing) return; // evita duplicados
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.service = service;
+  card.dataset.expert = selectedExpert.name;
+  card.innerHTML = `
+    <p><strong>Servicio:</strong> ${service}</p>
+    <p><strong>Experto:</strong> ${selectedExpert.name}</p>
+    <p><strong>Dirección:</strong> ${user.address || "No ingresada"}</p>`;
+  container.appendChild(card);
 }
 
 // ===================== PAGO =====================
-function goToPayment() { showSection("paymentSection"); }
-
-if(DOM.paymentForm) {
-  DOM.paymentForm.addEventListener("change", () => {
-    const payMethod = document.querySelector('input[name="pay"]:checked')?.value;
-    DOM.cardDetails.classList.toggle("hidden", payMethod !== "tarjeta");
+function goToPayment() { 
+  showSection("paymentSection"); 
+}
+if(DOM.paymentForm){
+  DOM.paymentForm.addEventListener("change", e => {
+    paymentMethod = document.querySelector('input[name="pay"]:checked')?.value;
+    if(paymentMethod === "tarjeta") DOM.cardDetails.classList.remove("hidden");
+    else DOM.cardDetails.classList.add("hidden");
   });
 }
 
-if(DOM.btnConfirmPayment) {
+if(DOM.btnConfirmPayment){
   DOM.btnConfirmPayment.addEventListener("click", () => {
-    const payMethod = document.querySelector('input[name="pay"]:checked')?.value;
-    if(!payMethod) { alert("Selecciona un método de pago"); return; }
-    if(payMethod === "tarjeta") {
+    if(!paymentMethod) return alert("Selecciona un método de pago");
+    if(paymentMethod === "tarjeta"){
       const number = document.getElementById("cardNumber").value.trim();
       const expiry = document.getElementById("cardExpiry").value.trim();
       const cvv = document.getElementById("cardCVV").value.trim();
-      if(!number || !expiry || !cvv) { alert("Ingresa los datos de tarjeta completos"); return; }
+      if(!number || !expiry || !cvv) return alert("Ingresa los datos de la tarjeta");
     }
     startTracking();
   });
@@ -294,7 +310,7 @@ function startTracking() {
     "🚗 En camino",
     "🧹 Servicio en progreso",
     "✅ Servicio finalizado",
-    "🎉 Gracias por elegir Xperto, tu tiempo vale más"
+    "🎉 Gracias por elegirnos Xperto, porque tu tiempo vale más"
   ];
   let i = 0;
   const interval = setInterval(() => {
@@ -304,29 +320,8 @@ function startTracking() {
   }, 2000);
 }
 
-// ===================== HISTORIAL =====================
-function renderHistory() {
-  DOM.historyContainer.innerHTML = "";
-  history.forEach(h => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `<p><strong>Servicio:</strong> ${h.service}</p>
-                     <p><strong>Experto:</strong> ${h.expert}</p>
-                     <p><strong>Total:</strong> $${h.total}</p>
-                     <p><strong>Fecha:</strong> ${h.date}</p>`;
-    DOM.historyContainer.appendChild(div);
-  });
-}
-
-// ===================== FECHA PROGRAMADA =====================
-document.querySelectorAll('input[name="schedule"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    DOM.scheduleDateInput.classList.toggle('hidden', radio.value !== 'programado');
-  });
-});
-
 // ===================== INIT =====================
 updateCarsFromSelect();
-updateCarCost();
+updateSpaces();
 showSection("worldSelection");
 checkAutoAvailability();
