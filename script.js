@@ -47,7 +47,6 @@ let selectedPayment = null;
 // ======== DOM Elements ========
 const defaultAddressEl = document.getElementById("defaultAddress");
 const worldSelectionSection = document.getElementById("worldSelection");
-const autoSection = document.getElementById("autoSection"); // Nueva sección para autos
 const expertSection = document.getElementById("expertSection");
 const expertsContainer = document.getElementById("expertsContainer");
 const btnNextFromExperts = document.getElementById("btnNextFromExperts");
@@ -84,8 +83,8 @@ const totalCarsEl = document.getElementById('totalCars');
 const totalCarCostEl = document.getElementById('totalCarCost');
 const btnCarIncrease = document.getElementById('btnCarIncrease');
 const btnCarDecrease = document.getElementById('btnCarDecrease');
+const scheduleDateInput = document.getElementById('scheduleDate');
 const btnCalculateTotal = document.getElementById('btnCalculateTotal');
-const scheduleDateInput = document.getElementById('scheduleDateInput');
 
 // ======== Funciones usuario ========
 function loadUser() {
@@ -119,7 +118,7 @@ function updateDefaultAddress() {
 
 // ======== Navegación ========
 function showSection(sectionId) {
-  const sections = [worldSelectionSection, autoSection, expertSection, areasSection, summarySection, paymentSection, trackingSection, historySection, profileSection];
+  const sections = [worldSelectionSection, expertSection, areasSection, summarySection, paymentSection, trackingSection, historySection, profileSection];
   sections.forEach(sec => sec.classList.add("hidden"));
   Object.values(navButtons).forEach(btn => btn.classList.remove("active"));
 
@@ -138,6 +137,24 @@ function showSection(sectionId) {
       profileSection.classList.remove("hidden");
       navButtons.profileSection.classList.add("active");
       break;
+    case "areasSection":
+      areasSection.classList.remove("hidden");
+      break;
+    case "carSection":
+      document.getElementById('carSection').classList.remove('hidden');
+      break;
+    case "expertSection":
+      expertSection.classList.remove("hidden");
+      break;
+    case "summarySection":
+      summarySection.classList.remove("hidden");
+      break;
+    case "paymentSection":
+      paymentSection.classList.remove("hidden");
+      break;
+    case "trackingSection":
+      trackingSection.classList.remove("hidden");
+      break;
   }
 }
 
@@ -150,7 +167,6 @@ function resetApp() {
   carType = 'sedan';
   expertSection.classList.add("hidden");
   areasSection.classList.add("hidden");
-  autoSection.classList.add("hidden");
   summarySection.classList.add("hidden");
   paymentSection.classList.add("hidden");
   trackingSection.classList.add("hidden");
@@ -171,18 +187,15 @@ function selectWorld(worldKey) {
   selectedWorld = worldKey;
   selectedService = worldKey;
 
-  // Lógica separada para autos
   if(worldKey === 'auto'){
-    autoSection.classList.remove('hidden');
-    worldSelectionSection.classList.add('hidden');
-    expertSection.classList.add('hidden');
+    showSection('carSection');
     areasSection.classList.add('hidden');
   } else {
-    autoSection.classList.add('hidden');
-    areasSection.classList.remove('hidden');
-    expertSection.classList.remove('hidden');
-    worldSelectionSection.classList.add('hidden');
+    showSection('areasSection');
+    document.getElementById('carSection').classList.add('hidden');
   }
+
+  showSection('expertSection');
 }
 
 // ======== Expertos ========
@@ -215,7 +228,7 @@ function selectExpert(id){
   btnNextFromExperts.disabled=false;
 }
 
-// ======== Contadores ========
+// ======== Contador de espacios ========
 function increaseSpaces(){ if(spaces<maxSpaces){ spaces++; updateSpaces(); } }
 function decreaseSpaces(){ if(spaces>1){ spaces--; updateSpaces(); } }
 function updateSpaces(){
@@ -226,6 +239,7 @@ function updateSpaces(){
   btnIncrease.disabled=spaces===maxSpaces;
 }
 
+// ======== Contador autos ========
 function increaseCars(){ if(carCount<maxCars){ carCount++; updateCars(); } }
 function decreaseCars(){ if(carCount>1){ carCount--; updateCars(); } }
 function updateCars(){
@@ -239,25 +253,26 @@ function updateCars(){
   btnCarDecrease.disabled=carCount===1;
   btnCarIncrease.disabled=carCount===maxCars;
 }
-document.querySelectorAll('input[name="carType"]').forEach(r=>{
-  r.addEventListener('change',()=>{
-    carType=document.querySelector('input[name="carType"]:checked').value;
-    updateCars();
-  });
-});
+document.querySelectorAll('input[name="carType"]').forEach(r=>r.addEventListener('change',()=>{
+  carType=document.querySelector('input[name="carType"]:checked').value;
+  updateCars();
+}));
 
 // ======== Tooltips info ========
-document.querySelectorAll('.infoBtn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const tooltipId = btn.dataset.tooltip;
-    document.getElementById(tooltipId).classList.toggle('hidden');
-  });
-});
+let openTooltip = null;
+function toggleInfo(e, id){
+  const tooltip = document.getElementById(id);
+  if(openTooltip && openTooltip !== tooltip){
+    openTooltip.classList.add('hidden'); // Cierra tooltip abierto
+  }
+  tooltip.classList.toggle('hidden');
+  openTooltip = tooltip.classList.contains('hidden') ? null : tooltip;
+}
 
 // ======== Horario ========
 document.querySelectorAll('input[name="schedule"]').forEach(r=>{
-  r.addEventListener('change', ()=>{
-    selectedSchedule=r.value;
+  r.addEventListener('change', e=>{
+    selectedSchedule=e.target.value;
     scheduleDateInput.classList.toggle('hidden', selectedSchedule!=='programado');
   });
 });
@@ -279,10 +294,11 @@ btnCalculateTotal.addEventListener('click', ()=>{
   summarySection.innerHTML=summaryHTML;
   summarySection.classList.remove('hidden');
   areasSection.classList.add('hidden');
+  document.getElementById('carSection').classList.add('hidden');
 });
 
 // ======== Pago ========
-paymentForm.addEventListener('change', ()=>{
+paymentForm.addEventListener('change', e=>{
   const method=document.querySelector('input[name="pay"]:checked')?.value;
   selectedPayment=method;
   cardDetailsDiv.classList.toggle('hidden', method!=='tarjeta');
@@ -300,6 +316,7 @@ btnConfirmPayment.addEventListener('click', ()=>{
 
   setTimeout(()=>{
     trackStatus.textContent='Experto asignado: '+(selectedExpert?selectedExpert.name:'Xperto');
+    // Guardar historial
     const serviceRecord={
       service:selectedService,
       expert:selectedExpert ? selectedExpert.name : null,
@@ -330,7 +347,3 @@ document.addEventListener("DOMContentLoaded", ()=>{
   showSection("worldSelection");
 });
 profileForm.addEventListener("submit", e=>{ e.preventDefault(); saveUser(); });
-btnDecrease.addEventListener('click', decreaseSpaces);
-btnIncrease.addEventListener('click', increaseSpaces);
-btnCarIncrease.addEventListener('click', increaseCars);
-btnCarDecrease.addEventListener('click', decreaseCars);
