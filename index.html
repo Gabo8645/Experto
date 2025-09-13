@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
+
   <header>
     <h1>Xperto</h1>
     <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
@@ -21,7 +22,6 @@
     <section id="worldSelection">
       <h2>Selecciona el servicio:</h2>
       <div class="world-options">
-
         <!-- Limpieza Básica -->
         <div class="service-button">
           <button type="button" onclick="selectWorld('basico')">
@@ -80,8 +80,7 @@
             </ul>
             <small>Se habilita después de 1 limpieza profunda</small>
           </div>
-        </div>       
-
+        </div>
       </div>
     </section>
 
@@ -94,7 +93,7 @@
 
     <!-- Selección de áreas -->
     <section id="areasSection" class="hidden">
-      <h2>Selecciona áreas a limpiar:</h2>
+      <h2>Selecciona áreas</h2>
       <div id="areasContainer" class="form-group"></div>
 
       <fieldset class="schedule-group">
@@ -111,28 +110,27 @@
     <section id="carSection" class="hidden">
       <h2>Selecciona tu auto</h2>
       <div class="car-type-selector">
-        <label>
-          <input type="radio" name="carType" value="sedan" checked /> Sedán ($10)
-        </label>
-        <label>
-          <input type="radio" name="carType" value="crossover" /> Crossover 2 filas ($15)
-        </label>
-        <label>
-          <input type="radio" name="carType" value="suv" /> SUV 3 filas ($20)
-        </label>
-        <label>
-          <input type="radio" name="carType" value="camioneta" /> Camioneta ($18)
-        </label>
+        <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($10)</label>
+        <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas ($15)</label>
+        <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV 3 filas ($20)</label>
+        <label><input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta ($18)</label>
       </div>
 
       <h3>Cantidad de autos</h3>
-      <div class="space-selector">
-        <button type="button" onclick="decreaseCars()">-</button>
-        <input type="text" id="carsInput" value="1" readonly />
-        <button type="button" onclick="increaseCars()">+</button>
-      </div>
+      <select id="carsInputSelect" onchange="updateCarsFromSelect()">
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
 
-      <p>Total autos: <span id="totalCars">1</span></p>
+      <p>Total autos seleccionados: <span id="totalCars">1</span></p>
       <p>Costo total: $<span id="totalCarCost">10.00</span></p>
 
       <button class="btn" id="btnNextFromCars">Siguiente</button>
@@ -147,11 +145,23 @@
       <form id="paymentForm">
         <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
         <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
+
+        <div id="cardDetails" class="hidden">
+          <label>Número de tarjeta
+            <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
+          </label>
+          <label>Fecha de expiración
+            <input type="month" id="cardExpiry" />
+          </label>
+          <label>Código CVV
+            <input type="text" id="cardCVV" maxlength="4" placeholder="123" inputmode="numeric" />
+          </label>
+        </div>
       </form>
       <button class="btn" id="btnConfirmPayment">Confirmar</button>
     </section>
 
-    <!-- Tracking -->
+    <!-- Seguimiento -->
     <section id="trackingSection" class="hidden tracking">
       <h2>Seguimiento</h2>
       <p id="trackStatus">Asignando experto...</p>
@@ -177,30 +187,35 @@
     <section id="profileSection" class="hidden">
       <h2>Mi Perfil</h2>
       <form id="profileForm">
-        <label>Nombre<input type="text" id="profileName" required /></label>
-        <label>Apellido<input type="text" id="profileLastName" required /></label>
-        <label>Email<input type="email" id="profileEmail" required /></label>
-        <label>Teléfono<input type="tel" id="profilePhone" required /></label>
-        <label>Dirección<input type="text" id="profileAddress" required /></label>
+        <label>Nombre <input type="text" id="profileName" required /></label>
+        <label>Apellido <input type="text" id="profileLastName" required /></label>
+        <label>Email <input type="email" id="profileEmail" required /></label>
+        <label>Teléfono <input type="tel" id="profilePhone" required /></label>
+        <label>Dirección <input type="text" id="profileAddress" required /></label>
         <button type="submit" class="btn">Guardar</button>
       </form>
     </section>
   </main>
 
   <!-- Barra inferior -->
-  <nav class="bottom-nav" role="navigation">
+  <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
     <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">
-      <span class="icon">🏠</span><span class="label">Inicio</span>
+      <span class="icon">🏠</span>
+      <span class="label">Inicio</span>
     </button>
     <button type="button" id="navPromos" onclick="showSection('promosSection')">
-      <span class="icon">💸</span><span class="label">Promos</span>
+      <span class="icon">💸</span>
+      <span class="label">Promos</span>
     </button>
     <button type="button" id="navHistory" onclick="showSection('historySection')">
-      <span class="icon">📋</span><span class="label">Historial</span>
+      <span class="icon">📋</span>
+      <span class="label">Historial</span>
     </button>
     <button type="button" id="navProfile" onclick="showSection('profileSection')">
-      <span class="icon">👤</span><span class="label">Perfil</span>
+      <span class="icon">👤</span>
+      <span class="label">Perfil</span>
     </button>
   </nav>
+
 </body>
 </html>
