@@ -56,8 +56,11 @@ main {
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
+  margin-top: 100px; /* espacio para header sticky */
+  margin-bottom: 80px; /* espacio para bottom nav */
 }
 
+/* ===== HEADINGS ===== */
 h2 {
   margin-bottom: 1rem;
   color: #004a99;
@@ -67,7 +70,13 @@ h2 {
 
 /* ===== SECTIONS ===== */
 section {
+  display: none; /* oculto por defecto */
   margin-bottom: 2rem;
+}
+
+section.active {
+  display: block; /* visible solo la activa */
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 /* ===== SERVICE BUTTONS ===== */
@@ -129,6 +138,7 @@ section {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 30;
 }
 
 .service-info {
@@ -144,6 +154,7 @@ section {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
   font-size: 0.9rem;
   animation: fadeIn 0.3s ease;
+  z-index: 50;
 }
 
 .service-info::after {
