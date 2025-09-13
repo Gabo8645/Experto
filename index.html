@@ -13,24 +13,22 @@
 <body>
 
   <header>
-  <h1>Xperto</h1>
-  <p id="userName">Hola 👋</p>
-  <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
-</header>
+    <h1>Xperto</h1>
+    <p id="userName">Hola 👋</p>
+    <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
+  </header>
 
   <main>
-    <!-- Selección de servicio -->
-    <section id="worldSelection">
+    <!-- SELECCIÓN DE SERVICIO -->
+    <section id="worldSelection" class="active">
       <h2>Selecciona el servicio:</h2>
       <div class="world-options">
         <!-- Limpieza Básica -->
-        <div class="service-button">
-          <button type="button" onclick="selectWorld('basico')">
-            <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-            Limpieza Básica
-            <span class="info-icon">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoBasico">
+        <button class="service-button" type="button" onclick="selectWorld('basico')">
+          <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
+          Limpieza Básica
+          <span class="info-icon" onclick="toggleInfo(event, 'infoBasico')">ℹ️</span>
+          <div class="service-info" id="infoBasico">
             <ul>
               <li class="included">Barrido y aspirado de pisos</li>
               <li class="included">Limpieza de superficies visibles</li>
@@ -43,16 +41,14 @@
               <li class="not-included">Desinfectantes potentes</li>
             </ul>
           </div>
-        </div>
+        </button>
 
         <!-- Limpieza Profunda -->
-        <div class="service-button">
-          <button type="button" onclick="selectWorld('profundo')">
-            <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
-            Limpieza Profunda
-            <span class="info-icon">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoProfundo">
+        <button class="service-button" type="button" onclick="selectWorld('profundo')">
+          <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
+          Limpieza Profunda
+          <span class="info-icon" onclick="toggleInfo(event, 'infoProfundo')">ℹ️</span>
+          <div class="service-info" id="infoProfundo">
             <ul>
               <li class="included">Incluye lo de la Básica</li>
               <li class="included">Limpieza profunda de baños y cocina</li>
@@ -63,16 +59,14 @@
               <li class="included">Desinfectantes potentes</li>
             </ul>
           </div>
-        </div>
+        </button>
 
         <!-- Lavada de Auto -->
-        <div class="service-button">
-          <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
-            <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
-            Lavada de Auto
-            <span class="info-icon">ℹ️</span>
-          </button>
-          <div class="service-info hidden" id="infoAuto">
+        <button class="service-button" type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
+          <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
+          Lavada de Auto
+          <span class="info-icon" onclick="toggleInfo(event, 'infoAuto')">ℹ️</span>
+          <div class="service-info" id="infoAuto">
             <ul>
               <li class="included">Lavado exterior</li>
               <li class="included">Aspirado interior</li>
@@ -80,19 +74,19 @@
             </ul>
             <small>Se habilita después de 1 limpieza profunda</small>
           </div>
-        </div>
+        </button>
       </div>
     </section>
 
-    <!-- Selección de expertos -->
-    <section id="expertSection" class="hidden">
+    <!-- SELECCIÓN DE EXPERTOS -->
+    <section id="expertSection">
       <h2>Selecciona un Xperto</h2>
       <div id="expertsContainer" class="card-container"></div>
       <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
     </section>
 
-    <!-- Selección de áreas -->
-    <section id="areasSection" class="hidden">
+    <!-- SELECCIÓN DE ÁREAS -->
+    <section id="areasSection">
       <h2>Selecciona áreas</h2>
       <div id="areasContainer" class="form-group"></div>
 
@@ -106,8 +100,8 @@
       <button class="btn" id="btnCalculateTotal">Ver resumen</button>
     </section>
 
-    <!-- Selección de autos -->
-    <section id="carSection" class="hidden">
+    <!-- SELECCIÓN DE AUTOS -->
+    <section id="carSection">
       <h2>Selecciona tu auto</h2>
       <div class="car-type-selector">
         <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($10)</label>
@@ -136,17 +130,20 @@
       <button class="btn" id="btnNextFromCars">Siguiente</button>
     </section>
 
-    <!-- Resumen -->
-    <section id="summarySection" class="hidden summary"></section>
+    <!-- RESUMEN -->
+    <section id="summarySection" class="summary"></section>
 
-    <!-- Pago -->
-    <section id="paymentSection" class="hidden payment">
+    <!-- PAGO -->
+    <section id="paymentSection" class="payment">
       <h2>Método de pago</h2>
       <form id="paymentForm">
-        <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
-        <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
+        <fieldset>
+          <legend>Selecciona método de pago</legend>
+          <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
+          <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
+        </fieldset>
 
-        <div id="cardDetails" class="hidden">
+        <div id="cardDetails">
           <label>Número de tarjeta
             <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
           </label>
@@ -161,14 +158,14 @@
       <button class="btn" id="btnConfirmPayment">Confirmar</button>
     </section>
 
-    <!-- Seguimiento -->
-    <section id="trackingSection" class="hidden tracking">
+    <!-- SEGUIMIENTO -->
+    <section id="trackingSection" class="tracking">
       <h2>Seguimiento</h2>
       <p id="trackStatus">Asignando experto...</p>
     </section>
 
-    <!-- Promos -->
-    <section id="promosSection" class="hidden">
+    <!-- PROMOS -->
+    <section id="promosSection">
       <h2>Promociones</h2>
       <ul>
         <li>🎁 20% en tu primer servicio</li>
@@ -177,27 +174,30 @@
       </ul>
     </section>
 
-    <!-- Historial -->
-    <section id="historySection" class="hidden">
+    <!-- HISTORIAL -->
+    <section id="historySection">
       <h2>Historial de Servicios</h2>
       <div id="historyContainer" class="card-container"></div>
     </section>
 
-    <!-- Perfil -->
-    <section id="profileSection" class="hidden">
+    <!-- PERFIL -->
+    <section id="profileSection">
       <h2>Mi Perfil</h2>
       <form id="profileForm">
-        <label>Nombre <input type="text" id="profileName" required /></label>
-        <label>Apellido <input type="text" id="profileLastName" required /></label>
-        <label>Email <input type="email" id="profileEmail" required /></label>
-        <label>Teléfono <input type="tel" id="profilePhone" required /></label>
-        <label>Dirección <input type="text" id="profileAddress" required /></label>
+        <fieldset>
+          <legend>Información personal</legend>
+          <label>Nombre <input type="text" id="profileName" required /></label>
+          <label>Apellido <input type="text" id="profileLastName" required /></label>
+          <label>Email <input type="email" id="profileEmail" required /></label>
+          <label>Teléfono <input type="tel" id="profilePhone" required /></label>
+          <label>Dirección <input type="text" id="profileAddress" required /></label>
+        </fieldset>
         <button type="submit" class="btn">Guardar</button>
       </form>
     </section>
   </main>
 
-  <!-- Barra inferior -->
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
     <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">
       <span class="icon">🏠</span>
