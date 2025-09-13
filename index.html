@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 </head>
 <body>
-
   <header>
     <h1>Xperto</h1>
     <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
@@ -22,6 +21,7 @@
     <section id="worldSelection">
       <h2>Selecciona el servicio:</h2>
       <div class="world-options">
+
         <!-- Limpieza Básica -->
         <div class="service-button">
           <button type="button" onclick="selectWorld('basico')">
@@ -80,7 +80,8 @@
             </ul>
             <small>Se habilita después de 1 limpieza profunda</small>
           </div>
-        </div>
+        </div>       
+
       </div>
     </section>
 
@@ -93,41 +94,47 @@
 
     <!-- Selección de áreas -->
     <section id="areasSection" class="hidden">
-      <h2>¿Cuántos espacios quieres limpiar?</h2>
+      <h2>Selecciona áreas a limpiar:</h2>
       <div id="areasContainer" class="form-group"></div>
-      <div class="space-selector">
-        <button type="button" id="btnDecrease" onclick="decreaseSpaces()">-</button>
-        <input type="text" id="spacesInput" value="1" readonly />
-        <button type="button" id="btnIncrease" onclick="increaseSpaces()">+</button>
-      </div>
-      <p>Total espacios seleccionados: <span id="totalSpaces">1</span></p>
-      <p>Costo total: $<span id="totalCost">30.00</span></p>
+
       <fieldset class="schedule-group">
         <legend>¿Cuándo deseas el servicio?</legend>
         <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
         <label><input type="radio" name="schedule" value="programado" /> Programado</label>
         <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
       </fieldset>
+
       <button class="btn" id="btnCalculateTotal">Ver resumen</button>
     </section>
 
     <!-- Selección de autos -->
-    <section id="autoSection" class="hidden">
+    <section id="carSection" class="hidden">
       <h2>Selecciona tu auto</h2>
       <div class="car-type-selector">
-        <label><input type="radio" name="carType" value="sedan" checked onchange="updateCars()" /> Sedán ($10)</label>
-        <label><input type="radio" name="carType" value="crossover" onchange="updateCars()" /> Crossover 2 filas</label>
-        <label><input type="radio" name="carType" value="suv" onchange="updateCars()" /> SUV 3 filas</label>
-        <label><input type="radio" name="carType" value="camioneta" onchange="updateCars()" /> Camioneta</label>
+        <label>
+          <input type="radio" name="carType" value="sedan" checked /> Sedán ($10)
+        </label>
+        <label>
+          <input type="radio" name="carType" value="crossover" /> Crossover 2 filas ($15)
+        </label>
+        <label>
+          <input type="radio" name="carType" value="suv" /> SUV 3 filas ($20)
+        </label>
+        <label>
+          <input type="radio" name="carType" value="camioneta" /> Camioneta ($18)
+        </label>
       </div>
+
       <h3>Cantidad de autos</h3>
       <div class="space-selector">
-        <button type="button" id="btnCarDecrease" onclick="decreaseCars()">-</button>
+        <button type="button" onclick="decreaseCars()">-</button>
         <input type="text" id="carsInput" value="1" readonly />
-        <button type="button" id="btnCarIncrease" onclick="increaseCars()">+</button>
+        <button type="button" onclick="increaseCars()">+</button>
       </div>
-      <p>Total autos seleccionados: <span id="totalCars">1</span></p>
+
+      <p>Total autos: <span id="totalCars">1</span></p>
       <p>Costo total: $<span id="totalCarCost">10.00</span></p>
+
       <button class="btn" id="btnNextFromCars">Siguiente</button>
     </section>
 
@@ -140,22 +147,11 @@
       <form id="paymentForm">
         <label><input type="radio" name="pay" value="tarjeta" /> Tarjeta</label>
         <label><input type="radio" name="pay" value="efectivo" /> Efectivo</label>
-        <div id="cardDetails" class="hidden">
-          <label>Número de tarjeta
-            <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" />
-          </label>
-          <label>Fecha de expiración
-            <input type="month" id="cardExpiry" />
-          </label>
-          <label>Código CVV
-            <input type="text" id="cardCVV" maxlength="4" placeholder="123" inputmode="numeric" />
-          </label>
-        </div>
       </form>
       <button class="btn" id="btnConfirmPayment">Confirmar</button>
     </section>
 
-    <!-- Seguimiento -->
+    <!-- Tracking -->
     <section id="trackingSection" class="hidden tracking">
       <h2>Seguimiento</h2>
       <p id="trackStatus">Asignando experto...</p>
@@ -167,7 +163,7 @@
       <ul>
         <li>🎁 20% en tu primer servicio</li>
         <li>🔥 2x1 fines de semana</li>
-        <li>🎉 Gratis 1 lavada de auto después de 3 servicios</li>
+        <li>🎉 Gratis 1 lavada de auto al completar 3 servicios</li>
       </ul>
     </section>
 
@@ -189,11 +185,10 @@
         <button type="submit" class="btn">Guardar</button>
       </form>
     </section>
-
   </main>
 
   <!-- Barra inferior -->
-  <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
+  <nav class="bottom-nav" role="navigation">
     <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">
       <span class="icon">🏠</span><span class="label">Inicio</span>
     </button>
@@ -207,6 +202,5 @@
       <span class="icon">👤</span><span class="label">Perfil</span>
     </button>
   </nav>
-
 </body>
 </html>
