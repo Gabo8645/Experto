@@ -63,6 +63,10 @@ document.querySelectorAll(".info-icon").forEach(btn => {
   });
 });
 
+document.addEventListener("click",()=>{
+  document.querySelectorAll(".service-info").forEach(el=>el.classList.add("hidden"));
+});
+
 // ===================== NAVEGACIÓN =====================
 function showSection(sectionId) {
   document.querySelectorAll("main section").forEach(s => s.classList.remove("active"));
@@ -143,20 +147,20 @@ function renderAreas() {
   if (!container) return;
   container.innerHTML = "";
   areas.forEach(area => {
-    selectedAreas[area.id] = 0;
+    if(!(area.id in selectedAreas)) selectedAreas[area.id] = 0;
     const div = document.createElement("div");
     div.className = "area-item";
     div.innerHTML = `
       <span>${area.label} ($${area.price})</span>
       <button onclick="changeAreaCount('${area.id}', -1)">-</button>
-      <span id="count-${area.id}">0</span>
+      <span id="count-${area.id}">${selectedAreas[area.id]}</span>
       <button onclick="changeAreaCount('${area.id}', 1)">+</button>`;
     container.appendChild(div);
   });
 }
 
 function changeAreaCount(areaId, delta) {
-  selectedAreas[areaId] = Math.max(0, Math.min(10, selectedAreas[areaId] + delta));
+  selectedAreas[areaId] = Math.max(0, Math.min(10, (selectedAreas[areaId] || 0) + delta));
   const countSpan = document.getElementById(`count-${areaId}`);
   if(countSpan) countSpan.textContent = selectedAreas[areaId];
 }
@@ -164,7 +168,7 @@ function changeAreaCount(areaId, delta) {
 // ===================== BOTONES =====================
 if(DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
-    if (!selectedExpert) return;
+    if (!selectedExpert) { alert("Seleccione un experto"); return; }
     if (currentService === "auto") showSection("carSection");
     else { renderAreas(); showSection("areasSection"); }
   });
@@ -193,7 +197,7 @@ function updateCarCost() {
 
 function updateCarsFromSelect() {
   if(!DOM.carsInputSelect) return;
-  carsCount = parseInt(DOM.carsInputSelect.value);
+  carsCount = parseInt(DOM.carsInputSelect.value) || 1;
   if(DOM.totalCars) DOM.totalCars.textContent = carsCount;
   updateCarCost();
 }
