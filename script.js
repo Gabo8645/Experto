@@ -28,6 +28,9 @@ const DOM = {
   historySection: document.getElementById("historySection"),
   profileSection: document.getElementById("profileSection"),
   scheduleDateInput: document.getElementById("scheduleDate"),
+  spacesInput: document.getElementById("spacesInput"),
+  totalSpaces: document.getElementById("totalSpaces"),
+  totalCost: document.getElementById("totalCost"),
   carsInput: document.getElementById("carsInput"),
   totalCars: document.getElementById("totalCars"),
   totalCarCost: document.getElementById("totalCarCost"),
@@ -39,9 +42,15 @@ const DOM = {
   historyContainer: document.getElementById("historyContainer"),
   trackStatus: document.getElementById("trackStatus"),
   btnAuto: document.getElementById("btnAuto"),
+  profileForm: document.getElementById("profileForm"),
 };
 
 // ===================== TOOLTIP INFO =====================
+document.querySelectorAll(".info-icon").forEach(icon => {
+  const infoDiv = icon.parentElement.nextElementSibling;
+  if (infoDiv) icon.setAttribute("data-target", infoDiv.id);
+});
+
 document.querySelectorAll(".info-icon").forEach(btn => {
   btn.addEventListener("click", e => {
     e.stopPropagation();
@@ -65,6 +74,19 @@ function showSection(sectionId) {
     `#nav${sectionId.charAt(0).toUpperCase() + sectionId.slice(1).replace("Section","")}`
   );
   if (navBtn) navBtn.classList.add("active");
+}
+
+// ===================== PERFIL =====================
+if (DOM.profileForm) {
+  DOM.profileForm.addEventListener("submit", e => {
+    e.preventDefault();
+    user.name = document.getElementById("profileName").value;
+    user.lastName = document.getElementById("profileLastName").value;
+    user.email = document.getElementById("profileEmail").value;
+    user.phone = document.getElementById("profilePhone").value;
+    user.address = document.getElementById("profileAddress").value;
+    alert("Perfil guardado correctamente!");
+  });
 }
 
 // ===================== FLUJO DE SERVICIOS =====================
@@ -145,6 +167,33 @@ function renderAreas() {
 function changeAreaCount(areaId, delta) {
   selectedAreas[areaId] = Math.max(0, Math.min(10, selectedAreas[areaId] + delta));
   document.getElementById(`count-${areaId}`).textContent = selectedAreas[areaId];
+  updateSpaces();
+}
+
+// ===================== BOTÓN VER RESUMEN ÁREAS =====================
+if (DOM.btnCalculateTotal) {
+  DOM.btnCalculateTotal.addEventListener("click", () => {
+    generateSummary(currentService);
+    if (currentService === "basico") user.limpiezaPurchases.basico++;
+    if (currentService === "profundo") {
+      user.limpiezaPurchases.profundo++;
+      checkAutoAvailability();
+    }
+  });
+}
+
+// ===================== FUNCIONES DE ESPACIOS =====================
+function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
+function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
+function updateSpaces() {
+  DOM.spacesInput.value = spacesCount;
+  DOM.totalSpaces.textContent = spacesCount;
+  let total = 0;
+  for (const [id, count] of Object.entries(selectedAreas)) {
+    const area = areas.find(a => a.id === id);
+    if (area) total += area.price * count;
+  }
+  DOM.totalCost.textContent = total.toFixed(2);
 }
 
 // ===================== AUTOS =====================
@@ -161,6 +210,7 @@ function updateCars() {
   DOM.totalCarCost.textContent = (carsCount * cost).toFixed(2);
 }
 
+// ===================== BOTÓN SIGUIENTE AUTOS =====================
 if (DOM.btnNextFromCars) {
   DOM.btnNextFromCars.addEventListener("click", () => {
     generateSummary("auto");
@@ -169,7 +219,7 @@ if (DOM.btnNextFromCars) {
   });
 }
 
-// ===================== CHECK AUTO DISPONIBLE =====================
+// ===================== DESBLOQUEO AUTO =====================
 function checkAutoAvailability() {
   if (DOM.btnAuto) {
     DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
@@ -189,11 +239,6 @@ function generateSummary(service) {
       }
     }
     html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
-    // Aumenta contador de limpiezas para desbloquear Auto
-    if (service === "profundo") {
-      user.limpiezaPurchases.profundo++;
-      checkAutoAvailability();
-    }
   } else if (service === "auto") {
     let type = document.querySelector('input[name="carType"]:checked').value;
     let cost = DOM.totalCarCost.textContent;
@@ -208,10 +253,7 @@ function generateSummary(service) {
 }
 
 // ===================== PAGO =====================
-function goToPayment() {
-  showSection("paymentSection");
-}
-
+function goToPayment() { showSection("paymentSection"); }
 if (DOM.btnConfirmPayment) {
   DOM.btnConfirmPayment.addEventListener("click", () => {
     startTracking();
@@ -238,5 +280,6 @@ function startTracking() {
 
 // ===================== INIT =====================
 updateCars();
+updateSpaces();
 showSection("worldSelection");
 checkAutoAvailability();
