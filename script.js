@@ -5,7 +5,7 @@ let user = {
   email: '',
   phone: '',
   address: '',
-  limpiezaPurchases: 0,
+  limpiezaPurchasesi: 0,
   history: []
 };
 
@@ -26,23 +26,16 @@ const experts = [
 const servicePrices = { basico: 30, profundo: 50 };
 
 // ======== Estado de la app ========
-let selectedWorld = null;
+let selectedWorld = null;     // 'basico' | 'profundo' | 'auto'
 let selectedService = 'basico';
-let selectedExpert = null;
+let selectedExpert = null;    // object from experts
 let spaces = 1;
 let maxSpaces = 10;
-
-// Para autos
 let carCount = 1;
 let carType = 'sedan';
 const maxCars = 10;
-
-// Horario
-let selectedSchedule = "inmediato";
-let selectedDate = null;
-
-// Pago
-let selectedPayment = null;
+let selectedSchedule = "inmediato"; // 'inmediato'|'programado'
+let selectedPayment = null; // 'tarjeta'|'efectivo'
 
 // ======== DOM Elements ========
 const defaultAddressEl = document.getElementById("defaultAddress");
@@ -86,17 +79,24 @@ const btnCarDecrease = document.getElementById('btnCarDecrease');
 const scheduleDateInput = document.getElementById("scheduleDateInput");
 const btnCalculateTotal = document.getElementById("btnCalculateTotal");
 const carSection = document.getElementById('autoSection');
+const btnNextFromCars = document.getElementById('btnNextFromCars'); // existe en tu HTML
 
-// ======== Funciones usuario ========
+// ======== Utilidades ========
+function safeGet(el, name) {
+  if(!el) console.warn(`Elemento faltante: ${name}`);
+  return el;
+}
+
+// ======== User functions (localStorage) ========
 function loadUser() {
   const saved = localStorage.getItem("xpertoUser");
   if(saved) {
     user = JSON.parse(saved);
-    profileName.value = user.name || "";
-    profileLastName.value = user.lastName || "";
-    profileEmail.value = user.email || "";
-    profilePhone.value = user.phone || "";
-    profileAddress.value = user.address || "";
+    if(profileName) profileName.value = user.name || "";
+    if(profileLastName) profileLastName.value = user.lastName || "";
+    if(profileEmail) profileEmail.value = user.email || "";
+    if(profilePhone) profilePhone.value = user.phone || "";
+    if(profileAddress) profileAddress.value = user.address || "";
     updateDefaultAddress();
   }
 }
@@ -117,11 +117,11 @@ function updateDefaultAddress() {
   defaultAddressEl.textContent = user.address ? `Dirección: ${user.address}` : "Por favor, configura tu dirección en Perfil.";
 }
 
-// ======== Navegación ========
+// ======== Navegación entre secciones ========
 function showSection(sectionId) {
   const sections = [worldSelectionSection, expertSection, areasSection, summarySection, paymentSection, trackingSection, historySection, profileSection, carSection];
-  sections.forEach(sec => sec.classList.add("hidden"));
-  Object.values(navButtons).forEach(btn => btn.classList.remove("active"));
+  sections.forEach(sec => sec && sec.classList.add("hidden"));
+  Object.values(navButtons).forEach(btn => btn && btn.classList.remove("active"));
 
   switch(sectionId) {
     case "worldSelection":
@@ -138,16 +138,42 @@ function showSection(sectionId) {
       profileSection.classList.remove("hidden");
       navButtons.profileSection.classList.add("active");
       break;
+    case "expertSection":
+      expertSection.classList.remove("hidden");
+      break;
+    case "areasSection":
+      areasSection.classList.remove("hidden");
+      break;
+    case "autoSection":
+      carSection.classList.remove("hidden");
+      break;
+    case "summarySection":
+      summarySection.classList.remove("hidden");
+      break;
+    case "paymentSection":
+      paymentSection.classList.remove("hidden");
+      break;
+    case "trackingSection":
+      trackingSection.classList.remove("hidden");
+      break;
+    default:
+      // si no coincide, intenta mostrar por id
+      const el = document.getElementById(sectionId);
+      if(el) el.classList.remove("hidden");
   }
 }
 
-// ======== Reset app ========
+// ======== Reset app (estado inicial cuando entras a Home) ========
 function resetApp() {
   selectedWorld = null;
+  selectedService = 'basico';
   selectedExpert = null;
   spaces = 1;
   carCount = 1;
   carType = 'sedan';
+  selectedSchedule = "inmediato";
+  selectedPayment = null;
+
   expertSection.classList.add("hidden");
   areasSection.classList.add("hidden");
   summarySection.classList.add("hidden");
@@ -155,12 +181,13 @@ function resetApp() {
   trackingSection.classList.add("hidden");
   carSection.classList.add("hidden");
   btnNextFromExperts.disabled = true;
+
   renderExperts();
   updateSpaces();
   updateCars();
 }
 
-// ======== Selección de mundo ========
+// ======== Selección de servicio (muestra expertos primero siempre) ========
 function selectWorld(worldKey) {
   const unlock = worlds[worldKey].unlocksAt || 0;
   if(user.limpiezaPurchases < unlock){
@@ -171,41 +198,43 @@ function selectWorld(worldKey) {
   selectedWorld = worldKey;
   selectedService = worldKey;
 
-  // Mostrar selección de experto siempre primero
-  expertSection.classList.remove('hidden');
-  areasSection.classList.add('hidden');
-  carSection.classList.add('hidden');
+  // Mostrar selección de experto primero (para limpieza y auto)
+  showSection('expertSection');
   renderExperts();
 }
 
 // ======== Expertos ========
 function renderExperts() {
+  if(!expertsContainer) return;
   expertsContainer.innerHTML = "";
   selectedExpert = null;
   btnNextFromExperts.disabled = true;
+
   experts.forEach(exp => {
     const card = document.createElement("div");
-    card.classList.add("card");
+    card.className = "card";
     card.tabIndex = 0;
     card.setAttribute("role","button");
-    card.setAttribute("aria-pressed","false");
-    card.innerHTML = `<img src="${exp.photo}" alt="Foto de ${exp.name}" />
-                      <h3>${exp.name}</h3>
-                      <p class="stars">${"★".repeat(exp.stars)}${"☆".repeat(5-exp.stars)}</p>
-                      <p class="comment">${exp.comments}</p>
-                      <p><em>${exp.specialty}</em></p>`;
-    card.addEventListener("click", ()=>selectExpert(exp.id));
-    card.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectExpert(exp.id); } });
+    card.innerHTML = `
+      <img src="${exp.photo}" alt="Foto de ${exp.name}" />
+      <h3>${exp.name}</h3>
+      <p class="stars">${"★".repeat(exp.stars)}${"☆".repeat(5-exp.stars)}</p>
+      <p class="comment">${exp.comments}</p>
+      <p><em>${exp.specialty}</em></p>
+    `;
+    card.addEventListener("click", ()=> selectExpert(exp.id));
+    card.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " ") { e.preventDefault(); selectExpert(exp.id); }});
     expertsContainer.appendChild(card);
   });
 }
 
-function selectExpert(id){
-  selectedExpert = experts.find(e=>e.id===id);
-  [...expertsContainer.children].forEach(c=>c.classList.remove("selected"));
-  const card = [...expertsContainer.children].find(c=>c.querySelector("h3").textContent===selectedExpert.name);
-  if(card) card.classList.add("selected");
-  btnNextFromExperts.disabled=false;
+function selectExpert(id) {
+  selectedExpert = experts.find(e => e.id === id);
+  // marcar UI
+  [...expertsContainer.children].forEach(c => c.classList.remove('selected'));
+  const card = [...expertsContainer.children].find(c => c.querySelector("h3")?.textContent === selectedExpert.name);
+  if(card) card.classList.add('selected');
+  btnNextFromExperts.disabled = false;
 }
 
 function goToAreas() {
@@ -213,134 +242,207 @@ function goToAreas() {
     alert("Selecciona un experto antes de continuar.");
     return;
   }
-
-  expertSection.classList.add("hidden");
+  // ocultar expertos
+  expertSection.classList.add('hidden');
 
   if(selectedService === 'auto'){
-    // Para Auto, mostrar sección de selección de auto y cantidad
+    // ir a selección de vehículo y cantidad
     carSection.classList.remove('hidden');
     updateCars();
   } else {
-    areasSection.classList.remove("hidden");
+    areasSection.classList.remove('hidden');
     updateSpaces();
   }
 }
 
-// ======== Contador de espacios ========
-function increaseSpaces(){ if(spaces<maxSpaces){ spaces++; updateSpaces(); } }
-function decreaseSpaces(){ if(spaces>1){ spaces--; updateSpaces(); } }
+// ======== Contadores: espacios ========
+function increaseSpaces(){ if(spaces < maxSpaces) { spaces++; updateSpaces(); } }
+function decreaseSpaces(){ if(spaces > 1) { spaces--; updateSpaces(); } }
 function updateSpaces(){
-  spacesInput.value=spaces;
-  totalSpaces.textContent=spaces;
-  totalCost.textContent=(spaces*servicePrices[selectedService]).toFixed(2);
-  btnDecrease.disabled=spaces===1;
-  btnIncrease.disabled=spaces===maxSpaces;
+  if(spacesInput) spacesInput.value = spaces;
+  if(totalSpaces) totalSpaces.textContent = spaces;
+  const price = servicePrices[selectedService] || servicePrices.basico;
+  if(totalCost) totalCost.textContent = (spaces * price).toFixed(2);
+  if(btnDecrease) btnDecrease.disabled = spaces === 1;
+  if(btnIncrease) btnIncrease.disabled = spaces === maxSpaces;
 }
 
-// ======== Contador autos ========
-function increaseCars(){ if(carCount<maxCars){ carCount++; updateCars(); } }
-function decreaseCars(){ if(carCount>1){ carCount--; updateCars(); } }
+// ======== Contadores: autos ========
+function increaseCars(){ if(carCount < maxCars) { carCount++; updateCars(); } }
+function decreaseCars(){ if(carCount > 1) { carCount--; updateCars(); } }
 function updateCars(){
-  carsInput.value=carCount;
-  totalCarsEl.textContent=carCount;
-  let basePrice=10;
-  if(carType==='crossover') basePrice=13;
-  if(carType==='suv') basePrice=16;
-  if(carType==='camioneta') basePrice=19;
-  totalCarCostEl.textContent=(basePrice+(carCount-1)*3).toFixed(2);
-  btnCarDecrease.disabled=carCount===1;
-  btnCarIncrease.disabled=carCount===maxCars;
+  if(carsInput) carsInput.value = carCount;
+  if(totalCarsEl) totalCarsEl.textContent = carCount;
+  let basePrice = 10;
+  if(carType === 'crossover') basePrice = 13;
+  if(carType === 'suv') basePrice = 16;
+  if(carType === 'camioneta') basePrice = 19;
+  if(totalCarCostEl) totalCarCostEl.textContent = (basePrice + (carCount - 1) * 3).toFixed(2);
+  if(btnCarDecrease) btnCarDecrease.disabled = carCount === 1;
+  if(btnCarIncrease) btnCarIncrease.disabled = carCount === maxCars;
 }
-document.querySelectorAll('input[name="carType"]').forEach(r=>r.addEventListener('change',()=>{
-  carType=document.querySelector('input[name="carType"]:checked').value;
-  updateCars();
-}));
 
-// ======== Tooltips info ========
+document.querySelectorAll('input[name="carType"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const sel = document.querySelector('input[name="carType"]:checked');
+    if(sel) carType = sel.value;
+    updateCars();
+  });
+});
+
+// ======== Tooltips ========
 document.querySelectorAll('.infoBtn').forEach(btn=>{
   btn.addEventListener('click', e=>{
-    e.stopPropagation();
+    e.stopPropagation(); // evita activar selectWorld
     const id = btn.getAttribute('data-tooltip');
     const tooltip = document.getElementById(id);
-    if(tooltip) tooltip.classList.toggle('hidden');
+    if(!tooltip) return;
+    // cerrar otros tooltips
+    document.querySelectorAll('.service-info').forEach(si => { if(si !== tooltip) si.classList.add('hidden'); });
+    tooltip.classList.toggle('hidden');
+  });
+});
+// cerrar tooltips si se hace click fuera
+document.addEventListener('click', () => {
+  document.querySelectorAll('.service-info').forEach(si => si.classList.add('hidden'));
+});
+
+// ======== Horario (programado / inmediato) ========
+document.querySelectorAll('input[name="schedule"]').forEach(r => {
+  r.addEventListener('change', e => {
+    selectedSchedule = e.target.value;
+    if(scheduleDateInput) scheduleDateInput.classList.toggle('hidden', selectedSchedule !== 'programado');
   });
 });
 
-// ======== Horario ========
-document.querySelectorAll('input[name="schedule"]').forEach(r=>{
-  r.addEventListener('change', e=>{
-    selectedSchedule=e.target.value;
-    scheduleDateInput.classList.toggle('hidden', selectedSchedule!=='programado');
-  });
-});
-
-// ======== Resumen ========
-btnCalculateTotal.addEventListener('click', ()=>{
-  let summaryHTML=`<h3>Resumen de tu servicio</h3>
-                   <p>Servicio: ${worlds[selectedService].name}</p>
-                   <p>Experto: ${selectedExpert ? selectedExpert.name : '-'}</p>`;
-  if(selectedService==='auto'){
-    summaryHTML+=`<p>Tipo de auto: ${carType}</p>
-                  <p>Cantidad: ${carCount}</p>
-                  <p>Total: $${totalCarCostEl.textContent}</p>`;
-  } else {
-    summaryHTML+=`<p>Espacios: ${spaces}</p>
-                  <p>Total: $${totalCost.textContent}</p>`;
-  }
-  summaryHTML+=`<p>Horario: ${selectedSchedule}${selectedSchedule==='programado'?` el ${scheduleDateInput.value}`:''}</p>`;
-  summarySection.innerHTML=summaryHTML;
-  summarySection.classList.remove('hidden');
-  areasSection.classList.add('hidden');
-  carSection.classList.add('hidden');
-});
-
-// ======== Pago ========
-paymentForm.addEventListener('change', e=>{
-  const method=document.querySelector('input[name="pay"]:checked')?.value;
-  selectedPayment=method;
-  cardDetailsDiv.classList.toggle('hidden', method!=='tarjeta');
-});
-
-btnConfirmPayment.addEventListener('click', ()=>{
-  if(!selectedPayment){
-    alert('Selecciona un método de pago.');
+// ======== Resumen (desde áreas o autos) ========
+function buildSummary() {
+  if(!selectedService) {
+    alert("Selecciona primero un servicio.");
     return;
   }
-  alert('Pago realizado con éxito');
-  trackStatus.textContent='Asignando experto...';
-  trackingSection.classList.remove('hidden');
-  paymentSection.classList.add('hidden');
+  let total = 0;
+  let html = `<h3>Resumen de tu servicio</h3>
+              <p>Servicio: ${worlds[selectedService].name}</p>
+              <p>Experto: ${selectedExpert ? selectedExpert.name : '-'}</p>`;
+  if(selectedService === 'auto') {
+    html += `<p>Tipo de auto: ${carType}</p>
+             <p>Cantidad: ${carCount}</p>`;
+    // calcular total
+    let basePrice = 10;
+    if(carType === 'crossover') basePrice = 13;
+    if(carType === 'suv') basePrice = 16;
+    if(carType === 'camioneta') basePrice = 19;
+    total = basePrice + (carCount - 1) * 3;
+  } else {
+    html += `<p>Espacios: ${spaces}</p>`;
+    const price = servicePrices[selectedService] || servicePrices.basico;
+    total = price * spaces;
+  }
 
-  setTimeout(()=>{
-    trackStatus.textContent='Experto asignado: '+(selectedExpert?selectedExpert.name:'Xperto');
-    // Guardar historial
-    const serviceRecord={
-      service:selectedService,
-      expert:selectedExpert ? selectedExpert.name : null,
-      date: new Date().toLocaleString(),
-      total:selectedService==='auto'?parseFloat(totalCarCostEl.textContent):parseFloat(totalCost.textContent)
-    };
-    user.history.push(serviceRecord);
-    if(selectedService!=='auto') user.limpiezaPurchases++;
-    localStorage.setItem('xpertoUser',JSON.stringify(user));
-  },2000);
-});
+  html += `<p>Horario: ${selectedSchedule}${selectedSchedule === 'programado' && scheduleDateInput && scheduleDateInput.value ? ` el ${scheduleDateInput.value}` : ''}</p>`;
+  html += `<p><strong>Total: $${total.toFixed(2)}</strong></p>`;
+
+  // añadir botones para continuar al pago
+  html += `<div class="summary-actions">
+            <button id="btnProceedToPayment" class="btn">Ir a pago</button>
+           </div>`;
+
+  summarySection.innerHTML = html;
+  showSection('summarySection');
+
+  // listener para ir a pago
+  const proceedBtn = document.getElementById('btnProceedToPayment');
+  if(proceedBtn) proceedBtn.addEventListener('click', () => {
+    showSection('paymentSection');
+    // guardar el total en dataset para el pago / historial
+    summarySection.dataset.total = total.toFixed(2);
+  });
+}
+
+// vincular botones de resumen
+if(btnCalculateTotal) btnCalculateTotal.addEventListener('click', buildSummary);
+if(btnNextFromCars) {
+  btnNextFromCars.addEventListener('click', () => {
+    // cuando se viene de autos, construimos resumen directamente
+    buildSummary();
+  });
+}
+
+// ======== Pago ========
+if(paymentForm) {
+  paymentForm.addEventListener('change', () => {
+    const method = document.querySelector('input[name="pay"]:checked')?.value;
+    selectedPayment = method;
+    if(cardDetailsDiv) cardDetailsDiv.classList.toggle('hidden', method !== 'tarjeta');
+  });
+}
+if(btnConfirmPayment) {
+  btnConfirmPayment.addEventListener('click', () => {
+    if(!selectedPayment) {
+      alert('Selecciona un método de pago.');
+      return;
+    }
+    // Simular pago ok
+    alert('Pago realizado con éxito');
+    showSection('trackingSection');
+    trackStatus.textContent = 'Asignando experto...';
+
+    // Después de un tiempo asignamos
+    setTimeout(() => {
+      trackStatus.textContent = 'Experto asignado: ' + (selectedExpert ? selectedExpert.name : 'Xperto');
+      // Guardar en historial
+      const total = parseFloat(summarySection.dataset.total || (selectedService === 'auto' ? parseFloat(totalCarCostEl?.textContent || 0) : parseFloat(totalCost?.textContent || 0)));
+      const serviceRecord = {
+        service: selectedService,
+        expert: selectedExpert ? selectedExpert.name : null,
+        date: new Date().toLocaleString(),
+        total: isNaN(total) ? 0 : total
+      };
+      user.history = user.history || [];
+      user.history.push(serviceRecord);
+      // incrementar limpieza purchases solo para limpiezas
+      if(selectedService !== 'auto') user.limpiezaPurchases = (user.limpiezaPurchases || 0) + 1;
+      localStorage.setItem('xpertoUser', JSON.stringify(user));
+    }, 1500);
+  });
+}
 
 // ======== Historial ========
 function renderHistory(){
-  historyContainer.innerHTML='';
-  if(!user.history.length){ historyContainer.innerHTML='<p>No tienes historial aún.</p>'; return; }
-  user.history.forEach(h=>{
-    const card=document.createElement('div');
-    card.classList.add('card');
-    card.innerHTML=`<h4>${h.service}</h4><p>Experto: ${h.expert || '-'}</p><p>Fecha: ${h.date}</p><p>Total: $${h.total.toFixed(2)}</p>`;
+  if(!historyContainer) return;
+  historyContainer.innerHTML = '';
+  if(!user.history || !user.history.length){
+    historyContainer.innerHTML = '<p>No tienes historial aún.</p>';
+    return;
+  }
+  user.history.forEach(h => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `<h4>${h.service}</h4>
+                      <p>Experto: ${h.expert || '-'}</p>
+                      <p>Fecha: ${h.date}</p>
+                      <p>Total: $${(h.total||0).toFixed(2)}</p>`;
     historyContainer.appendChild(card);
   });
 }
 
 // ======== Inicialización ========
 document.addEventListener("DOMContentLoaded", ()=>{
+  // avisos por si falta algún elemento crítico
+  safeGet(expertsContainer, 'expertsContainer');
+  safeGet(btnNextFromExperts, 'btnNextFromExperts');
+  safeGet(carSection, 'autoSection');
+
   loadUser();
   showSection("worldSelection");
+
+  // listeners botones contadores
+  if(btnDecrease) btnDecrease.addEventListener('click', decreaseSpaces);
+  if(btnIncrease) btnIncrease.addEventListener('click', increaseSpaces);
+  if(btnCarIncrease) btnCarIncrease.addEventListener('click', increaseCars);
+  if(btnCarDecrease) btnCarDecrease.addEventListener('click', decreaseCars);
+
+  // perfil
+  if(profileForm) profileForm.addEventListener('submit', e => { e.preventDefault(); saveUser(); });
 });
-profileForm.addEventListener("submit", e=>{ e.preventDefault(); saveUser(); });
