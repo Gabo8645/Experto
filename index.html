@@ -14,7 +14,7 @@
 
 <header>
   <h1>Xperto</h1>
-  <p id="defaultAddress">Dirección: Calle Falsa 123, Ciudad</p>
+  <p id="defaultAddress">Dirección: Por favor, configura tu dirección en Perfil.</p>
 </header>
 
 <main>
@@ -22,7 +22,6 @@
   <section id="worldSelection">
     <h2>Selecciona el servicio:</h2>
     <div class="world-options">
-
       <!-- Limpieza Básica -->
       <div class="service-button">
         <button type="button" onclick="selectWorld('basico')">
@@ -48,7 +47,7 @@
       <!-- Limpieza Profunda -->
       <div class="service-button">
         <button type="button" onclick="selectWorld('profundo')">
-          <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
+          <img src="https://img.icons8.com/ios-filled/50/000000/vacuum.png" alt="Profundo" />
           Limpieza Profunda
           <span class="infoBtn" data-tooltip="infoProfundo">ℹ️</span>
         </button>
@@ -68,7 +67,7 @@
 
       <!-- Lavada de Auto -->
       <div class="service-button">
-        <button type="button" id="btnAuto" onclick="selectWorld('auto')">
+        <button type="button" onclick="selectWorld('auto')">
           <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
           Lavada de Auto
           <span class="infoBtn" data-tooltip="infoAuto">ℹ️</span>
@@ -82,7 +81,6 @@
           <small>Se habilita después de 1 limpieza profunda</small>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -90,19 +88,13 @@
   <section id="expertSection" class="hidden">
     <h2>Selecciona un Xperto</h2>
     <div id="expertsContainer" class="card-container"></div>
-    <button class="btn" id="btnNextFromExperts" onclick="goToAreas()" disabled>Siguiente</button>
+    <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
   </section>
 
   <!-- Selección de áreas -->
   <section id="areasSection" class="hidden">
-    <h2>¿Cuántos espacios quieres limpiar?</h2>
-    <div class="space-selector">
-      <button type="button" id="btnDecrease" onclick="decreaseSpaces()">-</button>
-      <input type="text" id="spacesInput" value="1" readonly />
-      <button type="button" id="btnIncrease" onclick="increaseSpaces()">+</button>
-    </div>
-    <p>Total espacios seleccionados: <span id="totalSpaces">1</span></p>
-    <p>Costo total: $<span id="totalCost">30.00</span></p>
+    <h2>Selecciona las áreas a limpiar</h2>
+    <div id="areasContainer" class="areas-container"></div>
 
     <fieldset class="schedule-group">
       <legend>¿Cuándo deseas el servicio?</legend>
@@ -114,27 +106,25 @@
     <button class="btn" id="btnCalculateTotal">Ver resumen</button>
   </section>
 
-  <!-- Selección de autos (Lavada de Auto) -->
+  <!-- Selección de autos -->
   <section id="autoSection" class="hidden">
     <h2>Selecciona tu auto</h2>
     <div class="car-type-selector">
-      <label><input type="radio" name="carType" value="sedan" checked /> Sedán ($10 + $3 por cada auto adicional)</label>
-      <label><input type="radio" name="carType" value="crossover" /> Crossover 2 filas</label>
-      <label><input type="radio" name="carType" value="suv" /> SUV 3 filas</label>
-      <label><input type="radio" name="carType" value="camioneta" /> Camioneta</label>
+      <label><input type="radio" name="carType" value="sedan" checked /> Sedán ($10)</label>
+      <label><input type="radio" name="carType" value="crossover" /> Crossover ($15)</label>
+      <label><input type="radio" name="carType" value="suv" /> SUV ($20)</label>
+      <label><input type="radio" name="carType" value="camioneta" /> Camioneta ($25)</label>
     </div>
 
     <h3>Cantidad de autos</h3>
     <div class="space-selector">
-      <button type="button" id="btnCarDecrease" onclick="decreaseCars()">-</button>
+      <button type="button" onclick="decreaseCars()">-</button>
       <input type="text" id="carsInput" value="1" readonly />
-      <button type="button" id="btnCarIncrease" onclick="increaseCars()">+</button>
+      <button type="button" onclick="increaseCars()">+</button>
     </div>
 
     <p>Total autos seleccionados: <span id="totalCars">1</span></p>
     <p>Costo total: $<span id="totalCarCost">10.00</span></p>
-
-    <button class="btn" id="btnNextFromCars" onclick="showSection('summarySection')">Siguiente</button>
   </section>
 
   <!-- Resumen -->
@@ -174,7 +164,7 @@
     <ul>
       <li>🎁 20% en tu primer servicio</li>
       <li>🔥 2x1 fines de semana</li>
-      <li>🎉 Gratis 1 lavada de auto! Cuando hayas completado 3 servicios</li>
+      <li>🎉 Gratis 1 lavada de auto después de 3 servicios</li>
     </ul>
   </section>
 
@@ -206,7 +196,6 @@
       <button type="submit" class="btn">Guardar</button>
     </form>
   </section>
-
 </main>
 
 <!-- Barra inferior -->
@@ -220,14 +209,4 @@
     <span class="label">Promos</span>
   </button>
   <button type="button" id="navHistory" onclick="showSection('historySection')">
-    <span class="icon">📋</span>
-    <span class="label">Historial</span>
-  </button>
-  <button type="button" id="navProfile" onclick="showSection('profileSection')">
-    <span class="icon">👤</span>
-    <span class="label">Perfil</span>
-  </button>
-</nav>
-
-</body>
-</html>
+    <
