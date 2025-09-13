@@ -13,8 +13,7 @@ let currentService = null;
 let selectedExpert = null;
 let spacesCount = 1;
 let carsCount = 1;
-let baseCost = 30;
-let selectedAreas = {}; // Áreas dinámicas
+let selectedAreas = {};
 
 // ===================== DOM =====================
 const DOM = {
@@ -29,10 +28,6 @@ const DOM = {
   historySection: document.getElementById("historySection"),
   profileSection: document.getElementById("profileSection"),
   scheduleDateInput: document.getElementById("scheduleDate"),
-  spacesInput: document.getElementById("spacesInput"),
-  totalSpaces: document.getElementById("totalSpaces"),
-  totalCost: document.getElementById("totalCost"),
-  carsInputSelect: document.getElementById("carsInputSelect"),
   totalCars: document.getElementById("totalCars"),
   totalCarCost: document.getElementById("totalCarCost"),
   btnNextFromExperts: document.getElementById("btnNextFromExperts"),
@@ -50,7 +45,7 @@ const DOM = {
   areasContainer: document.getElementById("areasContainer")
 };
 
-// ===================== TOOLTIP INFO =====================
+// ===================== TOOLTIP =====================
 document.querySelectorAll(".info-icon").forEach(icon => {
   const infoDiv = icon.parentElement.nextElementSibling;
   if (infoDiv) icon.setAttribute("data-target", infoDiv.id);
@@ -66,7 +61,6 @@ document.querySelectorAll(".info-icon").forEach(btn => {
     document.getElementById(id).classList.toggle("hidden");
   });
 });
-// Cerrar tooltips al hacer click fuera
 document.body.addEventListener("click", () => {
   document.querySelectorAll(".service-info").forEach(el => el.classList.add("hidden"));
 });
@@ -77,6 +71,7 @@ function showSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) section.classList.remove("hidden");
 
+  // Navegación inferior solo activa cuando corresponde
   document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.remove("active"));
   const navBtn = document.querySelector(
     `#nav${sectionId.charAt(0).toUpperCase() + sectionId.slice(1).replace("Section","")}`
@@ -186,16 +181,16 @@ if (DOM.btnCalculateTotal) {
     generateSummary(currentService);
     if (currentService === "basico") user.limpiezaPurchases.basico++;
     if (currentService === "profundo") user.limpiezaPurchases.profundo++;
-    if (currentService !== "auto") checkAutoAvailability();
+    checkAutoAvailability();
   });
 }
 
-// ===================== ESPACIOS =====================
-function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
-function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
-function updateSpaces() {
-  DOM.spacesInput.value = spacesCount;
-  DOM.totalSpaces.textContent = spacesCount;
+if (DOM.btnNextFromCars) {
+  DOM.btnNextFromCars.addEventListener("click", () => {
+    generateSummary("auto");
+    user.limpiezaPurchases.auto++;
+    checkAutoAvailability();
+  });
 }
 
 // ===================== AUTOS =====================
@@ -209,17 +204,9 @@ function updateCarCost() {
 }
 
 function updateCarsFromSelect() {
-  carsCount = parseInt(DOM.carsInputSelect.value) || 1;
+  carsCount = parseInt(document.getElementById("carsInputSelect").value) || 1;
   DOM.totalCars.textContent = carsCount;
   updateCarCost();
-}
-
-if (DOM.btnNextFromCars) {
-  DOM.btnNextFromCars.addEventListener("click", () => {
-    generateSummary("auto");
-    user.limpiezaPurchases.auto++;
-    checkAutoAvailability();
-  });
 }
 
 // ===================== DESBLOQUEO AUTO =====================
