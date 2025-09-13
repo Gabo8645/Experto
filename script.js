@@ -24,6 +24,12 @@ const worlds = {
     icon: "https://img.icons8.com/ios-filled/50/000000/vacuum.png",
     description: "Limpieza profunda",
     unlocksAt: 3
+  },
+  auto: {
+    name: "Lavada de Auto",
+    icon: "https://img.icons8.com/ios-filled/50/000000/car.png",
+    description: "Lavado interior y exterior de auto",
+    unlocksAt: 3 // se habilita después de 3 limpiezas básicas
   }
 };
 
