@@ -1,12 +1,7 @@
 // ======== Datos iniciales ========
 let user = {
-  name: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  address: '',
-  limpiezaPurchases: 0,
-  history: []
+  name: '', lastName: '', email: '', phone: '', address: '',
+  limpiezaPurchases: 0, history: []
 };
 
 const worlds = {
@@ -32,12 +27,7 @@ const areas = [
   { id: "terraza", label: "Terraza", price: 15 }
 ];
 
-const carTypes = {
-  sedan: 10,
-  crossover: 15,
-  suv: 20,
-  camioneta: 25
-};
+const carTypes = { sedan: 10, crossover: 15, suv: 20, camioneta: 25 };
 
 // ======== Estado ========
 let selectedWorld = null;
@@ -50,203 +40,189 @@ let selectedCarType = "sedan";
 let carQuantity = 1;
 
 // ======== DOM ========
-const defaultAddressEl = document.getElementById("defaultAddress");
-const worldSelectionSection = document.getElementById("worldSelection");
-const expertSection = document.getElementById("expertSection");
-const expertsContainer = document.getElementById("expertsContainer");
-const btnNextFromExperts = document.getElementById("btnNextFromExperts");
-const areasSection = document.getElementById("areasSection");
-const areasContainer = document.getElementById("areasContainer");
-const scheduleRadios = document.querySelectorAll('input[name="schedule"]');
-const scheduleDateInput = document.getElementById("scheduleDateInput");
-const btnCalculateTotal = document.getElementById("btnCalculateTotal");
-const autoSection = document.getElementById("autoSection");
-const carsInput = document.getElementById("carsInput");
-const totalCars = document.getElementById("totalCars");
-const totalCarCost = document.getElementById("totalCarCost");
-const summarySection = document.getElementById("summarySection");
-const paymentSection = document.getElementById("paymentSection");
-const paymentForm = document.getElementById("paymentForm");
-const cardDetailsDiv = document.getElementById("cardDetails");
-const btnConfirmPayment = document.getElementById("btnConfirmPayment");
-const trackingSection = document.getElementById("trackingSection");
-const trackStatus = document.getElementById("trackStatus");
-const historySection = document.getElementById("historySection");
-const historyContainer = document.getElementById("historyContainer");
-const profileSection = document.getElementById("profileSection");
-const profileForm = document.getElementById("profileForm");
-const profileName = document.getElementById("profileName");
-const profileLastName = document.getElementById("profileLastName");
-const profileEmail = document.getElementById("profileEmail");
-const profilePhone = document.getElementById("profilePhone");
-const profileAddress = document.getElementById("profileAddress");
-const navButtons = {
-  worldSelection: document.getElementById("navHome"),
-  promosSection: document.getElementById("navPromos"),
-  historySection: document.getElementById("navHistory"),
-  profileSection: document.getElementById("navProfile")
+const DOM = {
+  defaultAddressEl: document.getElementById("defaultAddress"),
+  worldSelectionSection: document.getElementById("worldSelection"),
+  expertSection: document.getElementById("expertSection"),
+  expertsContainer: document.getElementById("expertsContainer"),
+  btnNextFromExperts: document.getElementById("btnNextFromExperts"),
+  areasSection: document.getElementById("areasSection"),
+  areasContainer: document.getElementById("areasContainer"),
+  scheduleRadios: document.querySelectorAll('input[name="schedule"]'),
+  scheduleDateInput: document.getElementById("scheduleDateInput"),
+  btnCalculateTotal: document.getElementById("btnCalculateTotal"),
+  autoSection: document.getElementById("autoSection"),
+  carsInput: document.getElementById("carsInput"),
+  totalCars: document.getElementById("totalCars"),
+  totalCarCost: document.getElementById("totalCarCost"),
+  summarySection: document.getElementById("summarySection"),
+  paymentSection: document.getElementById("paymentSection"),
+  paymentForm: document.getElementById("paymentForm"),
+  cardDetailsDiv: document.getElementById("cardDetails"),
+  btnConfirmPayment: document.getElementById("btnConfirmPayment"),
+  trackingSection: document.getElementById("trackingSection"),
+  trackStatus: document.getElementById("trackStatus"),
+  historySection: document.getElementById("historySection"),
+  historyContainer: document.getElementById("historyContainer"),
+  profileSection: document.getElementById("profileSection"),
+  profileForm: document.getElementById("profileForm"),
+  profileName: document.getElementById("profileName"),
+  profileLastName: document.getElementById("profileLastName"),
+  profileEmail: document.getElementById("profileEmail"),
+  profilePhone: document.getElementById("profilePhone"),
+  profileAddress: document.getElementById("profileAddress"),
+  navButtons: {
+    worldSelection: document.getElementById("navHome"),
+    promosSection: document.getElementById("navPromos"),
+    historySection: document.getElementById("navHistory"),
+    profileSection: document.getElementById("navProfile")
+  }
 };
 
-// ======== Funciones usuario ========
-function loadUser() {
+// ======== Usuario ========
+function loadUser(){
   const saved = localStorage.getItem("xpertoUser");
-  if(saved) {
+  if(saved){
     user = JSON.parse(saved);
-    profileName.value = user.name || "";
-    profileLastName.value = user.lastName || "";
-    profileEmail.value = user.email || "";
-    profilePhone.value = user.phone || "";
-    profileAddress.value = user.address || "";
-    updateDefaultAddress();
+    DOM.profileName.value = user.name || "";
+    DOM.profileLastName.value = user.lastName || "";
+    DOM.profileEmail.value = user.email || "";
+    DOM.profilePhone.value = user.phone || "";
+    DOM.profileAddress.value = user.address || "";
   }
+  updateDefaultAddress();
 }
-function saveUser() {
-  user.name = profileName.value.trim();
-  user.lastName = profileLastName.value.trim();
-  user.email = profileEmail.value.trim();
-  user.phone = profilePhone.value.trim();
-  user.address = profileAddress.value.trim();
+
+function saveUser(){
+  user.name = DOM.profileName.value.trim();
+  user.lastName = DOM.profileLastName.value.trim();
+  user.email = DOM.profileEmail.value.trim();
+  user.phone = DOM.profilePhone.value.trim();
+  user.address = DOM.profileAddress.value.trim();
   localStorage.setItem("xpertoUser", JSON.stringify(user));
   updateDefaultAddress();
   alert("Perfil guardado correctamente.");
   showSection("worldSelection");
 }
-function updateDefaultAddress() {
-  defaultAddressEl.textContent = user.address ? `Dirección: ${user.address}` : "Por favor, configura tu dirección en Perfil.";
+
+function updateDefaultAddress(){
+  DOM.defaultAddressEl.textContent = user.address ? `Dirección: ${user.address}` : "Por favor, configura tu dirección en Perfil.";
 }
 
 // ======== Navegación ========
-function showSection(sectionId) {
-  const sections = [worldSelectionSection, expertSection, areasSection, autoSection, summarySection, paymentSection, trackingSection, promosSection, historySection, profileSection];
-  sections.forEach(sec => sec.classList.add("hidden"));
-  Object.values(navButtons).forEach(btn => btn.classList.remove("active"));
+function showSection(sectionId){
+  const sections = [DOM.worldSelectionSection, DOM.expertSection, DOM.areasSection, DOM.autoSection, DOM.summarySection, DOM.paymentSection, DOM.trackingSection, DOM.historySection, DOM.profileSection];
+  sections.forEach(s => s.classList.add("hidden"));
+  Object.values(DOM.navButtons).forEach(b => b.classList.remove("active"));
 
-  switch(sectionId) {
-    case "worldSelection": worldSelectionSection.classList.remove("hidden"); navButtons.worldSelection.classList.add("active"); resetApp(); break;
-    case "promosSection": promosSection.classList.remove("hidden"); navButtons.promosSection.classList.add("active"); break;
-    case "historySection": historySection.classList.remove("hidden"); navButtons.historySection.classList.add("active"); renderHistory(); break;
-    case "profileSection": profileSection.classList.remove("hidden"); navButtons.profileSection.classList.add("active"); break;
+  switch(sectionId){
+    case "worldSelection": DOM.worldSelectionSection.classList.remove("hidden"); DOM.navButtons.worldSelection.classList.add("active"); resetApp(); break;
+    case "promosSection": DOM.promosSection.classList.remove("hidden"); DOM.navButtons.promosSection.classList.add("active"); break;
+    case "historySection": DOM.historySection.classList.remove("hidden"); DOM.navButtons.historySection.classList.add("active"); renderHistory(); break;
+    case "profileSection": DOM.profileSection.classList.remove("hidden"); DOM.navButtons.profileSection.classList.add("active"); break;
   }
 }
-function resetApp() {
-  selectedWorld = null;
-  selectedExpert = null;
-  selectedAreas = {};
-  selectedSchedule = "inmediato";
-  selectedDate = null;
-  selectedPayment = null;
-  selectedCarType = "sedan";
-  carQuantity = 1;
-  btnNextFromExperts.disabled = true;
-  scheduleDateInput.value = "";
-  scheduleDateInput.classList.add("hidden");
-  renderExperts();
-  renderAreasInputs();
+
+function resetApp(){
+  selectedWorld=null; selectedExpert=null; selectedAreas={};
+  selectedSchedule="inmediato"; selectedDate=null; selectedPayment=null;
+  selectedCarType="sedan"; carQuantity=1;
+  DOM.btnNextFromExperts.disabled = true;
+  DOM.scheduleDateInput.value=""; DOM.scheduleDateInput.classList.add("hidden");
+  renderExperts(); renderAreasInputs();
 }
 
 // ======== Selección mundo ========
-function selectWorld(worldKey) {
-  if(worldKey === "profundo" && user.limpiezaPurchases < worlds.profundo.unlocksAt) {
+function selectWorld(worldKey){
+  if(worldKey==="profundo" && user.limpiezaPurchases<worlds.profundo.unlocksAt){
     alert(`Debes completar al menos ${worlds.profundo.unlocksAt} servicios básicos para desbloquear limpieza profunda.`);
     return;
   }
-  selectedWorld = worldKey;
-  expertSection.classList.remove("hidden");
-  worldSelectionSection.classList.add("hidden");
+  selectedWorld=worldKey;
+  DOM.worldSelectionSection.classList.add("hidden");
+  selectedWorld==="auto" ? DOM.autoSection.classList.remove("hidden") : DOM.expertSection.classList.remove("hidden");
   renderExperts();
 }
 
 // ======== Renderizar expertos ========
-function renderExperts() {
-  expertsContainer.innerHTML = "";
-  selectedExpert = null;
-  btnNextFromExperts.disabled = true;
-
-  experts.forEach(exp => {
-    if(selectedWorld === "basico" && exp.specialty.toLowerCase().includes("profundo")) return;
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.tabIndex = 0;
-    card.innerHTML = `<img src="${exp.photo}" alt="${exp.name}"/><h3>${exp.name}</h3><p>${"★".repeat(exp.stars)}${"☆".repeat(5-exp.stars)}</p><p>${exp.comments}</p><p><em>${exp.specialty}</em></p>`;
-    card.addEventListener("click", ()=>{ selectExpert(exp.id); });
-    card.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectExpert(exp.id); }});
-    expertsContainer.appendChild(card);
+function renderExperts(){
+  DOM.expertsContainer.innerHTML="";
+  selectedExpert=null; DOM.btnNextFromExperts.disabled=true;
+  experts.forEach(exp=>{
+    if(selectedWorld==="basico" && exp.specialty.toLowerCase().includes("profundo")) return;
+    const card=document.createElement("div");
+    card.classList.add("card"); card.tabIndex=0;
+    card.innerHTML=`<img src="${exp.photo}" alt="${exp.name}"/>
+                    <h3>${exp.name}</h3>
+                    <p>${"★".repeat(exp.stars)}${"☆".repeat(5-exp.stars)}</p>
+                    <p>${exp.comments}</p>
+                    <p><em>${exp.specialty}</em></p>`;
+    card.addEventListener("click",()=>selectExpert(exp.id));
+    card.addEventListener("keydown", e=>{ if(["Enter"," "].includes(e.key)){ e.preventDefault(); selectExpert(exp.id); }});
+    DOM.expertsContainer.appendChild(card);
   });
 }
-function selectExpert(id) {
+
+function selectExpert(id){
   selectedExpert = experts.find(e=>e.id===id);
-  [...expertsContainer.children].forEach(card=>card.classList.remove("selected"));
-  const selCard = [...expertsContainer.children].find(c=>c.querySelector("h3").textContent===selectedExpert.name);
+  [...DOM.expertsContainer.children].forEach(c=>c.classList.remove("selected"));
+  const selCard = [...DOM.expertsContainer.children].find(c=>c.querySelector("h3").textContent===selectedExpert.name);
   if(selCard) selCard.classList.add("selected");
-  btnNextFromExperts.disabled = false;
+  DOM.btnNextFromExperts.disabled=false;
 }
 
 // ======== Siguiente desde expertos ========
-btnNextFromExperts.addEventListener("click", ()=>{
-  expertSection.classList.add("hidden");
-  if(selectedWorld === "auto") {
-    autoSection.classList.remove("hidden");
-    updateCarDisplay();
-  } else {
-    areasSection.classList.remove("hidden");
-    renderAreasInputs();
-  }
+DOM.btnNextFromExperts.addEventListener("click", ()=>{
+  DOM.expertSection.classList.add("hidden");
+  selectedWorld==="auto" ? DOM.autoSection.classList.remove("hidden") : DOM.areasSection.classList.remove("hidden");
+  renderAreasInputs();
 });
 
-// ======== Áreas con contador ========
-function renderAreasInputs() {
-  areasContainer.innerHTML = "";
-  selectedAreas = {};
+// ======== Áreas con contadores ========
+function renderAreasInputs(){
+  DOM.areasContainer.innerHTML=""; selectedAreas={};
   areas.forEach(area=>{
-    const div = document.createElement("div");
-    div.classList.add("area-input");
-    div.innerHTML = `
-      <label>${area.label} ($${area.price})</label>
+    const div=document.createElement("div"); div.classList.add("area-input");
+    div.innerHTML=`
+      <label>${area.label} ($${area.price}) <button type="button" class="infoBtn" data-tooltip="info_${area.id}">ℹ️</button></label>
+      <div id="info_${area.id}" class="tooltip hidden">Detalle de ${area.label}</div>
       <div class="counter">
         <button type="button" onclick="decreaseArea('${area.id}')">-</button>
         <input type="text" id="area_${area.id}" value="0" readonly />
         <button type="button" onclick="increaseArea('${area.id}')">+</button>
-      </div>
-    `;
-    areasContainer.appendChild(div);
-    selectedAreas[area.id] = 0;
+      </div>`;
+    DOM.areasContainer.appendChild(div);
+    selectedAreas[area.id]=0;
+  });
+
+  // Tooltips
+  document.querySelectorAll(".infoBtn").forEach(btn=>{
+    btn.addEventListener("click", ()=>document.getElementById(btn.dataset.tooltip).classList.toggle("hidden"));
   });
 }
-function increaseArea(id) {
-  if(selectedAreas[id]<10) {
-    selectedAreas[id]++;
-    document.getElementById(`area_${id}`).value = selectedAreas[id];
-  }
-}
-function decreaseArea(id) {
-  if(selectedAreas[id]>0) {
-    selectedAreas[id]--;
-    document.getElementById(`area_${id}`).value = selectedAreas[id];
-  }
-}
+
+function increaseArea(id){ if(selectedAreas[id]<10){ selectedAreas[id]++; document.getElementById(`area_${id}`).value=selectedAreas[id]; } }
+function decreaseArea(id){ if(selectedAreas[id]>0){ selectedAreas[id]--; document.getElementById(`area_${id}`).value=selectedAreas[id]; } }
 
 // ======== Programación ========
-scheduleRadios.forEach(radio=>{
+DOM.scheduleRadios.forEach(radio=>{
   radio.addEventListener("change", ()=>{
-    selectedSchedule = document.querySelector('input[name="schedule"]:checked').value;
-    if(selectedSchedule==="programado"){ scheduleDateInput.classList.remove("hidden"); scheduleDateInput.required=true; }
-    else{ scheduleDateInput.classList.add("hidden"); scheduleDateInput.required=false; selectedDate=null; scheduleDateInput.value=""; }
+    selectedSchedule=document.querySelector('input[name="schedule"]:checked').value;
+    if(selectedSchedule==="programado"){ DOM.scheduleDateInput.classList.remove("hidden"); DOM.scheduleDateInput.required=true; }
+    else{ DOM.scheduleDateInput.classList.add("hidden"); DOM.scheduleDateInput.required=false; selectedDate=null; DOM.scheduleDateInput.value=""; }
   });
 });
-scheduleDateInput.addEventListener("change", e=>{ selectedDate=e.target.value; });
+DOM.scheduleDateInput.addEventListener("change", e=>selectedDate=e.target.value);
 
-// ======== Auto sección ========
+// ======== Autos ========
 function increaseCars(){ if(carQuantity<10){ carQuantity++; updateCarDisplay(); } }
 function decreaseCars(){ if(carQuantity>1){ carQuantity--; updateCarDisplay(); } }
-function updateCarDisplay(){ carsInput.value=carQuantity; totalCars.textContent=carQuantity; totalCarCost.textContent=(carQuantity*carTypes[selectedCarType]).toFixed(2); }
-document.querySelectorAll('input[name="carType"]').forEach(radio=>{
-  radio.addEventListener("change", e=>{ selectedCarType=e.target.value; updateCarDisplay(); });
-});
+function updateCarDisplay(){ DOM.carsInput.value=carQuantity; DOM.totalCars.textContent=carQuantity; DOM.totalCarCost.textContent=(carQuantity*carTypes[selectedCarType]).toFixed(2); }
+document.querySelectorAll('input[name="carType"]').forEach(radio=>radio.addEventListener("change", e=>{ selectedCarType=e.target.value; updateCarDisplay(); }));
 
-// ======== Resumen ========
-btnCalculateTotal.addEventListener("click", ()=>{
-  let total=0;
-  let summaryHTML=`<h2>Resumen del Servicio</h2>`;
+// ======== Resumen y pago ========
+DOM.btnCalculateTotal.addEventListener("click", ()=>{
+  let total=0, summaryHTML=`<h2>Resumen del Servicio</h2>`;
   summaryHTML+=`<p><strong>Mundo:</strong> ${worlds[selectedWorld].name}</p>`;
   summaryHTML+=`<p><strong>Experto:</strong> ${selectedExpert.name}</p>`;
   summaryHTML+=`<p><strong>Dirección:</strong> ${user.address||"No configurada"}</p>`;
@@ -256,30 +232,27 @@ btnCalculateTotal.addEventListener("click", ()=>{
     summaryHTML+=`<p><strong>Tipo de auto:</strong> ${selectedCarType}</p>`;
     summaryHTML+=`<p><strong>Cantidad:</strong> ${carQuantity}</p>`;
   } else {
-    for(const [areaId,count] of Object.entries(selectedAreas)){
-      const area = areas.find(a=>a.id===areaId);
-      total += area.price*count;
-    }
     summaryHTML+=`<p><strong>Áreas:</strong></p><ul>`;
-    for(const [areaId,count] of Object.entries(selectedAreas)){
-      if(count>0){ const area=areas.find(a=>a.id===areaId); summaryHTML+=`<li>${area.label}: ${count} x $${area.price} = $${area.price*count}</li>`;}
+    for(const [id,count] of Object.entries(selectedAreas)){
+      if(count>0){ const area=areas.find(a=>a.id===id); summaryHTML+=`<li>${area.label}: ${count} x $${area.price} = $${area.price*count}</li>`; total+=area.price*count; }
     }
     summaryHTML+=`</ul>`;
   }
   summaryHTML+=`<p><strong>Total:</strong> $${total}</p>`;
   summaryHTML+=`<p><strong>Programación:</strong> ${selectedSchedule==="inmediato"?"Inmediato":selectedDate}</p>`;
-  summarySection.innerHTML=summaryHTML;
-  summarySection.classList.remove("hidden");
-  paymentSection.classList.remove("hidden");
-  areasSection.classList.add("hidden");
-  autoSection.classList.add("hidden");
+
+  DOM.summarySection.innerHTML=summaryHTML;
+  DOM.summarySection.classList.remove("hidden");
+  DOM.paymentSection.classList.remove("hidden");
+  DOM.areasSection.classList.add("hidden");
+  DOM.autoSection.classList.add("hidden");
 });
 
-// ======== Pago ========
-paymentForm.addEventListener("change", e=>{
-  if(e.target.name==="pay"){ selectedPayment=e.target.value; cardDetailsDiv.classList.toggle("hidden", selectedPayment!=="tarjeta"); }
+DOM.paymentForm.addEventListener("change", e=>{
+  if(e.target.name==="pay"){ selectedPayment=e.target.value; DOM.cardDetailsDiv.classList.toggle("hidden", selectedPayment!=="tarjeta"); }
 });
-btnConfirmPayment.addEventListener("click", ()=>{
+
+DOM.btnConfirmPayment.addEventListener("click", ()=>{
   if(!selectedPayment){ alert("Selecciona un método de pago."); return; }
   if(selectedPayment==="tarjeta"){
     const cardNumber=document.getElementById("cardNumber").value.trim();
@@ -287,7 +260,10 @@ btnConfirmPayment.addEventListener("click", ()=>{
     const cardCVV=document.getElementById("cardCVV").value.trim();
     if(cardNumber.length<13 || !cardExpiry || cardCVV.length<3){ alert("Datos de tarjeta incompletos."); return; }
   }
-  const now = new Date();
+
+  const now=new Date();
+  const total = selectedWorld==="auto"?carQuantity*carTypes[selectedCarType]:Object.entries(selectedAreas).reduce((acc,[id,c])=>acc+areas.find(a=>a.id===id).price*c,0);
+
   const serviceRecord = {
     id: now.getTime(),
     date: now.toLocaleString(),
@@ -296,17 +272,17 @@ btnConfirmPayment.addEventListener("click", ()=>{
     address: user.address,
     areas: selectedWorld==="auto"?{type:selectedCarType, quantity:carQuantity}:{...selectedAreas},
     schedule: selectedSchedule==="inmediato"?"Inmediato":selectedDate,
-    total: selectedWorld==="auto"?carQuantity*carTypes[selectedCarType]:Object.entries(selectedAreas).reduce((acc,[id,c])=>{ const area=areas.find(a=>a.id===id); return acc+area.price*c;},0),
+    total,
     paymentMethod: selectedPayment
   };
   user.history.push(serviceRecord);
   if(selectedWorld==="basico") user.limpiezaPurchases++;
   localStorage.setItem("xpertoUser", JSON.stringify(user));
 
-  summarySection.classList.add("hidden");
-  paymentSection.classList.add("hidden");
-  trackingSection.classList.remove("hidden");
-  trackStatus.textContent="Asignando experto...";
+  DOM.summarySection.classList.add("hidden");
+  DOM.paymentSection.classList.add("hidden");
+  DOM.trackingSection.classList.remove("hidden");
+  DOM.trackStatus.textContent="Asignando experto...";
   simulateTracking();
 });
 
@@ -314,20 +290,21 @@ btnConfirmPayment.addEventListener("click", ()=>{
 function simulateTracking(){
   const statuses=["Asignando experto...","Experto en camino 🚗","Experto ha llegado 🏠","Servicio en progreso 🧹","Servicio finalizado 🎉"];
   let i=0;
-  function next(){ if(i<statuses.length){ trackStatus.textContent=statuses[i]; i++; setTimeout(next,3000); } 
-    else { alert("¡Gracias por elegir Xperto! Porque tu tiempo vale más."); showSection("worldSelection"); resetApp(); } }
-  next();
+  (function next(){
+    if(i<statuses.length){ DOM.trackStatus.textContent=statuses[i]; i++; setTimeout(next,3000); }
+    else{ alert("¡Gracias por elegir Xperto! Porque tu tiempo vale más."); showSection("worldSelection"); resetApp(); }
+  })();
 }
 
 // ======== Historial ========
 function renderHistory(){
-  historyContainer.innerHTML="";
-  if(user.history.length===0){ historyContainer.innerHTML="<p>No tienes servicios contratados aún.</p>"; return;}
+  DOM.historyContainer.innerHTML="";
+  if(user.history.length===0){ DOM.historyContainer.innerHTML="<p>No tienes servicios contratados aún.</p>"; return;}
   user.history.slice().reverse().forEach(item=>{
     const card=document.createElement("div"); card.classList.add("card");
     let areasDesc="";
     if(item.world==="Auto") areasDesc=`Tipo: ${item.areas.type}, Cantidad: ${item.areas.quantity}`;
-    else for(const [id,count] of Object.entries(item.areas)) { if(count>0){ const area=areas.find(a=>a.id===id); areasDesc+=`${area.label}: ${count}, `;} }
+    else for(const [id,count] of Object.entries(item.areas)) { if(count>0){ areasDesc+=`${areas.find(a=>a.id===id).label}: ${count}, `; } }
     card.innerHTML=`<p><strong>Fecha:</strong> ${item.date}</p>
                     <p><strong>Servicio:</strong> ${item.world}</p>
                     <p><strong>Experto:</strong> ${item.expert}</p>
@@ -336,12 +313,12 @@ function renderHistory(){
                     <p><strong>Programación:</strong> ${item.schedule}</p>
                     <p><strong>Total:</strong> $${item.total}</p>
                     <p><strong>Pago:</strong> ${item.paymentMethod}</p>`;
-    historyContainer.appendChild(card);
+    DOM.historyContainer.appendChild(card);
   });
 }
 
 // ======== Perfil ========
-profileForm.addEventListener("submit", e=>{ e.preventDefault(); saveUser(); });
+DOM.profileForm.addEventListener("submit", e=>{ e.preventDefault(); saveUser(); });
 
 // ======== Inicialización ========
 window.addEventListener("DOMContentLoaded", ()=>{
