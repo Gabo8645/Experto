@@ -133,12 +133,12 @@ function selectWorld(service) {
 
 // ===================== ÁREAS =====================
 const areas = [
-  { id: "habitacion", label: "Habitación", price: 10 },
-  { id: "bano", label: "Baño", price: 8 },
-  { id: "cocina", label: "Cocina", price: 12 },
-  { id: "sala", label: "Sala", price: 9 },
-  { id: "comedor", label: "Comedor", price: 7 },
-  { id: "terraza", label: "Terraza", price: 11 }
+  { id: "habitacion", label: "Habitación", price: 5},
+  { id: "bano", label: "Baño", price: 5},
+  { id: "cocina", label: "Cocina", price: 10},
+  { id: "sala", label: "Sala", price: 8},
+  { id: "comedor", label: "Comedor", price: 5},
+  { id: "terraza", label: "Terraza", price: 12}
 ];
 
 function renderAreas() {
@@ -196,10 +196,10 @@ if (DOM.btnNextFromCars) {
 // ===================== AUTOS =====================
 function updateCarCost() {
   let type = document.querySelector('input[name="carType"]:checked')?.value || "sedan";
-  let cost = 10;
-  if (type === "crossover") cost = 15;
-  if (type === "suv") cost = 20;
-  if (type === "camioneta") cost = 18;
+  let cost = 7;
+  if (type === "crossover") cost = 10;
+  if (type === "suv") cost = 15;
+  if (type === "camioneta") cost = 20;
   DOM.totalCarCost.textContent = (carsCount * cost).toFixed(2);
 }
 
