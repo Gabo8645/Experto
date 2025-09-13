@@ -14,7 +14,7 @@ let selectedExpert = null;
 let spacesCount = 1;
 let carsCount = 1;
 let baseCost = 30;
-let selectedAreas = {};
+let selectedAreas = {}; // Áreas dinámicas
 
 // ===================== DOM =====================
 const DOM = {
@@ -31,7 +31,6 @@ const DOM = {
   scheduleDateInput: document.getElementById("scheduleDate"),
   spacesInput: document.getElementById("spacesInput"),
   totalSpaces: document.getElementById("totalSpaces"),
-  totalCost: document.getElementById("totalCost"),
   carsInputSelect: document.getElementById("carsInputSelect"),
   totalCars: document.getElementById("totalCars"),
   totalCarCost: document.getElementById("totalCarCost"),
@@ -50,11 +49,12 @@ const DOM = {
   userName: document.getElementById("userName")
 };
 
-// ===================== TOOLTIP INFO =====================
+// ===================== TOOLTIP =====================
 document.querySelectorAll(".info-icon").forEach(icon => {
   const infoDiv = icon.parentElement.nextElementSibling;
   if (infoDiv) icon.setAttribute("data-target", infoDiv.id);
 });
+
 document.querySelectorAll(".info-icon").forEach(btn => {
   btn.addEventListener("click", e => {
     e.stopPropagation();
@@ -69,10 +69,11 @@ document.querySelectorAll(".info-icon").forEach(btn => {
 
 // ===================== NAVEGACIÓN =====================
 function showSection(sectionId) {
-  document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
+  document.querySelectorAll("main section").forEach(s => s.classList.remove("active"));
   const section = document.getElementById(sectionId);
-  if (section) section.classList.remove("hidden");
+  if (section) section.classList.add("active");
 
+  // Bottom nav
   document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.remove("active"));
   const navBtn = document.querySelector(
     `#nav${sectionId.charAt(0).toUpperCase() + sectionId.slice(1).replace("Section","")}`
@@ -84,18 +85,13 @@ function showSection(sectionId) {
 if (DOM.profileForm) {
   DOM.profileForm.addEventListener("submit", e => {
     e.preventDefault();
-    user.name = document.getElementById("profileName").value.trim();
-    user.lastName = document.getElementById("profileLastName").value.trim();
+    user.name = document.getElementById("profileName").value;
+    user.lastName = document.getElementById("profileLastName").value;
     user.email = document.getElementById("profileEmail").value;
     user.phone = document.getElementById("profilePhone").value;
     user.address = document.getElementById("profileAddress").value;
-
     DOM.defaultAddress.textContent = `Dirección: ${user.address}`;
-    if (user.name) DOM.userName.textContent = `Hola, ${user.name} 👋`;
-
-    localStorage.setItem("xpertoName", user.name + " " + user.lastName);
-    localStorage.setItem("xpertoAddress", user.address);
-
+    if(DOM.userName) DOM.userName.textContent = `Hola, ${user.name.split(" ")[0]} 👋`;
     alert("Perfil guardado correctamente!");
   });
 }
@@ -108,6 +104,7 @@ const experts = [
 ];
 
 function loadExperts() {
+  if (!DOM.expertsContainer) return;
   DOM.expertsContainer.innerHTML = "";
   experts.forEach(exp => {
     const card = document.createElement("div");
@@ -121,7 +118,7 @@ function loadExperts() {
       selectedExpert = exp;
       document.querySelectorAll("#expertsContainer .card").forEach(c => c.classList.remove("selected"));
       card.classList.add("selected");
-      DOM.btnNextFromExperts.disabled = false;
+      if(DOM.btnNextFromExperts) DOM.btnNextFromExperts.disabled = false;
     };
     DOM.expertsContainer.appendChild(card);
   });
@@ -165,11 +162,12 @@ function renderAreas() {
 
 function changeAreaCount(areaId, delta) {
   selectedAreas[areaId] = Math.max(0, Math.min(10, selectedAreas[areaId] + delta));
-  document.getElementById(`count-${areaId}`).textContent = selectedAreas[areaId];
+  const countSpan = document.getElementById(`count-${areaId}`);
+  if(countSpan) countSpan.textContent = selectedAreas[areaId];
 }
 
 // ===================== BOTONES =====================
-if (DOM.btnNextFromExperts) {
+if(DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
     if (!selectedExpert) return;
     if (currentService === "auto") showSection("carSection");
@@ -177,42 +175,43 @@ if (DOM.btnNextFromExperts) {
   });
 }
 
-if (DOM.btnCalculateTotal) {
+if(DOM.btnCalculateTotal) {
   DOM.btnCalculateTotal.addEventListener("click", () => {
     generateSummary(currentService);
-    if (currentService === "basico") user.limpiezaPurchases.basico++;
-    if (currentService === "profundo") user.limpiezaPurchases.profundo++;
-    if (currentService !== "auto") checkAutoAvailability();
+    if(currentService === "basico") user.limpiezaPurchases.basico++;
+    if(currentService === "profundo") user.limpiezaPurchases.profundo++;
+    if(currentService !== "auto") checkAutoAvailability();
   });
 }
 
 // ===================== ESPACIOS =====================
-function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
-function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
+function increaseSpaces() { spacesCount = Math.min(10, spacesCount+1); updateSpaces(); }
+function decreaseSpaces() { spacesCount = Math.max(1, spacesCount-1); updateSpaces(); }
 function updateSpaces() {
-  DOM.spacesInput.value = spacesCount;
-  DOM.totalSpaces.textContent = spacesCount;
+  if(DOM.spacesInput) DOM.spacesInput.value = spacesCount;
+  if(DOM.totalSpaces) DOM.totalSpaces.textContent = spacesCount;
 }
 
 // ===================== AUTOS =====================
 function updateCarCost() {
-  const selected = document.querySelector('input[name="carType"]:checked');
-  if (!selected) return;
-  let type = selected.value;
+  let typeEl = document.querySelector('input[name="carType"]:checked');
+  if(!typeEl) return;
+  let type = typeEl.value;
   let cost = 10;
-  if (type === "crossover") cost = 15;
-  if (type === "suv") cost = 20;
-  if (type === "camioneta") cost = 18;
-  DOM.totalCarCost.textContent = (carsCount * cost).toFixed(2);
+  if(type==="crossover") cost=15;
+  if(type==="suv") cost=20;
+  if(type==="camioneta") cost=18;
+  if(DOM.totalCarCost) DOM.totalCarCost.textContent = (carsCount*cost).toFixed(2);
 }
 
 function updateCarsFromSelect() {
+  if(!DOM.carsInputSelect) return;
   carsCount = parseInt(DOM.carsInputSelect.value);
-  DOM.totalCars.textContent = carsCount;
+  if(DOM.totalCars) DOM.totalCars.textContent = carsCount;
   updateCarCost();
 }
 
-if (DOM.btnNextFromCars) {
+if(DOM.btnNextFromCars) {
   DOM.btnNextFromCars.addEventListener("click", () => {
     generateSummary("auto");
     user.limpiezaPurchases.auto++;
@@ -222,7 +221,7 @@ if (DOM.btnNextFromCars) {
 
 // ===================== DESBLOQUEO AUTO =====================
 function checkAutoAvailability() {
-  if (DOM.btnAuto) DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
+  if(DOM.btnAuto) DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
 }
 
 // ===================== RESUMEN =====================
@@ -231,104 +230,108 @@ function generateSummary(service) {
   html += `<p><strong>Dirección:</strong> ${user.address}</p>`;
   html += `<p><strong>Experto:</strong> ${selectedExpert ? selectedExpert.name : "No asignado"}</p>`;
 
-  if (service === "basico" || service === "profundo") {
-    let total = 0;
-    for (const [id, count] of Object.entries(selectedAreas)) {
-      if (count > 0) {
-        const area = areas.find(a => a.id === id);
-        total += area.price * count;
-        html += `<p>${area.label}: ${count} x $${area.price}</p>`;
+  if(service==="basico" || service==="profundo"){
+    let total=0;
+    for(const [id,count] of Object.entries(selectedAreas)){
+      if(count>0){
+        const area = areas.find(a=>a.id===id);
+        total+=area.price*count;
+        html+=`<p>${area.label}: ${count} x $${area.price}</p>`;
       }
     }
-    html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
-  } else if (service === "auto") {
-    const selected = document.querySelector('input[name="carType"]:checked');
-    let type = selected ? selected.value : "N/A";
-    let cost = DOM.totalCarCost.textContent;
-    html += `<p><strong>Servicio:</strong> Lavada de Auto</p>`;
-    html += `<p><strong>Tipo:</strong> ${type}</p>`;
-    html += `<p><strong>Autos:</strong> ${carsCount}</p>`;
-    html += `<p><strong>Total:</strong> $${cost}</p>`;
+    html+=`<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
+  } else if(service==="auto"){
+    let typeEl = document.querySelector('input[name="carType"]:checked');
+    let type = typeEl ? typeEl.value : "No seleccionado";
+    let cost = DOM.totalCarCost ? DOM.totalCarCost.textContent : "0";
+    html+=`<p><strong>Servicio:</strong> Lavada de Auto</p>`;
+    html+=`<p><strong>Tipo:</strong> ${type}</p>`;
+    html+=`<p><strong>Autos:</strong> ${carsCount}</p>`;
+    html+=`<p><strong>Total:</strong> $${cost}</p>`;
   }
 
-  html += `<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
-  DOM.summarySection.innerHTML = html;
+  html+=`<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
+  if(DOM.summarySection) DOM.summarySection.innerHTML = html;
   showSection("summarySection");
 
-  // Guardar historial
-  user.history.push({ service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() });
+  // historial
+  let historyEntry = { service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() };
+  user.history.push(historyEntry);
   renderHistory();
 }
 
 // ===================== PAGO =====================
 function goToPayment() { showSection("paymentSection"); }
 
-document.querySelectorAll('input[name="pay"]').forEach(r => {
-  r.addEventListener("change", () => {
-    if (r.value === "tarjeta" && r.checked) DOM.cardDetails.classList.remove("hidden");
+document.querySelectorAll('input[name="pay"]').forEach(r=>{
+  r.addEventListener("change",()=>{
+    if(r.value==="tarjeta" && r.checked) DOM.cardDetails.classList.remove("hidden");
     else DOM.cardDetails.classList.add("hidden");
   });
 });
 
-if (DOM.btnConfirmPayment) {
-  DOM.btnConfirmPayment.addEventListener("click", () => {
+if(DOM.btnConfirmPayment){
+  DOM.btnConfirmPayment.addEventListener("click",()=>{
     const selectedPay = document.querySelector('input[name="pay"]:checked');
-    if (!selectedPay) { alert("Elija un método de pago"); return; }
-    if (selectedPay.value === "tarjeta") {
-      const num = document.getElementById("cardNumber").value.trim();
-      const exp = document.getElementById("cardExpiry").value;
-      const cvv = document.getElementById("cardCVV").value.trim();
-      if (!num || !exp || !cvv) { alert("Complete los datos de tarjeta"); return; }
+    if(!selectedPay){ alert("Elija un método de pago"); return; }
+    if(selectedPay.value==="tarjeta"){
+      const num=document.getElementById("cardNumber").value.trim();
+      const exp=document.getElementById("cardExpiry").value;
+      const cvv=document.getElementById("cardCVV").value.trim();
+      if(!num||!exp||!cvv){ alert("Complete los datos de tarjeta"); return; }
     }
     startTracking();
   });
 }
 
 // ===================== TRACKING =====================
-function startTracking() {
+function startTracking(){
   showSection("trackingSection");
-  const steps = [
+  const steps=[
     "🧑‍🔧 Experto asignado",
     "🚗 En camino",
     "🧹 Servicio en progreso",
     "✅ Servicio finalizado",
     "🎉 Gracias por elegirnos Xperto, porque tu tiempo vale más"
   ];
-  let i = 0;
-  const interval = setInterval(() => {
-    DOM.trackStatus.textContent = steps[i];
+  let i=0;
+  const interval = setInterval(()=>{
+    if(DOM.trackStatus) DOM.trackStatus.textContent=steps[i];
     i++;
-    if (i >= steps.length) clearInterval(interval);
-  }, 2000);
+    if(i>=steps.length) clearInterval(interval);
+  },2000);
 }
 
 // ===================== HISTORIAL =====================
-function renderHistory() {
-  DOM.historyContainer.innerHTML = "";
-  user.history.forEach(entry => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `<p><strong>Servicio:</strong> ${entry.service}</p>
-                     <p><strong>Experto:</strong> ${entry.expert}</p>
-                     <p><strong>Dirección:</strong> ${entry.address}</p>
-                     <p><strong>Fecha:</strong> ${entry.date}</p>`;
+function renderHistory(){
+  if(!DOM.historyContainer) return;
+  DOM.historyContainer.innerHTML="";
+  user.history.forEach(entry=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`<p><strong>Servicio:</strong> ${entry.service}</p>
+                   <p><strong>Experto:</strong> ${entry.expert}</p>
+                   <p><strong>Dirección:</strong> ${entry.address}</p>
+                   <p><strong>Fecha:</strong> ${entry.date}</p>`;
     DOM.historyContainer.appendChild(div);
   });
 }
+
 // ===================== PROGRAMADO =====================
-document.querySelectorAll('input[name="schedule"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    if (radio.value === 'programado' && radio.checked) {
-      DOM.scheduleDateInput.classList.remove('hidden');
-    } else if (radio.value === 'inmediato' && radio.checked) {
+document.querySelectorAll('input[name="schedule"]').forEach(radio=>{
+  radio.addEventListener('change',()=>{
+    if(radio.value==='programado' && radio.checked) DOM.scheduleDateInput.classList.remove('hidden');
+    else if(radio.value==='inmediato' && radio.checked){
       DOM.scheduleDateInput.classList.add('hidden');
-      DOM.scheduleDateInput.value = "";
+      DOM.scheduleDateInput.value="";
     }
   });
 });
 
 // ===================== INIT =====================
-updateCarsFromSelect();
-updateCarCost();
-showSection("worldSelection");
-checkAutoAvailability();
+window.addEventListener("DOMContentLoaded",()=>{
+  updateCarsFromSelect();
+  updateCarCost();
+  showSection("worldSelection");
+  checkAutoAvailability();
+});
