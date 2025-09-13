@@ -22,64 +22,67 @@
     <section id="worldSelection">
       <h2>Selecciona el servicio:</h2>
       <div class="world-options">
-<!-- Limpieza Básica -->
-<div class="service-button">
-  <button type="button" onclick="selectWorld('basico')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-    Limpieza Básica
-    <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoBasico')">ℹ️</span>
-  </button>
-  <div class="service-info hidden" id="infoBasico">
-    <ul>
-      <li class="included">Barrido y aspirado de pisos</li>
-      <li class="included">Limpieza de superficies visibles</li>
-      <li class="included">Limpieza de baños básica</li>
-      <li class="included">Cocina: encimeras y fregadero</li>
-      <li class="included">Cambio de basura</li>
-      <li class="not-included">Aspirado y lavado de alfombras</li>
-      <li class="not-included">Limpieza de ventanas y persianas</li>
-      <li class="not-included">Muebles por dentro y fuera</li>
-      <li class="not-included">Desinfectantes potentes</li>
-    </ul>
-  </div>
-</div>
 
-<!-- Limpieza Profunda -->
-<div class="service-button">
-  <button type="button" onclick="selectWorld('profundo')">
-    <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
-    Limpieza Profunda
-    <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoProfundo')">ℹ️</span>
-  </button>
-  <div class="service-info hidden" id="infoProfundo">
-    <ul>
-      <li class="included">Incluye lo de la Básica</li>
-      <li class="included">Limpieza profunda de baños y cocina</li>
-      <li class="included">Aspirado y lavado de alfombras</li>
-      <li class="included">Limpieza de ventanas y persianas</li>
-      <li class="included">Muebles por dentro y fuera</li>
-      <li class="included">Polvo en rincones, zócalos y techos</li>
-      <li class="included">Desinfectantes potentes</li>
-    </ul>
-    <small>Se habilita después de 3 limpiezas básicas</small>
-  </div>
-</div>
-<!-- Lavada de Auto -->
-<div class="service-button">
-  <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
-    <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
-    Lavada de Auto
-    <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoAuto')">ℹ️</span>
-  </button>
-  <div class="service-info hidden" id="infoAuto">
-    <ul>
-      <li class="included">Lavado exterior</li>
-      <li class="included">Aspirado interior</li>
-      <li class="not-included">Pulido</li>
-    </ul>
-    <small>Se habilita después de 1 limpieza profunda</small>
-  </div>
-</div>       
+        <!-- Limpieza Básica -->
+        <div class="service-button">
+          <button type="button" onclick="selectWorld('basico')">
+            <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
+            Limpieza Básica
+            <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoBasico')">ℹ️</span>
+          </button>
+          <div class="service-info hidden" id="infoBasico">
+            <ul>
+              <li class="included">Barrido y aspirado de pisos</li>
+              <li class="included">Limpieza de superficies visibles</li>
+              <li class="included">Limpieza de baños básica</li>
+              <li class="included">Cocina: encimeras y fregadero</li>
+              <li class="included">Cambio de basura</li>
+              <li class="not-included">Aspirado y lavado de alfombras</li>
+              <li class="not-included">Limpieza de ventanas y persianas</li>
+              <li class="not-included">Muebles por dentro y fuera</li>
+              <li class="not-included">Desinfectantes potentes</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Limpieza Profunda -->
+        <div class="service-button">
+          <button type="button" onclick="selectWorld('profundo')">
+            <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
+            Limpieza Profunda
+            <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoProfundo')">ℹ️</span>
+          </button>
+          <div class="service-info hidden" id="infoProfundo">
+            <ul>
+              <li class="included">Incluye lo de la Básica</li>
+              <li class="included">Limpieza profunda de baños y cocina</li>
+              <li class="included">Aspirado y lavado de alfombras</li>
+              <li class="included">Limpieza de ventanas y persianas</li>
+              <li class="included">Muebles por dentro y fuera</li>
+              <li class="included">Polvo en rincones, zócalos y techos</li>
+              <li class="included">Desinfectantes potentes</li>
+            </ul>
+            <small>Se habilita después de 3 limpiezas básicas</small>
+          </div>
+        </div>
+
+        <!-- Lavada de Auto -->
+        <div class="service-button">
+          <button type="button" id="btnAuto" onclick="selectWorld('auto')">
+            <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
+            Lavada de Auto
+            <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoAuto')">ℹ️</span>
+          </button>
+          <div class="service-info hidden" id="infoAuto">
+            <ul>
+              <li class="included">Lavado exterior</li>
+              <li class="included">Aspirado interior</li>
+              <li class="not-included">Pulido</li>
+            </ul>
+            <small>Se habilita después de 1 limpieza profunda</small>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -93,53 +96,47 @@
     <!-- Selección de áreas -->
     <section id="areasSection" class="hidden">
       <h2>¿Cuántos espacios quieres limpiar?</h2>
-      <div id="areasContainer" class="form-group">
-  <div class="space-selector">
-    <button type="button" id="btnDecrease" onclick="decreaseSpaces()">-</button>
-    <input type="text" id="spacesInput" value="1" readonly />
-    <button type="button" id="btnIncrease" onclick="increaseSpaces()">+</button>
-  </div>
-  <p>Total espacios seleccionados: <span id="totalSpaces">1</span></p>
-  <p>Costo total: $<span id="totalCost">30.00</span></p>
-</div>
+      <div class="space-selector">
+        <button type="button" id="btnDecrease" onclick="decreaseSpaces()">-</button>
+        <input type="text" id="spacesInput" value="1" readonly />
+        <button type="button" id="btnIncrease" onclick="increaseSpaces()">+</button>
+      </div>
+      <p>Total espacios seleccionados: <span id="totalSpaces">1</span></p>
+      <p>Costo total: $<span id="totalCost">30.00</span></p>
+
       <fieldset class="schedule-group">
         <legend>¿Cuándo deseas el servicio?</legend>
         <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
         <label><input type="radio" name="schedule" value="programado" /> Programado</label>
         <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
       </fieldset>
+
       <button class="btn" id="btnCalculateTotal">Ver resumen</button>
     </section>
-<!-- Selección de autos (Lavada de Auto) -->
-<section id="carSection" class="hidden">
-  <h2>Selecciona tu auto</h2>
-  <div class="car-type-selector">
-    <label>
-      <input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($10 + $3 por cada auto adicional)
-    </label>
-    <label>
-      <input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas
-    </label>
-    <label>
-      <input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV 3 filas
-    </label>
-    <label>
-      <input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta
-    </label>
-  </div>
 
-  <h3>Cantidad de autos</h3>
-  <div class="space-selector">
-    <button type="button" id="btnCarDecrease" onclick="decreaseCars()">-</button>
-    <input type="text" id="carsInput" value="1" readonly />
-    <button type="button" id="btnCarIncrease" onclick="increaseCars()">+</button>
-  </div>
+    <!-- Selección de autos (Lavada de Auto) -->
+    <section id="carSection" class="hidden">
+      <h2>Selecciona tu auto</h2>
+      <div class="car-type-selector">
+        <label><input type="radio" name="carType" value="sedan" checked /> Sedán ($10 + $3 por cada auto adicional)</label>
+        <label><input type="radio" name="carType" value="crossover" /> Crossover 2 filas</label>
+        <label><input type="radio" name="carType" value="suv" /> SUV 3 filas</label>
+        <label><input type="radio" name="carType" value="camioneta" /> Camioneta</label>
+      </div>
 
-  <p>Total autos seleccionados: <span id="totalCars">1</span></p>
-  <p>Costo total: $<span id="totalCarCost">10.00</span></p>
+      <h3>Cantidad de autos</h3>
+      <div class="space-selector">
+        <button type="button" id="btnCarDecrease" onclick="decreaseCars()">-</button>
+        <input type="text" id="carsInput" value="1" readonly />
+        <button type="button" id="btnCarIncrease" onclick="increaseCars()">+</button>
+      </div>
 
-  <button class="btn" id="btnNextFromCars" onclick="goToCarSummary()">Siguiente</button>
-</section>
+      <p>Total autos seleccionados: <span id="totalCars">1</span></p>
+      <p>Costo total: $<span id="totalCarCost">10.00</span></p>
+
+      <button class="btn" id="btnNextFromCars" onclick="goToCarSummary()">Siguiente</button>
+    </section>
+
     <!-- Resumen -->
     <section id="summarySection" class="hidden summary"></section>
 
@@ -177,7 +174,7 @@
       <ul>
         <li>🎁 20% en tu primer servicio</li>
         <li>🔥 2x1 fines de semana</li>
-        <li>🎉 Gratis 1 lavada de auto!Cuando hayas completado 3 servicios</li>
+        <li>🎉 Gratis 1 lavada de auto! Cuando hayas completado 3 servicios</li>
       </ul>
     </section>
 
@@ -209,6 +206,7 @@
         <button type="submit" class="btn">Guardar</button>
       </form>
     </section>
+
   </main>
 
   <!-- Barra inferior -->
