@@ -22,13 +22,12 @@
   <section id="worldSelection">
     <h2>Selecciona el servicio:</h2>
     <div class="world-options">
-
       <!-- Limpieza Básica -->
       <div class="service-button">
         <button type="button" onclick="selectWorld('basico')">
           <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
           Limpieza Básica
-          <span class="info-icon" data-target="infoBasico">ℹ️</span>
+          <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoBasico')">ℹ️</span>
         </button>
         <div class="service-info hidden" id="infoBasico">
           <ul>
@@ -50,7 +49,7 @@
         <button type="button" onclick="selectWorld('profundo')">
           <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
           Limpieza Profunda
-          <span class="info-icon" data-target="infoProfundo">ℹ️</span>
+          <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoProfundo')">ℹ️</span>
         </button>
         <div class="service-info hidden" id="infoProfundo">
           <ul>
@@ -71,7 +70,7 @@
         <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
           <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
           Lavada de Auto
-          <span class="info-icon" data-target="infoAuto">ℹ️</span>
+          <span class="info-icon" onclick="event.stopPropagation(); toggleInfo(event,'infoAuto')">ℹ️</span>
         </button>
         <div class="service-info hidden" id="infoAuto">
           <ul>
@@ -82,7 +81,6 @@
           <small>Se habilita después de 1 limpieza profunda</small>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -97,10 +95,16 @@
   <section id="areasSection" class="hidden">
     <h2>¿Cuántos espacios quieres limpiar?</h2>
     <div id="areasContainer" class="form-group"></div>
+    <fieldset class="schedule-group">
+      <legend>¿Cuándo deseas el servicio?</legend>
+      <label><input type="radio" name="schedule" value="inmediato" checked /> Inmediato</label>
+      <label><input type="radio" name="schedule" value="programado" /> Programado</label>
+      <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
+    </fieldset>
     <button class="btn" id="btnCalculateTotal">Ver resumen</button>
   </section>
 
-  <!-- Selección de autos -->
+  <!-- Selección de autos (Lavada de Auto) -->
   <section id="autoSection" class="hidden">
     <h2>Selecciona tu auto</h2>
     <div class="car-type-selector">
@@ -132,7 +136,48 @@
     <button class="btn" id="btnConfirmPayment">Confirmar</button>
   </section>
 
+  <!-- Seguimiento -->
+  <section id="trackingSection" class="hidden tracking">
+    <h2>Seguimiento</h2>
+    <p id="trackStatus">Asignando experto...</p>
+  </section>
+
+  <!-- Promos -->
+  <section id="promosSection" class="hidden">
+    <h2>Promociones</h2>
+    <ul>
+      <li>🎁 20% en tu primer servicio</li>
+      <li>🔥 2x1 fines de semana</li>
+      <li>🎉 Gratis 1 lavada de auto al completar 3 servicios</li>
+    </ul>
+  </section>
+
+  <!-- Historial -->
+  <section id="historySection" class="hidden">
+    <h2>Historial de Servicios</h2>
+    <div id="historyContainer" class="card-container"></div>
+  </section>
+
+  <!-- Perfil -->
+  <section id="profileSection" class="hidden">
+    <h2>Mi Perfil</h2>
+    <form id="profileForm">
+      <label>Nombre <input type="text" id="profileName" required /></label>
+      <label>Apellido <input type="text" id="profileLastName" required /></label>
+      <label>Email <input type="email" id="profileEmail" required /></label>
+      <label>Teléfono <input type="tel" id="profilePhone" required /></label>
+      <label>Dirección <input type="text" id="profileAddress" required /></label>
+      <button type="submit" class="btn">Guardar</button>
+    </form>
+  </section>
 </main>
+
+<nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
+  <button type="button" id="navHome" class="active" onclick="showSection('worldSelection')">🏠 Inicio</button>
+  <button type="button" id="navPromos" onclick="showSection('promosSection')">💸 Promos</button>
+  <button type="button" id="navHistory" onclick="showSection('historySection')">📋 Historial</button>
+  <button type="button" id="navProfile" onclick="showSection('profileSection')">👤 Perfil</button>
+</nav>
 
 </body>
 </html>
