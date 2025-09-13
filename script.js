@@ -46,7 +46,8 @@ const DOM = {
   profileForm: document.getElementById("profileForm"),
   paymentForm: document.getElementById("paymentForm"),
   cardDetails: document.getElementById("cardDetails"),
-  defaultAddress: document.getElementById("defaultAddress")
+  defaultAddress: document.getElementById("defaultAddress"),
+  areasContainer: document.getElementById("areasContainer")
 };
 
 // ===================== TOOLTIP INFO =====================
@@ -64,6 +65,10 @@ document.querySelectorAll(".info-icon").forEach(btn => {
     });
     document.getElementById(id).classList.toggle("hidden");
   });
+});
+// Cerrar tooltips al hacer click fuera
+document.body.addEventListener("click", () => {
+  document.querySelectorAll(".service-info").forEach(el => el.classList.add("hidden"));
 });
 
 // ===================== NAVEGACIÓN =====================
@@ -97,10 +102,7 @@ if (DOM.profileForm) {
 const experts = [
   { name: "Juan Pérez", rating: 4.8, activities: "Barrido, aspirado y limpieza general", photo: "https://randomuser.me/api/portraits/men/1.jpg" },
   { name: "María López", rating: 4.9, activities: "Limpieza profunda, desinfección, cocina y baños", photo: "https://randomuser.me/api/portraits/women/2.jpg" },
-  { name: "Carlos Ruiz", rating: 4.7, activities: "Aspirado de alfombras, lavado de pisos y muebles", photo: "https://randomuser.me/api/portraits/men/3.jpg" },
-  { name: "Ana Torres", rating: 4.6, activities: "Limpieza de ventanas, persianas y muebles", photo: "https://randomuser.me/api/portraits/women/4.jpg" },
-  { name: "Luis Fernández", rating: 4.5, activities: "Cocina y baños profundos, aspirado y lavado de pisos", photo: "https://randomuser.me/api/portraits/men/5.jpg" },
-  { name: "Sofía Gómez", rating: 4.9, activities: "Cambio de sábanas, limpieza general y desinfección", photo: "https://randomuser.me/api/portraits/women/6.jpg" }
+  { name: "Carlos Ruiz", rating: 4.7, activities: "Aspirado de alfombras, lavado de pisos y muebles", photo: "https://randomuser.me/api/portraits/men/3.jpg" }
 ];
 
 function loadExperts() {
@@ -127,6 +129,8 @@ function loadExperts() {
 function selectWorld(service) {
   currentService = service;
   selectedExpert = null;
+  DOM.btnNextFromExperts.disabled = true;
+  selectedAreas = {};
   loadExperts();
   showSection("expertSection");
   checkAutoAvailability();
@@ -143,7 +147,8 @@ const areas = [
 ];
 
 function renderAreas() {
-  const container = document.getElementById("areasContainer");
+  selectedAreas = {};
+  const container = DOM.areasContainer;
   if (!container) return;
   container.innerHTML = "";
   areas.forEach(area => {
@@ -168,9 +173,8 @@ function changeAreaCount(areaId, delta) {
 if (DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
     if (!selectedExpert) return;
-    if (currentService === "auto") {
-      showSection("carSection");
-    } else {
+    if (currentService === "auto") showSection("carSection");
+    else {
       renderAreas();
       showSection("areasSection");
     }
@@ -196,7 +200,7 @@ function updateSpaces() {
 
 // ===================== AUTOS =====================
 function updateCarCost() {
-  let type = document.querySelector('input[name="carType"]:checked').value;
+  let type = document.querySelector('input[name="carType"]:checked')?.value || "sedan";
   let cost = 10;
   if (type === "crossover") cost = 15;
   if (type === "suv") cost = 20;
@@ -205,7 +209,7 @@ function updateCarCost() {
 }
 
 function updateCarsFromSelect() {
-  carsCount = parseInt(DOM.carsInputSelect.value);
+  carsCount = parseInt(DOM.carsInputSelect.value) || 1;
   DOM.totalCars.textContent = carsCount;
   updateCarCost();
 }
@@ -220,16 +224,14 @@ if (DOM.btnNextFromCars) {
 
 // ===================== DESBLOQUEO AUTO =====================
 function checkAutoAvailability() {
-  if (DOM.btnAuto) {
-    DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
-  }
+  if (DOM.btnAuto) DOM.btnAuto.disabled = user.limpiezaPurchases.profundo < 1;
 }
 
 // ===================== RESUMEN =====================
 function generateSummary(service) {
   let html = `<h2>Resumen del servicio</h2>`;
   html += `<p><strong>Dirección:</strong> ${user.address}</p>`;
-  html += `<p><strong>Experto:</strong> ${selectedExpert ? selectedExpert.name : "No asignado"}</p>`;
+  html += `<p><strong>Experto:</strong> ${selectedExpert?.name || "No asignado"}</p>`;
 
   if (service === "basico" || service === "profundo") {
     let total = 0;
@@ -242,7 +244,7 @@ function generateSummary(service) {
     }
     html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
   } else if (service === "auto") {
-    let type = document.querySelector('input[name="carType"]:checked').value;
+    let type = document.querySelector('input[name="carType"]:checked')?.value || "sedan";
     let cost = DOM.totalCarCost.textContent;
     html += `<p><strong>Servicio:</strong> Lavada de Auto</p>`;
     html += `<p><strong>Tipo:</strong> ${type}</p>`;
@@ -254,9 +256,7 @@ function generateSummary(service) {
   DOM.summarySection.innerHTML = html;
   showSection("summarySection");
 
-  // Guardar en historial
-  let historyEntry = { service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() };
-  user.history.push(historyEntry);
+  user.history.push({ service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() });
   renderHistory();
 }
 
