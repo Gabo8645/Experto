@@ -47,8 +47,8 @@ const DOM = {
 
 // ===================== TOOLTIP =====================
 document.querySelectorAll(".info-icon").forEach(icon => {
-  const infoDiv = icon.parentElement.nextElementSibling;
-  if (infoDiv) icon.setAttribute("data-target", infoDiv.id);
+  const infoDiv = icon.parentElement.querySelector(".service-info");
+  if(infoDiv) icon.setAttribute("data-target", infoDiv.id);
 });
 
 document.querySelectorAll(".info-icon").forEach(btn => {
@@ -239,8 +239,6 @@ function generateSummary(service) {
 
   html+=`<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
   if(DOM.summarySection) DOM.summarySection.innerHTML = html;
-
-  showSection("summarySection");
 
   // historial
   let historyEntry = { service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() };
