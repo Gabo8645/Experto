@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #f4f5f7;
+  background-color: #f9fafb;
   color: #333;
   line-height: 1.6;
   min-height: 100vh;
@@ -18,45 +18,48 @@ body {
 
 /* ================= Header ================= */
 header {
-  background-color: #ffffff;
+  background: linear-gradient(90deg, #0077cc, #0099ff);
   padding: 1rem 1.5rem;
   text-align: center;
-  border-bottom: 1px solid #e0e0e0;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 header h1 {
-  font-size: 1.8rem;
-  color: #0077cc;
+  font-size: 1.7rem;
+  color: #fff;
   font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 #defaultAddress {
   font-size: 0.95rem;
-  margin-top: 0.4rem;
-  color: #666;
+  margin-top: 0.3rem;
+  color: #e8f4ff;
   font-weight: 500;
 }
 
 /* ================= Main ================= */
 main {
   flex: 1;
-  padding: 1rem 1.5rem;
-  max-width: 480px;
+  padding: 1.2rem;
+  max-width: 500px;
   margin: 0 auto;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 h2 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
   color: #0077cc;
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 section.hidden {
@@ -68,7 +71,6 @@ section.hidden {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  align-items: center;
 }
 
 .service-button {
@@ -80,21 +82,21 @@ section.hidden {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 1.5rem;
-  border-radius: 20px;
-  border: 2px solid #ccc;
+  padding: 1rem 1.3rem;
+  border-radius: 16px;
+  border: 1.5px solid #e0e0e0;
   background: #fff;
   cursor: pointer;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   width: 100%;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .service-button img {
-  width: 60px;
-  height: 60px;
+  width: 54px;
+  height: 54px;
   object-fit: cover;
   border-radius: 12px;
 }
@@ -102,18 +104,19 @@ section.hidden {
 .service-button:hover > button,
 .service-button:focus > button {
   border-color: #0077cc;
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0,119,204,0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,119,204,0.25);
   outline: none;
 }
 
 /* ================= Info icon y tooltip ================= */
 .info-icon {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 16px;
-  background: rgba(0,0,0,0.05);
+  top: 12px;
+  right: 12px;
+  font-size: 14px;
+  background: rgba(0,119,204,0.1);
+  color: #0077cc;
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -121,8 +124,6 @@ section.hidden {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 30;
-  user-select: none;
 }
 
 .service-info {
@@ -130,13 +131,13 @@ section.hidden {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  width: 240px;
+  width: 250px;
   background: #fff;
   border: 1px solid #0077cc;
   border-radius: 14px;
-  padding: 0.8rem;
+  padding: 0.9rem;
   margin-top: 0.5rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   z-index: 50;
   font-size: 0.9rem;
   animation: fadeIn 0.3s ease;
@@ -145,44 +146,16 @@ section.hidden {
 .service-info::after {
   content: "";
   position: absolute;
-  top: -6px;
+  top: -8px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 6px;
+  border-width: 8px;
   border-style: solid;
   border-color: transparent transparent #0077cc transparent;
 }
 
 .service-info.hidden {
   display: none !important;
-}
-
-.service-info ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-.service-info li.included::before {
-  content: "✔ ";
-  color: green;
-  font-weight: bold;
-}
-
-.service-info li.not-included::before {
-  content: "✖ ";
-  color: red;
-  font-weight: bold;
-}
-
-.service-info li {
-  margin: 4px 0;
-  font-size: 14px;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0; transform: translate(-50%, -10px);}
-  to {opacity: 1; transform: translate(-50%, 0);}
 }
 
 /* ================= Tarjetas de expertos ================= */
@@ -195,36 +168,34 @@ section.hidden {
 .card {
   background: #fff;
   padding: 1rem;
-  border-radius: 20px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: center;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   position: relative;
 }
 
-.card:hover,
-.card:focus {
-  box-shadow: 0 12px 28px rgba(0,119,204,0.35);
-  transform: scale(1.05);
-  outline: none;
+.card:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 20px rgba(0,119,204,0.25);
 }
 
 .card.selected {
-  border: 3px solid #0077cc;
-  box-shadow: 0 12px 28px rgba(0,119,204,0.5);
+  border: 2px solid #0077cc;
+  box-shadow: 0 10px 24px rgba(0,119,204,0.3);
 }
 
 .card img {
   width: 100%;
-  height: 130px;
+  height: 120px;
   object-fit: cover;
-  border-radius: 16px;
+  border-radius: 14px;
   margin-bottom: 0.7rem;
 }
 
 .card h3 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   margin-bottom: 0.3rem;
   color: #0077cc;
   font-weight: 700;
@@ -233,30 +204,26 @@ section.hidden {
 .card p {
   font-size: 0.9rem;
   color: #555;
-  margin: 0.3rem 0;
 }
 
 /* ================= Botones generales ================= */
 .btn {
   display: block;
   width: 100%;
-  margin-top: 1.3rem;
   padding: 1rem;
-  background-color: #0077cc;
+  background: linear-gradient(90deg, #0077cc, #0099ff);
   color: white;
   border: none;
-  border-radius: 16px;
+  border-radius: 14px;
   font-size: 1.1rem;
   cursor: pointer;
   font-weight: 700;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-.btn:hover,
-.btn:focus {
-  background-color: #005fa3;
+.btn:hover {
+  background: linear-gradient(90deg, #005fa3, #0077cc);
   transform: translateY(-2px);
-  outline: none;
 }
 
 /* ================= Formularios ================= */
@@ -280,11 +247,11 @@ input[type="date"],
 input[type="number"],
 input[type="month"] {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1.8px solid #ccc;
-  border-radius: 14px;
+  padding: 0.8rem 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 12px;
   font-size: 1rem;
-  transition: border-color 0.3s ease, box-shadow 0.2s ease;
+  transition: border-color 0.25s ease, box-shadow 0.2s ease;
 }
 
 input:focus {
@@ -293,36 +260,25 @@ input:focus {
   outline: none;
 }
 
-input[type="radio"] {
-  margin-right: 0.5rem;
-  cursor: pointer;
-}
-
 /* ================= Contadores + / - ================= */
 .space-selector {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
 }
 
 .space-selector button {
-  width: 44px;
-  height: 44px;
-  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
   cursor: pointer;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 10px;
   background-color: #f0f0f0;
   transition: background-color 0.2s;
 }
 
-.space-selector button:disabled {
-  background-color: #ddd;
-  cursor: not-allowed;
-}
-
-.space-selector button:hover:not(:disabled) {
+.space-selector button:hover {
   background-color: #e0e0e0;
 }
 
@@ -343,38 +299,28 @@ input[type="radio"] {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 62px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: #ffffff;
-  border-top: 1px solid #ddd;
-  z-index: 1000;
+  background: #fff;
+  border-top: 1px solid #eee;
   box-shadow: 0 -2px 6px rgba(0,0,0,0.05);
+  z-index: 1000;
 }
 
 .bottom-nav button {
   flex: 1;
   background: none;
   border: none;
-  outline: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  color: #555;
+  color: #666;
   cursor: pointer;
-}
-
-.bottom-nav button .icon {
-  font-size: 22px;
-  line-height: 1;
-}
-
-.bottom-nav button .label {
-  font-size: 11px;
-  margin-top: 2px;
+  transition: color 0.25s ease;
 }
 
 .bottom-nav button.active {
@@ -384,15 +330,9 @@ input[type="radio"] {
 /* ================= Responsive ================= */
 @media (max-width: 420px) {
   .service-button {
-    width: 95%;
+    width: 100%;
   }
   .card-container {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-}
-
-@media (min-width: 600px) {
-  .form-group label {
-    flex: 1 1 48%;
   }
 }
