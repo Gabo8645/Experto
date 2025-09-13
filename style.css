@@ -59,6 +59,10 @@ h2 {
   font-weight: 600;
 }
 
+section.hidden {
+  display: none;
+}
+
 /* ================= Botones de servicios verticales ================= */
 .world-options {
   display: flex;
@@ -196,6 +200,7 @@ h2 {
   text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+  position: relative;
 }
 
 .card:hover,
@@ -225,24 +230,10 @@ h2 {
   font-weight: 700;
 }
 
-.card .stars {
-  color: #f5c518;
-  font-size: 1rem;
-  margin: 0.3rem 0;
-}
-
-.card .comment {
+.card p {
   font-size: 0.9rem;
   color: #555;
-  margin-top: 0.5rem;
-  font-style: italic;
-}
-
-.card em {
-  font-size: 0.85rem;
-  color: #777;
-  display: block;
-  margin-top: 0.3rem;
+  margin: 0.3rem 0;
 }
 
 /* ================= Botones generales ================= */
