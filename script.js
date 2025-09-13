@@ -319,3 +319,17 @@ updateCarsFromSelect();
 updateCarCost();
 showSection("worldSelection");
 checkAutoAvailability();
+// Referencias a los radio buttons y al formulario de tarjeta
+const payRadios = document.querySelectorAll('input[name="pay"]');
+const cardDetails = document.getElementById('cardDetails');
+
+// Función para mostrar/ocultar el formulario de tarjeta
+payRadios.forEach(radio => {
+  radio.addEventListener('change', () => {
+    if (radio.value === 'tarjeta' && radio.checked) {
+      cardDetails.classList.remove('hidden');
+    } else if (radio.value === 'efectivo' && radio.checked) {
+      cardDetails.classList.add('hidden');
+    }
+  });
+});
