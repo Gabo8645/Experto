@@ -71,7 +71,6 @@ const cardDetailsDiv = document.getElementById("cardDetails");
 const btnConfirmPayment = document.getElementById("btnConfirmPayment");
 const trackingSection = document.getElementById("trackingSection");
 const trackStatus = document.getElementById("trackStatus");
-const promosSection = document.getElementById("promosSection");
 const historySection = document.getElementById("historySection");
 const historyContainer = document.getElementById("historyContainer");
 const profileSection = document.getElementById("profileSection");
@@ -240,7 +239,9 @@ scheduleDateInput.addEventListener("change", e=>{ selectedDate=e.target.value; }
 function increaseCars(){ if(carQuantity<10){ carQuantity++; updateCarDisplay(); } }
 function decreaseCars(){ if(carQuantity>1){ carQuantity--; updateCarDisplay(); } }
 function updateCarDisplay(){ carsInput.value=carQuantity; totalCars.textContent=carQuantity; totalCarCost.textContent=(carQuantity*carTypes[selectedCarType]).toFixed(2); }
-function selectCarType(type){ selectedCarType=type; updateCarDisplay(); }
+document.querySelectorAll('input[name="carType"]').forEach(radio=>{
+  radio.addEventListener("change", e=>{ selectedCarType=e.target.value; updateCarDisplay(); });
+});
 
 // ======== Resumen ========
 btnCalculateTotal.addEventListener("click", ()=>{
@@ -286,7 +287,6 @@ btnConfirmPayment.addEventListener("click", ()=>{
     const cardCVV=document.getElementById("cardCVV").value.trim();
     if(cardNumber.length<13 || !cardExpiry || cardCVV.length<3){ alert("Datos de tarjeta incompletos."); return; }
   }
-  // Guardar historial
   const now = new Date();
   const serviceRecord = {
     id: now.getTime(),
@@ -303,7 +303,6 @@ btnConfirmPayment.addEventListener("click", ()=>{
   if(selectedWorld==="basico") user.limpiezaPurchases++;
   localStorage.setItem("xpertoUser", JSON.stringify(user));
 
-  // Tracking
   summarySection.classList.add("hidden");
   paymentSection.classList.add("hidden");
   trackingSection.classList.remove("hidden");
@@ -327,5 +326,25 @@ function renderHistory(){
   user.history.slice().reverse().forEach(item=>{
     const card=document.createElement("div"); card.classList.add("card");
     let areasDesc="";
-    if(selectedWorld==="auto") areasDesc=`Tipo: ${item.areas.type}, Cantidad: ${item.areas.quantity}`;
-    else for(const [id,count] of Object.entries(item.areas)) { if(count>0){ const area=areas.find(a=>a.id===id); areasDesc
+    if(item.world==="Auto") areasDesc=`Tipo: ${item.areas.type}, Cantidad: ${item.areas.quantity}`;
+    else for(const [id,count] of Object.entries(item.areas)) { if(count>0){ const area=areas.find(a=>a.id===id); areasDesc+=`${area.label}: ${count}, `;} }
+    card.innerHTML=`<p><strong>Fecha:</strong> ${item.date}</p>
+                    <p><strong>Servicio:</strong> ${item.world}</p>
+                    <p><strong>Experto:</strong> ${item.expert}</p>
+                    <p><strong>Dirección:</strong> ${item.address}</p>
+                    <p><strong>Áreas:</strong> ${areasDesc}</p>
+                    <p><strong>Programación:</strong> ${item.schedule}</p>
+                    <p><strong>Total:</strong> $${item.total}</p>
+                    <p><strong>Pago:</strong> ${item.paymentMethod}</p>`;
+    historyContainer.appendChild(card);
+  });
+}
+
+// ======== Perfil ========
+profileForm.addEventListener("submit", e=>{ e.preventDefault(); saveUser(); });
+
+// ======== Inicialización ========
+window.addEventListener("DOMContentLoaded", ()=>{
+  loadUser();
+  showSection("worldSelection");
+});
