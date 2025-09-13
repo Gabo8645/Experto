@@ -79,7 +79,7 @@ section.active {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-/* ===== SERVICE BUTTONS ===== */
+/* ===== SERVICE BUTTONS REALISTAS ===== */
 .world-options {
   display: flex;
   gap: 1.5rem;
@@ -91,7 +91,7 @@ section.active {
 .service-button {
   position: relative;
   display: inline-block;
-  width: 150px;
+  width: 160px;
 }
 
 .service-button > button {
@@ -99,28 +99,50 @@ section.active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1.4rem 1rem;
-  border-radius: 18px;
+  padding: 1.5rem 1rem;
+  border-radius: 20px;
   border: none;
-  background: #fff;
+  background: linear-gradient(145deg, #ffffff, #f0f7ff);
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  position: relative;
+}
+
+.service-button > button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background: linear-gradient(to bottom, rgba(0,119,204,0.05), rgba(0,119,204,0.1));
+  pointer-events: none;
 }
 
 .service-button > button:hover,
 .service-button > button:focus {
-  background: #f0f7ff;
-  transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0, 119, 204, 0.25);
+  background: linear-gradient(145deg, #e6f2ff, #ffffff);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(0, 119, 204, 0.25);
 }
 
 .service-button img {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 0.6rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease;
+}
+
+.service-button:hover img {
+  transform: scale(1.1);
 }
 
 /* ===== INFO ICON + TOOLTIP ===== */
@@ -132,8 +154,8 @@ section.active {
   background: #0077cc;
   color: #fff;
   border-radius: 50%;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -143,16 +165,16 @@ section.active {
 
 .service-info {
   position: absolute;
-  top: 95%;
+  top: 105%;
   left: 50%;
   transform: translateX(-50%);
-  width: 240px;
+  width: 250px;
   background: #fff;
   border: 1.5px solid #0077cc;
-  border-radius: 14px;
-  padding: 0.9rem;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
-  font-size: 0.9rem;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  font-size: 0.95rem;
   animation: fadeIn 0.3s ease;
   z-index: 50;
 }
@@ -160,10 +182,10 @@ section.active {
 .service-info::after {
   content: "";
   position: absolute;
-  top: -7px;
+  top: -8px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 7px;
+  border-width: 8px;
   border-style: solid;
   border-color: transparent transparent #0077cc transparent;
 }
@@ -189,22 +211,22 @@ section.active {
 }
 
 .service-info li {
-  margin: 5px 0;
+  margin: 6px 0;
   font-size: 14px;
 }
 
 /* ===== CARDS EXPERTOS ===== */
 .card-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 1.4rem;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
 }
 
 .card {
   background: #fff;
-  padding: 1rem;
-  border-radius: 18px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 1.2rem;
+  border-radius: 20px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -212,25 +234,26 @@ section.active {
 
 .card:hover,
 .card:focus {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 22px rgba(0, 119, 204, 0.25);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 10px 28px rgba(0, 119, 204, 0.25);
 }
 
 .card.selected {
   border: 3px solid #0077cc;
-  box-shadow: 0 10px 26px rgba(0, 119, 204, 0.35);
+  box-shadow: 0 12px 30px rgba(0, 119, 204, 0.35);
 }
 
 .card img {
   width: 100%;
-  height: 130px;
+  height: 140px;
   object-fit: cover;
-  border-radius: 14px;
-  margin-bottom: 0.6rem;
+  border-radius: 16px;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .card h3 {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: #0077cc;
   font-weight: 700;
 }
@@ -242,7 +265,7 @@ section.active {
 }
 
 .card .comment {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #555;
   font-style: italic;
   margin-top: 0.4rem;
@@ -252,12 +275,12 @@ section.active {
 .btn {
   display: block;
   width: 100%;
-  margin-top: 1.3rem;
+  margin-top: 1.5rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #0077cc, #005fa3);
+  background: linear-gradient(145deg, #0077cc, #005fa3);
   color: white;
   border: none;
-  border-radius: 14px;
+  border-radius: 16px;
   font-size: 1.1rem;
   font-weight: 700;
   cursor: pointer;
@@ -266,8 +289,8 @@ section.active {
 
 .btn:hover,
 .btn:focus {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 119, 204, 0.3);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 24px rgba(0, 119, 204, 0.35);
 }
 
 /* ===== FORMS ===== */
@@ -289,17 +312,17 @@ input[type="date"],
 input[type="number"],
 input[type="month"] {
   width: 100%;
-  padding: 0.7rem 0.9rem;
+  padding: 0.8rem 1rem;
   border: 2px solid #e0e0e0;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 1rem;
-  transition: border 0.3s ease;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
 input:focus {
   border-color: #0077cc;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.15);
 }
 
 input[type="radio"] {
@@ -350,7 +373,7 @@ input[type="radio"] {
   background-color: #e6f2ff;
   border-left: 5px solid #0077cc;
   padding: 1rem 1.2rem;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 1.1rem;
   font-weight: 600;
   color: #004a99;
@@ -362,13 +385,13 @@ input[type="radio"] {
   margin-top: 1rem;
   padding: 1rem;
   background-color: #f0f7ff;
-  border-radius: 12px;
-  box-shadow: inset 0 0 5px rgba(0, 119, 204, 0.25);
+  border-radius: 14px;
+  box-shadow: inset 0 0 8px rgba(0, 119, 204, 0.2);
 }
 
 #cardDetails label {
   display: block;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.8rem;
   font-weight: 600;
 }
 
