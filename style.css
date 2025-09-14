@@ -169,7 +169,34 @@ section.hidden {
   from {opacity: 0; transform: translate(-50%, -8px);}
   to {opacity: 1; transform: translate(-50%, 0);}
 }
+/* ================= Tooltip con check y X ================= */
+.service-info ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
 
+.service-info li {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ✅ Servicios incluidos */
+.service-info li.included::before {
+  content: "✔";
+  color: #28a745; /* verde */
+  font-weight: bold;
+}
+
+/* ❌ Servicios no incluidos */
+.service-info li.excluded::before {
+  content: "✘";
+  color: #dc3545; /* rojo */
+  font-weight: bold;
+}
 /* ================= Tarjetas de expertos ================= */
 .card-container {
   display: grid;
