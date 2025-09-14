@@ -437,3 +437,34 @@ input:focus {
   font-weight: 600;
   color: #333;
 }
+/* ================= Tipos de auto ================= */
+.car-item {
+  display: flex;                  /* fila con texto y botones */
+  align-items: center;            /* vertical centrado */
+  justify-content: space-between; /* texto a la izquierda, botones a la derecha */
+  padding: 8px 0;
+  border-bottom: 1px solid #eee; /* opcional, separador entre autos */
+  width: 100%;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+.car-item button {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: 1px solid #d1d9e0;
+  background-color: #f3f6f9;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.car-item button:hover {
+  background-color: #e4edf5;
+}
+
+.car-item span {
+  font-weight: 600;
+  color: #333;
+}
