@@ -74,12 +74,21 @@ section.hidden {
 
 /* ================= Botón de siguiente (flotante sobre la barra inferior) ================= */
 .btn-next {
-  position: sticky; /* se queda visible al llegar al final */
-  bottom: 80px; /* justo encima de la barra inferior */
-  z-index: 1100; /* por encima de la barra */
-  width: 100%;
-  margin: 0 auto;
+  position: fixed;       /* siempre visible */
+  bottom: 80px;          /* ajusta según altura de tu barra inferior */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;         /* encima de la barra inferior */
+  width: 90%;            /* ancho del botón */
+  max-width: 520px;      /* opcional, para no sobrepasar el contenido */
   border-radius: 14px;
+  padding: 1rem;
+  background: linear-gradient(135deg, #0077cc, #00b4ff);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,119,204,0.25);
 }
 
 /* ================= Botones de servicios ================= */
