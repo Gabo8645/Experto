@@ -84,7 +84,6 @@
   <section id="expertSection" class="hidden">
     <h2>Selecciona un Xperto</h2>
     <div id="expertsContainer" class="card-container"></div>
-    <button class="btn" id="btnNextFromExperts" disabled>Siguiente</button>
   </section>
 
   <!-- ==================== 3. Selección de áreas ==================== -->
@@ -98,8 +97,6 @@
       <label><input type="radio" name="schedule" value="programado" /> Programado</label>
       <input type="date" id="scheduleDate" class="hidden" aria-label="Fecha programada" />
     </fieldset>
-
-    <button class="btn" id="btnCalculateTotal">Ver resumen</button>
   </section>
 
   <!-- ==================== 4. Selección de autos ==================== -->
@@ -107,8 +104,7 @@
     <h2>Selecciona tu auto</h2>
     <div class="car-type-selector">
       <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($7)</label>
-      <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas ($
-        10)</label>
+      <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas ($10)</label>
       <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV 3 filas ($15)</label>
       <label><input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta ($20)</label>
     </div>
@@ -129,8 +125,6 @@
 
     <p>Total autos seleccionados: <span id="totalCars">1</span></p>
     <p>Costo total: $<span id="totalCarCost">10.00</span></p>
-
-    <button class="btn" id="btnNextFromCars">Siguiente</button>
   </section>
 
   <!-- ==================== 5. Resumen ==================== -->
@@ -155,7 +149,6 @@
         </label>
       </div>
     </form>
-    <button class="btn" id="btnConfirmPayment">Confirmar</button>
   </section>
 
   <!-- ==================== 7. Seguimiento ==================== -->
@@ -191,6 +184,11 @@
     </form>
   </section>
 </main>
+
+<!-- ==================== Botón fijo de flujo ==================== -->
+<div id="fixedButtonContainer">
+  <button class="btn-next" id="btnNextFlow">Siguiente</button>
+</div>
 
 <!-- ==================== Barra inferior ==================== -->
 <nav class="bottom-nav" role="navigation" aria-label="Navegación principal">
