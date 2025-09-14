@@ -98,7 +98,7 @@ const experts = [
   { name: "Juan Pérez", rating: 4.8, activities: "Barrido, aspirado y limpieza general", photo: "https://randomuser.me/api/portraits/men/7.jpg" },
   { name: "María López", rating: 4.9, activities: "Limpieza profunda, desinfección, cocina y baños", photo: "https://randomuser.me/api/portraits/women/2.jpg" },
   { name: "Carlos Ruiz", rating: 4.7, activities: "Aspirado de alfombras, lavado de pisos y muebles", photo: "https://randomuser.me/api/portraits/men/3.jpg" },
-  { name: "Ana Martínez", rating: 4.6, activities: "Limpieza de vidrios, patios y balcones", photo: "https://randomuser.me/api/portraits/women/5.jpg" }
+  { name: "Ana Martínez", rating: 4.6, activities: "Limpieza de vidrios, patios y balcones", photo: "https://randomuser.me/api/portraits/women/4.jpg" }
 ];
 
 function loadExperts() {
