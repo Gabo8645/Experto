@@ -19,67 +19,68 @@
 
 <main>
   <!-- ==================== 1. Selección de servicio ==================== -->
-  <section id="worldSelection">
-    <h2>Selecciona el servicio:</h2>
-    <div class="world-options">
-      <div class="service-button">
-        <button type="button" onclick="selectWorld('basico')">
-          <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
-          Limpieza Básica
-        </button>
-        <span class="info-icon" onclick="toggleInfo('infoBasico', event)">ℹ️</span>
-        <div class="service-info hidden" id="infoBasico">
-          <ul>
-            <li class="included">Barrido y aspirado de pisos</li>
-            <li class="included">Limpieza de superficies visibles</li>
-            <li class="included">Limpieza de baños básica</li>
-            <li class="included">Cocina: encimeras y fregadero</li>
-            <li class="included">Cambio de basura</li>
-            <li class="excluded">Aspirado y lavado de alfombras</li>
-            <li class="excluded">Limpieza de ventanas y persianas</li>
-            <li class="excluded">Muebles por dentro y fuera</li>
-            <li class="excluded">Desinfectantes potentes</li>
-          </ul>
-        </div>
-      </div>
+<section id="worldSelection">
+  <h2>Selecciona el servicio:</h2>
+  <div class="world-options">
 
-      <div class="service-button">
-        <button type="button" onclick="selectWorld('profundo')">
-          <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
-          Limpieza Profunda
-        </button>
-        <span class="info-icon" onclick="toggleInfo('infoProfundo', event)">ℹ️</span>
-        <div class="service-info hidden" id="infoProfundo">
-          <ul>
-            <li class="included">Incluye lo de la Básica</li>
-            <li class="included">Limpieza profunda de baños y cocina</li>
-            <li class="included">Aspirado y lavado de alfombras</li>
-            <li class="included">Limpieza de ventanas y persianas</li>
-            <li class="included">Muebles por dentro y fuera</li>
-            <li class="included">Polvo en rincones, zócalos y techos</li>
-            <li class="included">Desinfectantes potentes</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="service-button">
-        <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
-          <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
-          Lavada de Auto
-        </button>
-        <span class="info-icon" onclick="toggleInfo('infoAuto', event)">ℹ️</span>
-        <div class="service-info hidden" id="infoAuto">
-          <ul>
-            <li class="included">Lavado exterior</li>
-            <li class="included">Aspirado interior</li>
-            <li class="excluded">Pulido</li>
-          </ul>
-          <small>Se habilita después de 1 limpieza profunda</small>
-        </div>
+    <div class="service-button">
+      <button type="button" onclick="selectWorld('basico')">
+        <img src="https://img.icons8.com/ios-filled/50/000000/broom.png" alt="Básico" />
+        Limpieza Básica
+      </button>
+      <span class="info-icon" data-target="infoBasico">ℹ️</span>
+      <div class="service-info hidden" id="infoBasico">
+        <ul>
+          <li class="included">Barrido y aspirado de pisos</li>
+          <li class="included">Limpieza de superficies visibles</li>
+          <li class="included">Limpieza de baños básica</li>
+          <li class="included">Cocina: encimeras y fregadero</li>
+          <li class="included">Cambio de basura</li>
+          <li class="excluded">Aspirado y lavado de alfombras</li>
+          <li class="excluded">Limpieza de ventanas y persianas</li>
+          <li class="excluded">Muebles por dentro y fuera</li>
+          <li class="excluded">Desinfectantes potentes</li>
+        </ul>
       </div>
     </div>
-  </section>
 
+    <div class="service-button">
+      <button type="button" onclick="selectWorld('profundo')">
+        <img src="https://img.icons8.com/ios-filled/50/000000/vacuum-cleaner.png" alt="Profundo" />
+        Limpieza Profunda
+      </button>
+      <span class="info-icon" data-target="infoProfundo">ℹ️</span>
+      <div class="service-info hidden" id="infoProfundo">
+        <ul>
+          <li class="included">Incluye lo de la Básica</li>
+          <li class="included">Limpieza profunda de baños y cocina</li>
+          <li class="included">Aspirado y lavado de alfombras</li>
+          <li class="included">Limpieza de ventanas y persianas</li>
+          <li class="included">Muebles por dentro y fuera</li>
+          <li class="included">Polvo en rincones, zócalos y techos</li>
+          <li class="included">Desinfectantes potentes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="service-button">
+      <button type="button" id="btnAuto" onclick="selectWorld('auto')" disabled>
+        <img src="https://img.icons8.com/ios-filled/50/000000/car.png" alt="Lavada de Auto" />
+        Lavada de Auto
+      </button>
+      <span class="info-icon" data-target="infoAuto">ℹ️</span>
+      <div class="service-info hidden" id="infoAuto">
+        <ul>
+          <li class="included">Lavado exterior</li>
+          <li class="included">Aspirado interior</li>
+          <li class="excluded">Pulido</li>
+        </ul>
+        <small>Se habilita después de 1 limpieza profunda</small>
+      </div>
+    </div>
+
+  </div>
+</section>
   <!-- ==================== 2. Selección de expertos ==================== -->
   <section id="expertSection" class="hidden">
     <h2>Selecciona un Xperto</h2>
