@@ -12,7 +12,12 @@ let user = {
 let currentService = null;
 let selectedExpert = null;
 let spacesCount = 1;
-let carsCount = 1;
+let selectedCars = {
+  sedan: 0,
+  crossover: 0,
+  suv: 0,
+  camioneta: 0
+};
 let baseCost = 30;
 let selectedAreas = {}; // Áreas dinámicas
 
@@ -52,25 +57,19 @@ const DOM = {
 // ===================== TOOLTIP INFO =====================
 document.querySelectorAll(".info-icon").forEach(btn => {
   btn.addEventListener("click", e => {
-    e.stopPropagation(); // evita que el click se propague al body
+    e.stopPropagation();
     const id = btn.getAttribute("data-target");
     if (!id) return;
-
-    // Cierra todos menos el actual
     document.querySelectorAll(".service-info").forEach(el => {
       if (el.id !== id) el.classList.add("hidden");
     });
-
-    // Alterna el tooltip actual
-    const tooltip = document.getElementById(id);
-    tooltip.classList.toggle("hidden");
+    document.getElementById(id).classList.toggle("hidden");
   });
 });
-
-// Cerrar tooltip al hacer click afuera
 document.body.addEventListener("click", () => {
   document.querySelectorAll(".service-info").forEach(el => el.classList.add("hidden"));
 });
+
 // ===================== NAVEGACIÓN =====================
 function showSection(sectionId) {
   document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
@@ -167,16 +166,71 @@ function changeAreaCount(areaId, delta) {
   document.getElementById(`count-${areaId}`).textContent = selectedAreas[areaId];
 }
 
+// ===================== AUTOS =====================
+const cars = [
+  { id: "sedan", label: "Sedán", price: 7 },
+  { id: "crossover", label: "Crossover 2 filas", price: 10 },
+  { id: "suv", label: "SUV 3 filas", price: 15 },
+  { id: "camioneta", label: "Camioneta", price: 20 }
+];
+
+function changeCarCount(carId, delta) {
+  selectedCars[carId] = Math.max(0, selectedCars[carId] + delta);
+  document.getElementById(`count-${carId}`).textContent = selectedCars[carId];
+  updateTotalCars();
+}
+
+function updateTotalCars() {
+  let total = 0;
+  let cost = 0;
+  for (const car of cars) {
+    total += selectedCars[car.id];
+    cost += selectedCars[car.id] * car.price;
+  }
+  DOM.totalCars.textContent = total;
+  DOM.totalCarCost.textContent = cost.toFixed(2);
+}
+
+function renderCars() {
+  const container = document.getElementById("carsContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  cars.forEach(car => {
+    if (!(car.id in selectedCars)) selectedCars[car.id] = 0;
+    const div = document.createElement("div");
+    div.className = "car-item";
+    div.innerHTML = `
+      <span>${car.label} ($${car.price})</span>
+      <button onclick="changeCarCount('${car.id}', -1)">-</button>
+      <span id="count-${car.id}">0</span>
+      <button onclick="changeCarCount('${car.id}', 1)">+</button>
+    `;
+    container.appendChild(div);
+  });
+
+  updateTotalCars();
+}
+
 // ===================== BOTONES =====================
 if (DOM.btnNextFromExperts) {
   DOM.btnNextFromExperts.addEventListener("click", () => {
     if (!selectedExpert) return;
     if (currentService === "auto") {
+      renderCars();
       showSection("carSection");
     } else {
       renderAreas();
       showSection("areasSection");
     }
+  });
+}
+
+if (DOM.btnNextFromCars) {
+  DOM.btnNextFromCars.addEventListener("click", () => {
+    generateSummary("auto");
+    user.limpiezaPurchases.auto++;
+    checkAutoAvailability();
   });
 }
 
@@ -186,38 +240,6 @@ if (DOM.btnCalculateTotal) {
     if (currentService === "basico") user.limpiezaPurchases.basico++;
     if (currentService === "profundo") user.limpiezaPurchases.profundo++;
     if (currentService !== "auto") checkAutoAvailability();
-  });
-}
-
-// ===================== ESPACIOS =====================
-function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
-function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
-function updateSpaces() {
-  DOM.spacesInput.value = spacesCount;
-  DOM.totalSpaces.textContent = spacesCount;
-}
-
-// ===================== AUTOS =====================
-function updateCarCost() {
-  let type = document.querySelector('input[name="carType"]:checked').value;
-  let cost = 10;
-  if (type === "crossover") cost = 15;
-  if (type === "suv") cost = 20;
-  if (type === "camioneta") cost = 18;
-  DOM.totalCarCost.textContent = (carsCount * cost).toFixed(2);
-}
-
-function updateCarsFromSelect() {
-  carsCount = parseInt(DOM.carsInputSelect.value);
-  DOM.totalCars.textContent = carsCount;
-  updateCarCost();
-}
-
-if (DOM.btnNextFromCars) {
-  DOM.btnNextFromCars.addEventListener("click", () => {
-    generateSummary("auto");
-    user.limpiezaPurchases.auto++;
-    checkAutoAvailability();
   });
 }
 
@@ -240,17 +262,22 @@ function generateSummary(service) {
       if (count > 0) {
         const area = areas.find(a => a.id === id);
         total += area.price * count;
-        html += `<p>${area.label}: ${count} x $${area.price}</p>`;
+        html += `<p>${area.label}: ${count} x $${area.price} = $${area.price * count}</p>`;
       }
     }
     html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
   } else if (service === "auto") {
-    let type = document.querySelector('input[name="carType"]:checked').value;
-    let cost = DOM.totalCarCost.textContent;
+    let total = 0;
     html += `<p><strong>Servicio:</strong> Lavada de Auto</p>`;
-    html += `<p><strong>Tipo:</strong> ${type}</p>`;
-    html += `<p><strong>Autos:</strong> ${carsCount}</p>`;
-    html += `<p><strong>Total:</strong> $${cost}</p>`;
+    for (const car of cars) {
+      const count = selectedCars[car.id];
+      if (count > 0) {
+        const subtotal = count * car.price;
+        total += subtotal;
+        html += `<p>${car.label}: ${count} x $${car.price} = $${subtotal}</p>`;
+      }
+    }
+    html += `<p><strong>Total:</strong> $${total.toFixed(2)}</p>`;
   }
 
   html += `<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
@@ -261,6 +288,14 @@ function generateSummary(service) {
   let historyEntry = { service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() };
   user.history.push(historyEntry);
   renderHistory();
+}
+
+// ===================== ESPACIOS =====================
+function increaseSpaces() { spacesCount = Math.min(10, spacesCount + 1); updateSpaces(); }
+function decreaseSpaces() { spacesCount = Math.max(1, spacesCount - 1); updateSpaces(); }
+function updateSpaces() {
+  DOM.spacesInput.value = spacesCount;
+  DOM.totalSpaces.textContent = spacesCount;
 }
 
 // ===================== PAGO =====================
@@ -331,7 +366,7 @@ document.querySelectorAll('input[name="schedule"]').forEach(radio => {
 });
 
 // ===================== INIT =====================
-updateCarsFromSelect();
-updateCarCost();
+renderCars();
+updateTotalCars();
 showSection("worldSelection");
 checkAutoAvailability();
