@@ -68,6 +68,20 @@ h2 {
 section.hidden {
   display: none;
 }
+  /* ================= Espacio inferior para que botones no se escondan ================= */
+  padding-bottom: 100px; /* ajusta según altura de tu barra inferior */
+}
+
+h2 {
+  margin-bottom: 0.8rem;
+  color: #0077cc;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+section.hidden {
+  display: none;
+}
 
 /* ================= Botones de servicios ================= */
 .world-options {
