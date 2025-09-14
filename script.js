@@ -30,10 +30,6 @@ const DOM = {
   scheduleDateInput: document.getElementById("scheduleDate"),
   totalCars: document.getElementById("totalCars"),
   totalCarCost: document.getElementById("totalCarCost"),
-  btnNextFromExperts: document.getElementById("btnNextFromExperts"),
-  btnCalculateTotal: document.getElementById("btnCalculateTotal"),
-  btnNextFromCars: document.getElementById("btnNextFromCars"),
-  btnConfirmPayment: document.getElementById("btnConfirmPayment"),
   expertsContainer: document.getElementById("expertsContainer"),
   historyContainer: document.getElementById("historyContainer"),
   trackStatus: document.getElementById("trackStatus"),
@@ -44,14 +40,12 @@ const DOM = {
   defaultAddress: document.getElementById("defaultAddress"),
   areasContainer: document.getElementById("areasContainer")
 };
+
 // ===================== TOOLTIP =====================
 document.querySelectorAll(".info-icon").forEach(icon => {
-  const infoDiv = icon.nextElementSibling; // ✅ hermano directo
+  const infoDiv = icon.nextElementSibling;
   if (infoDiv) {
-    // crear un id único si no tiene
-    if (!infoDiv.id) {
-      infoDiv.id = "tooltip-" + Math.random().toString(36).substr(2, 9);
-    }
+    if (!infoDiv.id) infoDiv.id = "tooltip-" + Math.random().toString(36).substr(2, 9);
     icon.setAttribute("data-target", infoDiv.id);
   }
 });
@@ -61,18 +55,13 @@ document.querySelectorAll(".info-icon").forEach(btn => {
     e.stopPropagation();
     const id = btn.getAttribute("data-target");
     if (!id) return;
-
-    // Ocultar todos los tooltips menos el clicado
     document.querySelectorAll(".service-info").forEach(el => {
       if (el.id !== id) el.classList.add("hidden");
     });
-
-    // Mostrar/ocultar el actual
     document.getElementById(id).classList.toggle("hidden");
   });
 });
 
-// Cerrar tooltips al hacer click fuera
 document.body.addEventListener("click", () => {
   document.querySelectorAll(".service-info").forEach(el => el.classList.add("hidden"));
 });
@@ -83,7 +72,6 @@ function showSection(sectionId) {
   const section = document.getElementById(sectionId);
   if (section) section.classList.remove("hidden");
 
-  // Navegación inferior solo activa cuando corresponde
   document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.remove("active"));
   const navBtn = document.querySelector(
     `#nav${sectionId.charAt(0).toUpperCase() + sectionId.slice(1).replace("Section","")}`
@@ -127,7 +115,6 @@ function loadExperts() {
       selectedExpert = exp;
       document.querySelectorAll("#expertsContainer .card").forEach(c => c.classList.remove("selected"));
       card.classList.add("selected");
-      DOM.btnNextFromExperts.disabled = false;
     };
     DOM.expertsContainer.appendChild(card);
   });
@@ -137,7 +124,6 @@ function loadExperts() {
 function selectWorld(service) {
   currentService = service;
   selectedExpert = null;
-  DOM.btnNextFromExperts.disabled = true;
   selectedAreas = {};
   loadExperts();
   showSection("expertSection");
@@ -175,35 +161,6 @@ function renderAreas() {
 function changeAreaCount(areaId, delta) {
   selectedAreas[areaId] = Math.max(0, Math.min(10, selectedAreas[areaId] + delta));
   document.getElementById(`count-${areaId}`).textContent = selectedAreas[areaId];
-}
-
-// ===================== BOTONES =====================
-if (DOM.btnNextFromExperts) {
-  DOM.btnNextFromExperts.addEventListener("click", () => {
-    if (!selectedExpert) return;
-    if (currentService === "auto") showSection("carSection");
-    else {
-      renderAreas();
-      showSection("areasSection");
-    }
-  });
-}
-
-if (DOM.btnCalculateTotal) {
-  DOM.btnCalculateTotal.addEventListener("click", () => {
-    generateSummary(currentService);
-    if (currentService === "basico") user.limpiezaPurchases.basico++;
-    if (currentService === "profundo") user.limpiezaPurchases.profundo++;
-    checkAutoAvailability();
-  });
-}
-
-if (DOM.btnNextFromCars) {
-  DOM.btnNextFromCars.addEventListener("click", () => {
-    generateSummary("auto");
-    user.limpiezaPurchases.auto++;
-    checkAutoAvailability();
-  });
 }
 
 // ===================== AUTOS =====================
@@ -252,10 +209,8 @@ function generateSummary(service) {
     html += `<p><strong>Total:</strong> $${cost}</p>`;
   }
 
-  html += `<button class="btn" onclick="goToPayment()">Ir a pago</button>`;
   DOM.summarySection.innerHTML = html;
   showSection("summarySection");
-
   user.history.push({ service, expert: selectedExpert?.name, address: user.address, date: new Date().toLocaleString() });
   renderHistory();
 }
@@ -270,18 +225,16 @@ document.querySelectorAll('input[name="pay"]').forEach(r => {
   });
 });
 
-if (DOM.btnConfirmPayment) {
-  DOM.btnConfirmPayment.addEventListener("click", () => {
-    const selectedPay = document.querySelector('input[name="pay"]:checked');
-    if (!selectedPay) { alert("Elija un método de pago"); return; }
-    if (selectedPay.value === "tarjeta") {
-      const num = document.getElementById("cardNumber").value.trim();
-      const exp = document.getElementById("cardExpiry").value;
-      const cvv = document.getElementById("cardCVV").value.trim();
-      if (!num || !exp || !cvv) { alert("Complete los datos de tarjeta"); return; }
-    }
-    startTracking();
-  });
+function confirmPayment() {
+  const selectedPay = document.querySelector('input[name="pay"]:checked');
+  if (!selectedPay) { alert("Elija un método de pago"); return; }
+  if (selectedPay.value === "tarjeta") {
+    const num = document.getElementById("cardNumber").value.trim();
+    const exp = document.getElementById("cardExpiry").value;
+    const cvv = document.getElementById("cardCVV").value.trim();
+    if (!num || !exp || !cvv) { alert("Complete los datos de tarjeta"); return; }
+  }
+  startTracking();
 }
 
 // ===================== TRACKING =====================
@@ -327,22 +280,62 @@ document.querySelectorAll('input[name="schedule"]').forEach(radio => {
   });
 });
 
+// ===================== BOTÓN FIJO DE FLUJO =====================
+const btnNextFlow = document.createElement("button");
+btnNextFlow.id = "btnNextFlow";
+btnNextFlow.className = "btn";
+btnNextFlow.textContent = "Siguiente";
+
+const fixedContainer = document.createElement("div");
+fixedContainer.id = "fixedButtonContainer";
+fixedContainer.style.position = "fixed";
+fixedContainer.style.bottom = "10px";
+fixedContainer.style.left = "50%";
+fixedContainer.style.transform = "translateX(-50%)";
+fixedContainer.style.zIndex = "999";
+fixedContainer.appendChild(btnNextFlow);
+document.body.appendChild(fixedContainer);
+
+btnNextFlow.addEventListener("click", () => {
+  const visibleSection = document.querySelector("main section:not(.hidden)");
+  if (visibleSection === DOM.expertSection) {
+    if (!selectedExpert) { alert("Seleccione un experto"); return; }
+    if (currentService === "auto") showSection("carSection");
+    else { renderAreas(); showSection("areasSection"); }
+  } else if (visibleSection === DOM.areasSection) {
+    generateSummary(currentService);
+    if (currentService === "basico") user.limpiezaPurchases.basico++;
+    if (currentService === "profundo") user.limpiezaPurchases.profundo++;
+    checkAutoAvailability();
+  } else if (visibleSection === DOM.carSection) {
+    generateSummary("auto");
+    user.limpiezaPurchases.auto++;
+    checkAutoAvailability();
+  } else if (visibleSection === DOM.summarySection) {
+    goToPayment();
+  } else if (visibleSection === DOM.paymentSection) {
+    confirmPayment();
+  }
+});
+
+function updateFlowButtonText() {
+  const visibleSection = document.querySelector("main section:not(.hidden)");
+  if (visibleSection === DOM.expertSection) btnNextFlow.textContent = "Siguiente";
+  else if (visibleSection === DOM.areasSection) btnNextFlow.textContent = "Ver resumen";
+  else if (visibleSection === DOM.carSection) btnNextFlow.textContent = "Ver resumen";
+  else if (visibleSection === DOM.summarySection) btnNextFlow.textContent = "Ir a pago";
+  else if (visibleSection === DOM.paymentSection) btnNextFlow.textContent = "Confirmar";
+  else btnNextFlow.textContent = "Siguiente";
+}
+
+const observer = new MutationObserver(updateFlowButtonText);
+document.querySelectorAll("main section").forEach(section => {
+  observer.observe(section, { attributes: true, attributeFilter: ["class"] });
+});
+updateFlowButtonText();
+
 // ===================== INIT =====================
 updateCarsFromSelect();
 updateCarCost();
 showSection("worldSelection");
 checkAutoAvailability();
-// Referencias a los radio buttons y al formulario de tarjeta
-const payRadios = document.querySelectorAll('input[name="pay"]');
-const cardDetails = document.getElementById('cardDetails');
-
-// Función para mostrar/ocultar el formulario de tarjeta
-payRadios.forEach(radio => {
-  radio.addEventListener('change', () => {
-    if (radio.value === 'tarjeta' && radio.checked) {
-      cardDetails.classList.remove('hidden');
-    } else if (radio.value === 'efectivo' && radio.checked) {
-      cardDetails.classList.add('hidden');
-    }
-  });
-});
