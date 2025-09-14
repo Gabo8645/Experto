@@ -50,22 +50,27 @@ const DOM = {
 };
 
 // ===================== TOOLTIP INFO =====================
-document.querySelectorAll(".info-icon").forEach(icon => {
-  const infoDiv = icon.parentElement.nextElementSibling;
-  if (infoDiv) icon.setAttribute("data-target", infoDiv.id);
-});
 document.querySelectorAll(".info-icon").forEach(btn => {
   btn.addEventListener("click", e => {
-    e.stopPropagation();
+    e.stopPropagation(); // evita que el click se propague al body
     const id = btn.getAttribute("data-target");
     if (!id) return;
+
+    // Cierra todos menos el actual
     document.querySelectorAll(".service-info").forEach(el => {
       if (el.id !== id) el.classList.add("hidden");
     });
-    document.getElementById(id).classList.toggle("hidden");
+
+    // Alterna el tooltip actual
+    const tooltip = document.getElementById(id);
+    tooltip.classList.toggle("hidden");
   });
 });
 
+// Cerrar tooltip al hacer click afuera
+document.body.addEventListener("click", () => {
+  document.querySelectorAll(".service-info").forEach(el => el.classList.add("hidden"));
+});
 // ===================== NAVEGACIÓN =====================
 function showSection(sectionId) {
   document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
