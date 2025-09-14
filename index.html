@@ -106,30 +106,13 @@
   <!-- ==================== 4. Selección de autos ==================== -->
   <section id="carSection" class="hidden">
     <h2>Selecciona tu auto</h2>
-    <div class="car-type-selector">
-      <label><input type="radio" name="carType" value="sedan" checked onchange="updateCarCost()" /> Sedán ($7)</label>
-      <label><input type="radio" name="carType" value="crossover" onchange="updateCarCost()" /> Crossover 2 filas ($
-        10)</label>
-      <label><input type="radio" name="carType" value="suv" onchange="updateCarCost()" /> SUV 3 filas ($15)</label>
-      <label><input type="radio" name="carType" value="camioneta" onchange="updateCarCost()" /> Camioneta ($20)</label>
-    </div>
+    <div id="carsContainer" class="form-group">
+  <!-- Cada auto se renderizará desde JS con botones + y - -->
+</div>
 
-    <h3>Cantidad de autos</h3>
-    <select id="carsInputSelect" onchange="updateCarsFromSelect()">
-      <option value="1" selected>1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
-      <option value="7">7</option>
-      <option value="8">8</option>
-      <option value="9">9</option>
-      <option value="10">10</option>
-    </select>
-
-    <p>Total autos seleccionados: <span id="totalCars">1</span></p>
-    <p>Costo total: $<span id="totalCarCost">10.00</span></p>
+<p>Total autos seleccionados: <span id="totalCars">1</span></p>
+<p>Costo total: $<span id="totalCarCost">10.00</span></p>
+    
 
     <button class="btn" id="btnNextFromCars">Siguiente</button>
   </section>
