@@ -15,10 +15,12 @@ body {
   flex-direction: column;
   font-size: 16px;
 }
+
 /* ✅ Clase global para ocultar cualquier elemento */
 .hidden {
   display: none !important;
 }
+
 /* ================= Header ================= */
 header {
   background: linear-gradient(135deg, #0077cc, #00b4ff);
@@ -50,6 +52,7 @@ header h1 {
 main {
   flex: 1;
   padding: 1.4rem;
+  padding-bottom: 120px; /* espacio inferior para que el botón no se esconda detrás de la barra */
   max-width: 520px;
   margin: 0 auto;
   width: 100%;
@@ -68,19 +71,15 @@ h2 {
 section.hidden {
   display: none;
 }
-  /* ================= Espacio inferior para que botones no se escondan ================= */
-  padding-bottom: 100px; /* ajusta según altura de tu barra inferior */
-}
 
-h2 {
-  margin-bottom: 0.8rem;
-  color: #0077cc;
-  font-size: 1.55rem;
-  font-weight: 700;
-}
-
-section.hidden {
-  display: none;
+/* ================= Botón de siguiente (flotante sobre la barra inferior) ================= */
+.btn-next {
+  position: sticky; /* se queda visible al llegar al final */
+  bottom: 80px; /* justo encima de la barra inferior */
+  z-index: 1100; /* por encima de la barra */
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 14px;
 }
 
 /* ================= Botones de servicios ================= */
@@ -183,6 +182,7 @@ section.hidden {
   from {opacity: 0; transform: translate(-50%, -8px);}
   to {opacity: 1; transform: translate(-50%, 0);}
 }
+
 /* ================= Tooltip con check y X ================= */
 .service-info ul {
   list-style: none;
@@ -211,6 +211,7 @@ section.hidden {
   color: #dc3545; /* rojo */
   font-weight: bold;
 }
+
 /* ================= Tarjetas de expertos ================= */
 .card-container {
   display: grid;
