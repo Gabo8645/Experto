@@ -44,23 +44,35 @@ const DOM = {
   defaultAddress: document.getElementById("defaultAddress"),
   areasContainer: document.getElementById("areasContainer")
 };
-
 // ===================== TOOLTIP =====================
 document.querySelectorAll(".info-icon").forEach(icon => {
-  const infoDiv = icon.parentElement.nextElementSibling;
-  if (infoDiv) icon.setAttribute("data-target", infoDiv.id);
+  const infoDiv = icon.nextElementSibling; // ✅ hermano directo
+  if (infoDiv) {
+    // crear un id único si no tiene
+    if (!infoDiv.id) {
+      infoDiv.id = "tooltip-" + Math.random().toString(36).substr(2, 9);
+    }
+    icon.setAttribute("data-target", infoDiv.id);
+  }
 });
+
 document.querySelectorAll(".info-icon").forEach(btn => {
   btn.addEventListener("click", e => {
     e.stopPropagation();
     const id = btn.getAttribute("data-target");
     if (!id) return;
+
+    // Ocultar todos los tooltips menos el clicado
     document.querySelectorAll(".service-info").forEach(el => {
       if (el.id !== id) el.classList.add("hidden");
     });
+
+    // Mostrar/ocultar el actual
     document.getElementById(id).classList.toggle("hidden");
   });
 });
+
+// Cerrar tooltips al hacer click fuera
 document.body.addEventListener("click", () => {
   document.querySelectorAll(".service-info").forEach(el => el.classList.add("hidden"));
 });
