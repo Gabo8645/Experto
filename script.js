@@ -107,7 +107,7 @@ if (DOM.profileForm) {
 
 // ===================== EXPERTOS =====================
 const experts = [
-  { name: "Juan Pérez", rating: 4.8, activities: "Barrido, aspirado y limpieza general", photo: "https://randomuser.me/api/portraits/men/5.jpg" },
+  { name: "Juan Pérez", rating: 4.8, activities: "Barrido, aspirado y limpieza general", photo: "https://randomuser.me/api/portraits/men/6.jpg" },
   { name: "María López", rating: 4.9, activities: "Limpieza profunda, desinfección, cocina y baños", photo: "https://randomuser.me/api/portraits/women/2.jpg" },
   { name: "Carlos Ruiz", rating: 4.7, activities: "Aspirado de alfombras, lavado de pisos y muebles", photo: "https://randomuser.me/api/portraits/men/3.jpg" },
   { name: "Lucía Fernández", rating: 4.8, activities: "Limpieza general, lavado de ventanas y cocinas", photo: "https://randomuser.me/api/portraits/women/4.jpg" }
